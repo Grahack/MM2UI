@@ -27,6 +27,7 @@ target_compile_definitions(MyJuceApp PRIVATE
 )
 
 target_link_libraries(MyJuceApp PRIVATE
-    juce::juce_gui_extra
+    juce::juce_gui_basics
+    curl
 )
 
