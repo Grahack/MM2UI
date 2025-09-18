@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "DraggableItem.h"
 
 class MainComponent  : public juce::Component,
                        public juce::Button::Listener
@@ -15,7 +16,7 @@ public:
 
 private:
     juce::TextButton myButton { "Clique-moi" };
-    juce::Label draggableLabel;
+    DraggableItem draggable { "Glisse-moi" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
