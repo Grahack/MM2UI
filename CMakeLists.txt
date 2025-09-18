@@ -29,6 +29,7 @@ target_compile_definitions(MyJuceApp PRIVATE
 
 target_link_libraries(MyJuceApp PRIVATE
     juce::juce_gui_basics
+    juce::juce_audio_devices
     curl
 )
 

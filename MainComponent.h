@@ -16,7 +16,10 @@ public:
 
 private:
     juce::TextButton myButton { "Clique-moi" };
+    juce::Label statusLabel;
     GlideControl glideControl { "Glisser ici" };
+
+    std::unique_ptr<juce::MidiOutput> midiOut;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
