@@ -10,7 +10,7 @@ set(JUCE_DIR ../JUCE)
 add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(MyJuceApp
-    COMPANY_NAME "MonApp"
+    COMPANY_NAME "ProfGra"
 )
 
 juce_generate_juce_header(MyJuceApp)
