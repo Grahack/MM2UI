@@ -19,6 +19,7 @@ target_sources(MyJuceApp PRIVATE
     Main.cpp
     MainComponent.cpp
     MainComponent.h
+    GlideControl.h
 )
 
 target_compile_definitions(MyJuceApp PRIVATE
