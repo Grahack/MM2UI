@@ -2,9 +2,8 @@
 
 MainComponent::MainComponent()
 {
-    setSize (400, 300);
+    setSize(400, 300);
 
-    // Bouton cliquable
     myButton.addListener(this);
     addAndMakeVisible(myButton);
 
@@ -16,14 +15,14 @@ MainComponent::~MainComponent()
     myButton.removeListener(this);
 }
 
-void MainComponent::paint (juce::Graphics& g)
+void MainComponent::paint(juce::Graphics& g)
 {
-    g.fillAll (juce::Colours::white);
+    g.fillAll(juce::Colours::white);
 }
 
 void MainComponent::resized()
 {
-    myButton.setBounds (10, 10, 150, 40);
+    myButton.setBounds(10, 10, 150, 40);
     draggable.setTopLeftPosition(10, 70);
 }
 
