@@ -7,7 +7,11 @@ MainComponent::MainComponent()
     myButton.addListener(this);
     addAndMakeVisible(myButton);
 
-    addAndMakeVisible(draggable);
+    glideControl.onValueChanged = [](int value) {
+        DBG("Nouvelle valeur : " << value);  // Console debug
+        // Tu pourrais envoyer du MIDI CC ici
+    };
+    addAndMakeVisible(glideControl);
 }
 
 MainComponent::~MainComponent()
@@ -23,7 +27,8 @@ void MainComponent::paint(juce::Graphics& g)
 void MainComponent::resized()
 {
     myButton.setBounds(10, 10, 150, 40);
-    draggable.setTopLeftPosition(10, 70);
+    glideControl.setBounds(20, 20, 100, 100);
+
 }
 
 void MainComponent::buttonClicked(juce::Button* button)
