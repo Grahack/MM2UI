@@ -11,12 +11,11 @@ public:
         label.setJustificationType(juce::Justification::centred);
         addAndMakeVisible(label);
         setSize(100, 40);
-        setColour(juce::Component::backgroundColourId, juce::Colours::lightblue);
     }
 
     void paint(juce::Graphics& g) override
     {
-        g.fillAll(findColour(juce::Component::backgroundColourId));
+        g.fillAll(juce::Colours::lightblue);
         g.setColour(juce::Colours::black);
         g.drawRect(getLocalBounds(), 2);
     }
