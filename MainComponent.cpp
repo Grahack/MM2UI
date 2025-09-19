@@ -94,6 +94,20 @@ void MainComponent::comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged)
     }
 }
 
+void MainComponent::sendCC(int chan, int cc, int val)
+{
+    if (midiOut != nullptr)
+    {
+        auto msg = juce::MidiMessage::controllerEvent(chan, cc, val);
+        midiOut->sendMessageNow(msg);
+        DBG("CC" << cc << " = " << val << " on chan " << chan);
+    }
+    else
+    {
+        DBG("No active MIDI out!");
+    }
+}
+
 void MainComponent::buttonClicked(juce::Button* button)
 {
     if (button == &myButton)
@@ -102,23 +116,7 @@ void MainComponent::buttonClicked(juce::Button* button)
 
         statusLabel.setText(isOn ? "ON" : "OFF",
                             juce::dontSendNotification);
-
-        if (midiOut != nullptr)
-        {
-            int midiChannel = 1;
-            int controllerNumber = 64;
-            int value = isOn ? 127 : 0;
-
-            auto msg = juce::MidiMessage::controllerEvent(
-                           midiChannel, controllerNumber, value);
-            midiOut->sendMessageNow(msg);
-
-            DBG("CC" << controllerNumber << " = " << value);
-        }
-        else
-        {
-            DBG("⚠️ Aucune sortie MIDI active !");
-        }
+        sendCC(1, 7, isOn ? 127 : 0);
     }
 }
 

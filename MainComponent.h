@@ -13,6 +13,7 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized() override;
+    void sendCC(int chan, int cc, int val);
     void buttonClicked(juce::Button* button) override;
     void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override;
 
