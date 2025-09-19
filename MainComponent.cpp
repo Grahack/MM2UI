@@ -46,7 +46,7 @@ void MainComponent::resized()
 {
     midiOutputSelector.setBounds(20, 20, 300, 50);
     myButton.setBounds(20, 70, 150, 50);
-    statusLabel.setBounds(150, 70, 70, 50);
+    statusLabel.setBounds(180, 70, 70, 50);
     glideControl.setBounds(20, 130, 50, 200);
 
 }
