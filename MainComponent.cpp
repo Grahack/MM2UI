@@ -19,27 +19,19 @@ MainComponent::MainComponent()
     };
     addAndMakeVisible(glideControl);
 
-    // Initialiser le MIDI
-    auto midiOutputs = juce::MidiOutput::getAvailableDevices();
-    if (!midiOutputs.isEmpty())
-    {
-        auto deviceInfo = midiOutputs[0]; // ← Utilise le premier port MIDI dispo
-        midiOut = juce::MidiOutput::openDevice(deviceInfo.identifier);
+    midiOutputSelector.addListener(this);
+    addAndMakeVisible(midiOutputSelector);
 
-        if (midiOut != nullptr)
-            DBG("Port MIDI ouvert : " + deviceInfo.name);
-        else
-            DBG("Erreur d'ouverture MIDI");
-    }
-    else
-    {
-        DBG("Aucun périphérique MIDI trouvé");
-    }
+    midiOutputLabel.attachToComponent(&midiOutputSelector, true);
+    addAndMakeVisible(midiOutputLabel);
+
+    refreshMidiOutputs();
 }
 
 MainComponent::~MainComponent()
 {
     myButton.removeListener(this);
+    midiOutputSelector.removeListener(this);
     midiOut.reset(); // Ferme proprement le port MIDI
 }
 
@@ -50,9 +42,58 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    myButton.setBounds(10, 10, 50, 40);
-    statusLabel.setBounds(60, 10, 80, 40);
+    auto area = getLocalBounds().reduced(20);
+
     glideControl.setBounds(10, 50, 60, 170);
+    myButton.setBounds(area.removeFromTop(30).removeFromLeft(120));
+    statusLabel.setBounds(area.removeFromTop(30).removeFromLeft(60));
+
+    area.removeFromTop(20); // Espace vertical
+
+    midiOutputSelector.setBounds(140, 80, 300, 25);
+
+}
+
+void MainComponent::refreshMidiOutputs()
+{
+    midiOutputSelector.clear();
+    availableMidiOutputs = juce::MidiOutput::getAvailableDevices();
+
+    for (int i = 0; i < availableMidiOutputs.size(); ++i)
+    {
+        midiOutputSelector.addItem(availableMidiOutputs[i].name, i + 1);
+    }
+
+    if (availableMidiOutputs.isEmpty())
+    {
+        midiOutputSelector.addItem("Aucune sortie MIDI disponible", 1);
+        midiOutputSelector.setEnabled(false);
+    }
+    else
+    {
+        midiOutputSelector.setSelectedId(1);
+        comboBoxChanged(&midiOutputSelector); // Ouvre automatiquement la 1re
+    }
+}
+
+void MainComponent::comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged)
+{
+    if (comboBoxThatHasChanged == &midiOutputSelector)
+    {
+        int index = midiOutputSelector.getSelectedId() - 1;
+
+        if (index >= 0 && index < availableMidiOutputs.size())
+        {
+            midiOut.reset(); // Ferme l'ancienne
+            auto deviceInfo = availableMidiOutputs[index];
+            midiOut = juce::MidiOutput::openDevice(deviceInfo.identifier);
+
+            if (midiOut != nullptr)
+                DBG("Sortie MIDI sélectionnée : " + deviceInfo.name);
+            else
+                DBG("Erreur ouverture sortie MIDI : " + deviceInfo.name);
+        }
+    }
 }
 
 void MainComponent::buttonClicked(juce::Button* button)
