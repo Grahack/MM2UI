@@ -34,7 +34,7 @@ MainComponent::~MainComponent()
 {
     myButton.removeListener(this);
     midiOutputSelector.removeListener(this);
-    midiOut.reset(); // Ferme proprement le port MIDI
+    midiOut.reset(); // Closes the MIDI out port
 }
 
 void MainComponent::paint(juce::Graphics& g)
@@ -63,13 +63,14 @@ void MainComponent::refreshMidiOutputs()
 
     if (availableMidiOutputs.isEmpty())
     {
-        midiOutputSelector.addItem("Aucune sortie MIDI disponible", 1);
+        midiOutputSelector.addItem("No MIDI out found!", 1);
         midiOutputSelector.setEnabled(false);
     }
     else
     {
         midiOutputSelector.setSelectedId(1);
-        comboBoxChanged(&midiOutputSelector); // Ouvre automatiquement la 1re
+        // Selects the first available
+        comboBoxChanged(&midiOutputSelector);
     }
 }
 

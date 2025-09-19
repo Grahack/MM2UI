@@ -19,9 +19,9 @@ public:
 private:
     juce::TextButton myButton {};
     juce::Label statusLabel;
-    GlideControl glideControl { "Glisser ici" };
+    GlideControl glideControl { "OSC 1"};
     juce::ComboBox midiOutputSelector;
-    juce::Label midiOutputLabel { {}, "Sortie MIDI :" };
+    juce::Label midiOutputLabel { {}, "MIDI out:" };
     juce::Array<juce::MidiDeviceInfo> availableMidiOutputs;
     std::unique_ptr<juce::MidiOutput> midiOut;
 
