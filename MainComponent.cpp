@@ -82,14 +82,14 @@ void MainComponent::comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged)
 
         if (index >= 0 && index < availableMidiOutputs.size())
         {
-            midiOut.reset(); // Ferme l'ancienne
+            midiOut.reset(); // Closes the current one
             auto deviceInfo = availableMidiOutputs[index];
             midiOut = juce::MidiOutput::openDevice(deviceInfo.identifier);
 
             if (midiOut != nullptr)
-                DBG("Sortie MIDI sélectionnée : " + deviceInfo.name);
+                DBG("MIDI out is now: " + deviceInfo.name);
             else
-                DBG("Erreur ouverture sortie MIDI : " + deviceInfo.name);
+                DBG("Could not open MIDI out: " + deviceInfo.name);
         }
     }
 }
@@ -98,7 +98,6 @@ void MainComponent::buttonClicked(juce::Button* button)
 {
     if (button == &myButton)
     {
-
         bool isOn = myButton.getToggleState();
 
         statusLabel.setText(isOn ? "ON" : "OFF",
