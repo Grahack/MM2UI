@@ -23,7 +23,7 @@ target_sources(MyJuceApp PRIVATE
 )
 
 target_compile_definitions(MyJuceApp PRIVATE
-    JUCE_APPLICATION_NAME_STRING="MyJuceApp"
+    JUCE_APPLICATION_NAME_STRING="GriMidui"
     JUCE_APPLICATION_VERSION_STRING="0.1.0"
 )
 
