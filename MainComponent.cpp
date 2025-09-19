@@ -4,6 +4,7 @@ MainComponent::MainComponent()
 {
     setSize(1000, 1000);
 
+    myButton.setClickingTogglesState(true);
     myButton.addListener(this);
     addAndMakeVisible(myButton);
 

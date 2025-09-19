@@ -4,7 +4,7 @@
 #include "GlideControl.h"
 
 class MainComponent  : public juce::Component,
-                       public juce::Button::Listener,
+                       public juce::ToggleButton::Listener,
                        public juce::ComboBox::Listener
 {
 public:
