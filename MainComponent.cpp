@@ -44,9 +44,9 @@ void MainComponent::resized()
 {
     auto area = getLocalBounds().reduced(20);
 
-    glideControl.setBounds(10, 50, 60, 170);
     myButton.setBounds(area.removeFromTop(30).removeFromLeft(120));
     statusLabel.setBounds(area.removeFromTop(30).removeFromLeft(60));
+    glideControl.setBounds(area.removeFromTop(30).removeFromLeft(200));
 
     area.removeFromTop(20); // Espace vertical
 
