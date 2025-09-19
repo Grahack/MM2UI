@@ -50,10 +50,9 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    myButton.setBounds(10, 10, 150, 40);
-    statusLabel.setBounds(130, 20, 60, 30);
-    glideControl.setBounds(20, 20, 100, 100);
-
+    myButton.setBounds(10, 10, 50, 40);
+    statusLabel.setBounds(60, 10, 80, 40);
+    glideControl.setBounds(10, 50, 60, 170);
 }
 
 void MainComponent::buttonClicked(juce::Button* button)
