@@ -2,7 +2,7 @@
 
 MainComponent::MainComponent()
 {
-    setSize(400, 300);
+    setSize(1000, 1000);
 
     myButton.addListener(this);
     addAndMakeVisible(myButton);
@@ -42,15 +42,10 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    auto area = getLocalBounds().reduced(20);
-
-    myButton.setBounds(area.removeFromTop(30).removeFromLeft(120));
-    statusLabel.setBounds(area.removeFromTop(30).removeFromLeft(60));
-    glideControl.setBounds(area.removeFromTop(30).removeFromLeft(200));
-
-    area.removeFromTop(20); // Espace vertical
-
-    midiOutputSelector.setBounds(140, 80, 300, 25);
+    midiOutputSelector.setBounds(20, 20, 300, 50);
+    myButton.setBounds(20, 70, 150, 50);
+    statusLabel.setBounds(150, 70, 70, 50);
+    glideControl.setBounds(20, 130, 50, 200);
 
 }
 
