@@ -15,9 +15,8 @@ MainComponent::MainComponent()
     statusLabel.setColour(juce::Label::textColourId, juce::Colours::black);
     addAndMakeVisible(statusLabel);
 
-    glideControl.onValueChanged = [](int value) {
-        DBG("Nouvelle valeur : " << value);  // Console debug
-        // Tu pourrais envoyer du MIDI CC ici
+    glideControl.onValueChanged = [this](int value) {
+        sendCC(1, 7, value);
     };
     addAndMakeVisible(glideControl);
 
