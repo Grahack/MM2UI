@@ -17,7 +17,7 @@ public:
     void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override;
 
 private:
-    juce::TextButton myButton { "Clique-moi" };
+    juce::TextButton myButton {};
     juce::Label statusLabel;
     GlideControl glideControl { "Glisser ici" };
     juce::ComboBox midiOutputSelector;
