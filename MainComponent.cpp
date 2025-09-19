@@ -113,10 +113,7 @@ void MainComponent::buttonClicked(juce::Button* button)
     if (button == &myButton)
     {
         bool isOn = myButton.getToggleState();
-
-        statusLabel.setText(isOn ? "ON" : "OFF",
-                            juce::dontSendNotification);
+        statusLabel.setText(isOn ? "ON" : "OFF", juce::dontSendNotification);
         sendCC(1, 7, isOn ? 127 : 0);
     }
 }
-
