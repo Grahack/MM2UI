@@ -118,6 +118,10 @@ void MainComponent::buttonClicked(juce::Button* button)
 
             DBG("CC" << controllerNumber << " = " << value);
         }
+        else
+        {
+            DBG("⚠️ Aucune sortie MIDI active !");
+        }
     }
 }
 
