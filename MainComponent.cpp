@@ -20,6 +20,17 @@ MainComponent::MainComponent()
     };
     addAndMakeVisible(glideControl);
 
+    testSlider.setRange(0, 127);
+    testSlider.addListener(this);
+    glideControl.onValueChanged = [this](int value) {
+        sendCC(1, 7, value);
+    };
+    addAndMakeVisible(testSlider);
+
+    sliderLabel.setText("OSC 1", juce::dontSendNotification);
+    addAndMakeVisible(sliderLabel);
+    sliderLabel.attachToComponent(&testSlider, false);
+
     midiOutputSelector.addListener(this);
     addAndMakeVisible(midiOutputSelector);
 
@@ -47,7 +58,7 @@ void MainComponent::resized()
     myButton.setBounds(20, 70, 150, 50);
     statusLabel.setBounds(180, 70, 70, 50);
     glideControl.setBounds(20, 130, 50, 200);
-
+    testSlider.setBounds(200, 200, 10, 100);
 }
 
 void MainComponent::refreshMidiOutputs()
@@ -114,5 +125,13 @@ void MainComponent::buttonClicked(juce::Button* button)
         bool isOn = myButton.getToggleState();
         statusLabel.setText(isOn ? "ON" : "OFF", juce::dontSendNotification);
         sendCC(1, 7, isOn ? 127 : 0);
+    }
+}
+
+void MainComponent::sliderValueChanged(juce::Slider* slider)
+{
+    if (slider == &testSlider)
+    {
+        sendCC(1, 7, testSlider.getValue());
     }
 }
