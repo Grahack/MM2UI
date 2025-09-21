@@ -54,12 +54,18 @@ void MainComponent::paint(juce::Graphics& g)
 void MainComponent::resized()
 {
     auto area = getLocalBounds();
-    int h = 50;
-    auto headerArea = area.removeFromTop(h);
+    int w = area.getWidth();
+    int headerHeight = 50;
+    auto headerArea = area.removeFromTop(headerHeight);
     channelSelector.setBounds(headerArea.removeFromLeft(100));
     midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
     refreshButton.setBounds(headerArea.removeFromLeft(100));
-    testSlider.setBounds(200, 200, 50, 150);
+    int slidersHeight = 200;
+    int slidersLabelHeight = 30;
+    area.removeFromTop(slidersLabelHeight);
+    auto oscArea = area.removeFromTop(slidersHeight);
+    int oscSlidersWidth = oscArea.getWidth() / 16;
+    testSlider.setBounds(oscArea.removeFromLeft(oscSlidersWidth));
 }
 
 void MainComponent::refreshMidiOutputs()
