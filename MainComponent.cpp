@@ -41,8 +41,11 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    midiOutputSelector.setBounds(20, 20, 300, 50);
-    myButton.setBounds(20, 70, 150, 50);
+    auto area = getLocalBounds();
+    int h = 50;
+    auto headerArea = area.removeFromTop(h);
+    midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
+    myButton.setBounds(headerArea.removeFromLeft(100));
     testSlider.setBounds(200, 200, 50, 150);
 }
 
