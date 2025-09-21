@@ -4,6 +4,16 @@ MainComponent::MainComponent()
 {
     setSize(1000, 1000);
 
+    channel = 0;
+    channelSelector.addListener(this);
+    channelSelector.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(channelSelector);
+    for (int i = 0; i < 16; i++)
+    {
+        channelSelector.addItem("CHAN " + std::to_string(i), i+1);
+    }
+    channelSelector.setSelectedId(1);
+
     myButton.setButtonText("REFRESH");
     myButton.addListener(this);
     addAndMakeVisible(myButton);
@@ -29,6 +39,7 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
+    channelSelector.removeListener(this);
     myButton.removeListener(this);
     midiOutputSelector.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
@@ -44,6 +55,7 @@ void MainComponent::resized()
     auto area = getLocalBounds();
     int h = 50;
     auto headerArea = area.removeFromTop(h);
+    channelSelector.setBounds(headerArea.removeFromLeft(100));
     midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
     myButton.setBounds(headerArea.removeFromLeft(100));
     testSlider.setBounds(200, 200, 50, 150);
@@ -74,6 +86,11 @@ void MainComponent::refreshMidiOutputs()
 
 void MainComponent::comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged)
 {
+    if (comboBoxThatHasChanged == &channelSelector)
+    {
+        channel = channelSelector.getSelectedId();
+        DBG("MIDI is now: " + std::to_string(channel));
+    }
     if (comboBoxThatHasChanged == &midiOutputSelector)
     {
         int index = midiOutputSelector.getSelectedId() - 1;
@@ -118,6 +135,6 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
 {
     if (slider == &testSlider)
     {
-        sendCC(1, 7, testSlider.getValue());
+        sendCC(channel, 7, testSlider.getValue());
     }
 }

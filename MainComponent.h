@@ -19,6 +19,8 @@ public:
     void sliderValueChanged(juce::Slider* slider) override;
 
 private:
+    int channel;
+    juce::ComboBox channelSelector;
     juce::TextButton myButton;
     juce::Slider testSlider;
     juce::Label sliderLabel;
