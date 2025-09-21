@@ -19,10 +19,11 @@ private:
     class MainWindow : public juce::DocumentWindow {
     public:
         MainWindow(juce::String name, juce::Component* c, JUCEApplication& app)
-            : DocumentWindow(name, juce::Desktop::getInstance().getDefaultLookAndFeel()
-                                        .findColour(ResizableWindow::backgroundColourId),
-                             DocumentWindow::allButtons),
-              ownerApp(app)
+          : DocumentWindow(name,
+                           juce::Desktop::getInstance().getDefaultLookAndFeel()
+                              .findColour(ResizableWindow::backgroundColourId),
+                           DocumentWindow::allButtons),
+            ownerApp(app)
         {
             setUsingNativeTitleBar(true);
             setContentOwned(c, true);
