@@ -24,7 +24,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(testSlider);
 
     sliderLabel.setText("OSC 1", juce::dontSendNotification);
-    sliderLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
+    sliderLabel.setColour(juce::Label::backgroundColourId, juce::Colours::black);
     addAndMakeVisible(sliderLabel);
     sliderLabel.attachToComponent(&testSlider, false);
 
@@ -54,7 +54,7 @@ void MainComponent::resized()
     midiOutputSelector.setBounds(20, 20, 300, 50);
     myButton.setBounds(20, 70, 150, 50);
     statusLabel.setBounds(180, 70, 70, 50);
-    testSlider.setBounds(200, 200, 150, 150);
+    testSlider.setBounds(200, 200, 50, 150);
 }
 
 void MainComponent::refreshMidiOutputs()
