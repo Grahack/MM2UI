@@ -3,7 +3,7 @@
 #include <JuceHeader.h>
 
 class MainComponent  : public juce::Component,
-                       public juce::ToggleButton::Listener,
+                       public juce::Button::Listener,
                        public juce::Slider::Listener,
                        public juce::ComboBox::Listener
 {
@@ -20,7 +20,6 @@ public:
 
 private:
     juce::TextButton myButton;
-    juce::Label statusLabel;
     juce::Slider testSlider;
     juce::Label sliderLabel;
     juce::ComboBox midiOutputSelector;

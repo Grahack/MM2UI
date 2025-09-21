@@ -4,16 +4,9 @@ MainComponent::MainComponent()
 {
     setSize(1000, 1000);
 
-    myButton.setButtonText("NOISE");
-    myButton.setClickingTogglesState(true);
+    myButton.setButtonText("REFRESH");
     myButton.addListener(this);
     addAndMakeVisible(myButton);
-
-    statusLabel.setText("OFF", juce::dontSendNotification);
-    statusLabel.setJustificationType(juce::Justification::centred);
-    statusLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
-    statusLabel.setColour(juce::Label::textColourId, juce::Colours::black);
-    addAndMakeVisible(statusLabel);
 
     testSlider.setRange(0, 127, 1);  // 1 for integer value to be displayed
     testSlider.addListener(this);
@@ -50,7 +43,6 @@ void MainComponent::resized()
 {
     midiOutputSelector.setBounds(20, 20, 300, 50);
     myButton.setBounds(20, 70, 150, 50);
-    statusLabel.setBounds(180, 70, 70, 50);
     testSlider.setBounds(200, 200, 50, 150);
 }
 
@@ -115,9 +107,7 @@ void MainComponent::buttonClicked(juce::Button* button)
 {
     if (button == &myButton)
     {
-        bool isOn = myButton.getToggleState();
-        statusLabel.setText(isOn ? "ON" : "OFF", juce::dontSendNotification);
-        sendCC(1, 7, isOn ? 127 : 0);
+        refreshMidiOutputs();
     }
 }
 
