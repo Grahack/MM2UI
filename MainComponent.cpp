@@ -20,14 +20,19 @@ MainComponent::MainComponent()
     };
     addAndMakeVisible(glideControl);
 
-    testSlider.setRange(0, 127);
+    testSlider.setRange(0, 127, 1);  // 1 for integer value to be displayed
     testSlider.addListener(this);
     glideControl.onValueChanged = [this](int value) {
         sendCC(1, 7, value);
     };
+    testSlider.setColour(juce::Slider::backgroundColourId, juce::Colours::lightgrey);
+    testSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
+    testSlider.setSliderStyle(juce::Slider::LinearVertical);
+    testSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 30);
     addAndMakeVisible(testSlider);
 
     sliderLabel.setText("OSC 1", juce::dontSendNotification);
+    sliderLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
     addAndMakeVisible(sliderLabel);
     sliderLabel.attachToComponent(&testSlider, false);
 
@@ -58,7 +63,7 @@ void MainComponent::resized()
     myButton.setBounds(20, 70, 150, 50);
     statusLabel.setBounds(180, 70, 70, 50);
     glideControl.setBounds(20, 130, 50, 200);
-    testSlider.setBounds(200, 200, 10, 100);
+    testSlider.setBounds(200, 200, 150, 150);
 }
 
 void MainComponent::refreshMidiOutputs()
