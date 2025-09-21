@@ -12,7 +12,7 @@ public:
     MainComponent();
     ~MainComponent() override;
 
-    void paint (juce::Graphics&) override;
+    void paint(juce::Graphics&) override;
     void resized() override;
     void sendCC(int chan, int cc, int val);
     void buttonClicked(juce::Button* button) override;
@@ -20,7 +20,7 @@ public:
     void sliderValueChanged(juce::Slider* slider) override;
 
 private:
-    juce::TextButton myButton {};
+    juce::TextButton myButton;
     juce::Label statusLabel;
     GlideControl glideControl { "OSC 1"};
     juce::Slider testSlider;
