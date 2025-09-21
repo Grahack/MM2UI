@@ -19,7 +19,6 @@ target_sources(GriMidui PRIVATE
     Main.cpp
     MainComponent.cpp
     MainComponent.h
-    GlideControl.h
 )
 
 target_compile_definitions(GriMidui PRIVATE

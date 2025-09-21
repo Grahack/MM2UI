@@ -1,7 +1,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "GlideControl.h"
 
 class MainComponent  : public juce::Component,
                        public juce::ToggleButton::Listener,
@@ -22,7 +21,6 @@ public:
 private:
     juce::TextButton myButton;
     juce::Label statusLabel;
-    GlideControl glideControl { "OSC 1"};
     juce::Slider testSlider;
     juce::Label sliderLabel;
     juce::ComboBox midiOutputSelector;

@@ -15,16 +15,8 @@ MainComponent::MainComponent()
     statusLabel.setColour(juce::Label::textColourId, juce::Colours::black);
     addAndMakeVisible(statusLabel);
 
-    glideControl.onValueChanged = [this](int value) {
-        sendCC(1, 7, value);
-    };
-    addAndMakeVisible(glideControl);
-
     testSlider.setRange(0, 127, 1);  // 1 for integer value to be displayed
     testSlider.addListener(this);
-    glideControl.onValueChanged = [this](int value) {
-        sendCC(1, 7, value);
-    };
     testSlider.setColour(juce::Slider::backgroundColourId, juce::Colours::lightgrey);
     testSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
     testSlider.setSliderStyle(juce::Slider::LinearVertical);
@@ -62,7 +54,6 @@ void MainComponent::resized()
     midiOutputSelector.setBounds(20, 20, 300, 50);
     myButton.setBounds(20, 70, 150, 50);
     statusLabel.setBounds(180, 70, 70, 50);
-    glideControl.setBounds(20, 130, 50, 200);
     testSlider.setBounds(200, 200, 150, 150);
 }
 
