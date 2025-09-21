@@ -31,9 +31,6 @@ MainComponent::MainComponent()
     midiOutputSelector.addListener(this);
     addAndMakeVisible(midiOutputSelector);
 
-    midiOutputLabel.attachToComponent(&midiOutputSelector, true);
-    addAndMakeVisible(midiOutputLabel);
-
     refreshMidiOutputs();
 }
 

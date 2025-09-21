@@ -24,7 +24,6 @@ private:
     juce::Slider testSlider;
     juce::Label sliderLabel;
     juce::ComboBox midiOutputSelector;
-    juce::Label midiOutputLabel { {}, "MIDI out:" };
     juce::Array<juce::MidiDeviceInfo> availableMidiOutputs;
     std::unique_ptr<juce::MidiOutput> midiOut;
 
