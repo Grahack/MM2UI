@@ -4,11 +4,11 @@
 class MyApp : public juce::JUCEApplication
 {
 public:
-    const juce::String getApplicationName() override     { return "GriMidui"; }
+    const juce::String getApplicationName() override     { return "MM2UI"; }
     const juce::String getApplicationVersion() override  { return "0.1.0"; }
 
     void initialise(const juce::String&) override {
-        mainWindow.reset(new MainWindow("GriMidui", new MainComponent(), *this));
+        mainWindow.reset(new MainWindow("MM2UI", new MainComponent(), *this));
     }
 
     void shutdown() override {
