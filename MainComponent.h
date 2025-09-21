@@ -21,7 +21,7 @@ public:
 private:
     int channel;
     juce::ComboBox channelSelector;
-    juce::TextButton myButton;
+    juce::TextButton refreshButton;
     juce::Slider testSlider;
     juce::Label sliderLabel;
     juce::ComboBox midiOutputSelector;

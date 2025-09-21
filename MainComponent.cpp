@@ -14,9 +14,9 @@ MainComponent::MainComponent()
     }
     channelSelector.setSelectedId(1);
 
-    myButton.setButtonText("REFRESH");
-    myButton.addListener(this);
-    addAndMakeVisible(myButton);
+    refreshButton.setButtonText("REFRESH");
+    refreshButton.addListener(this);
+    addAndMakeVisible(refreshButton);
 
     testSlider.setRange(0, 127, 1);  // 1 for integer value to be displayed
     testSlider.addListener(this);
@@ -40,7 +40,7 @@ MainComponent::MainComponent()
 MainComponent::~MainComponent()
 {
     channelSelector.removeListener(this);
-    myButton.removeListener(this);
+    refreshButton.removeListener(this);
     midiOutputSelector.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
 }
@@ -57,7 +57,7 @@ void MainComponent::resized()
     auto headerArea = area.removeFromTop(h);
     channelSelector.setBounds(headerArea.removeFromLeft(100));
     midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
-    myButton.setBounds(headerArea.removeFromLeft(100));
+    refreshButton.setBounds(headerArea.removeFromLeft(100));
     testSlider.setBounds(200, 200, 50, 150);
 }
 
@@ -125,7 +125,7 @@ void MainComponent::sendCC(int chan, int cc, int val)
 
 void MainComponent::buttonClicked(juce::Button* button)
 {
-    if (button == &myButton)
+    if (button == &refreshButton)
     {
         refreshMidiOutputs();
     }
