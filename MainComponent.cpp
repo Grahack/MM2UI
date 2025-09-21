@@ -27,6 +27,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(testSlider);
 
     sliderLabel.setText("OSC 1", juce::dontSendNotification);
+    sliderLabel.setJustificationType(juce::Justification::centred);
     sliderLabel.setColour(juce::Label::backgroundColourId, juce::Colours::black);
     addAndMakeVisible(sliderLabel);
     sliderLabel.attachToComponent(&testSlider, false);
