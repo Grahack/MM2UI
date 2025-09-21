@@ -133,8 +133,7 @@ void MainComponent::buttonClicked(juce::Button* button)
 
 void MainComponent::sliderValueChanged(juce::Slider* slider)
 {
-    if (slider == &testSlider)
-    {
-        sendCC(channel, 7, testSlider.getValue());
-    }
+    int CC = 0;
+    if (slider == &testSlider) CC = 7;
+    sendCC(channel, CC, (*slider).getValue());
 }
