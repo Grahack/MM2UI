@@ -25,20 +25,25 @@ MainComponent::MainComponent()
     addAndMakeVisible(refreshButton);
 
     // oscillators section
-    testSlider.setRange(0, 127, 1);  // 1 for integer value to be displayed
-    testSlider.addListener(this);
-    testSlider.setColour(juce::Slider::backgroundColourId, juce::Colours::lightgrey);
-    testSlider.setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
-    testSlider.setSliderStyle(juce::Slider::LinearVertical);
-    testSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 30);
-    addAndMakeVisible(testSlider);
-
-    sliderLabel.setText("OSC 1", juce::dontSendNotification);
-    sliderLabel.setJustificationType(juce::Justification::centred);
-    sliderLabel.setColour(juce::Label::backgroundColourId, juce::Colours::black);
-    addAndMakeVisible(sliderLabel);
-    sliderLabel.attachToComponent(&testSlider, false);
-
+    // See numName init in MainComponent.h
+    for (int i = 0; i < 8; i++)
+    {
+        slidersArray.add(new juce::Slider());
+        slidersArray[i]->setRange(0, 127, 1);  // 1 for integer value to be displayed
+        slidersArray[i]->addListener(this);
+        slidersArray[i]->setColour(juce::Slider::backgroundColourId, juce::Colours::lightgrey);
+        slidersArray[i]->setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
+        slidersArray[i]->setSliderStyle(juce::Slider::LinearVertical);
+        slidersArray[i]->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 30);
+        addAndMakeVisible(*slidersArray[i]);
+        labelsArray.add(new juce::Label());
+        labelsArray[i]->setText(nameNumArray[i].name, juce::dontSendNotification);
+        labelsArray[i]->setJustificationType(juce::Justification::centred);
+        labelsArray[i]->setColour(juce::Label::backgroundColourId, juce::Colours::black);
+        labelsArray[i]->attachToComponent(slidersArray[i], false);
+        addAndMakeVisible(*labelsArray[i]);
+    }
+    resized();
 }
 
 MainComponent::~MainComponent()
@@ -47,7 +52,10 @@ MainComponent::~MainComponent()
     midiOutputSelector.removeListener(this);
     refreshButton.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
-    testSlider.removeListener(this);
+    for (int i = 0; i < 8; i++)
+    {
+        slidersArray[i]->removeListener(this);
+    }
 }
 
 void MainComponent::paint(juce::Graphics& g)
@@ -69,7 +77,11 @@ void MainComponent::resized()
     area.removeFromTop(slidersLabelHeight);
     auto oscArea = area.removeFromTop(slidersHeight);
     int oscSlidersWidth = oscArea.getWidth() / 16;
-    testSlider.setBounds(oscArea.removeFromLeft(oscSlidersWidth));
+    if (slidersArray.size() < 8) return;
+    for (int i = 0; i < 8; i++)
+    {
+        slidersArray[i]->setBounds(oscArea.removeFromLeft(oscSlidersWidth));
+    }
 }
 
 void MainComponent::refreshMidiOutputs()
@@ -131,7 +143,13 @@ void MainComponent::buttonClicked(juce::Button* button)
 void MainComponent::sliderValueChanged(juce::Slider* slider)
 {
     int CC = 0;
-    if (slider == &testSlider) CC = 7;
+    for (int i = 0; i < 8; i++)
+    {
+        if (slider == slidersArray[i])
+        {
+            CC = nameNumArray[i].num;
+        }
+    }
     sendCC(channel, CC, (*slider).getValue());
 }
 

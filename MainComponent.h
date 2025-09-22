@@ -1,6 +1,9 @@
 #pragma once
 
+#include <map>
 #include <JuceHeader.h>
+
+using namespace std;
 
 class MainComponent  : public juce::Component,
                        public juce::ComboBox::Listener,
@@ -27,9 +30,16 @@ private:
     juce::Array<juce::MidiDeviceInfo> availableMidiOutputs;
     std::unique_ptr<juce::MidiOutput> midiOut;
     juce::TextButton refreshButton;
-    // oscillators section
-    juce::Slider testSlider;
-    juce::Label sliderLabel;
+    // controllers section
+    struct nameNum {
+        char name[6];
+        int  num;
+    };
+    nameNum nameNumArray[8] = {
+        {"LVL 1", 48}, {"SHP 1", 39}, {"TUNE1", 40}, {"F.TU1", 41},
+        {"LVL 2", 48}, {"SHP 2", 39}, {"TUNE2", 40}, {"F.TU2", 42}};
+    OwnedArray<Slider> slidersArray;
+    OwnedArray<Label> labelsArray;
 
     void refreshMidiOutputs();
 
