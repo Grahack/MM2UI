@@ -47,6 +47,7 @@ MainComponent::~MainComponent()
     midiOutputSelector.removeListener(this);
     refreshButton.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
+    testSlider.removeListener(this);
 }
 
 void MainComponent::paint(juce::Graphics& g)
