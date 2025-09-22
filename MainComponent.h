@@ -3,9 +3,9 @@
 #include <JuceHeader.h>
 
 class MainComponent  : public juce::Component,
+                       public juce::ComboBox::Listener,
                        public juce::Button::Listener,
-                       public juce::Slider::Listener,
-                       public juce::ComboBox::Listener
+                       public juce::Slider::Listener
 {
 public:
     MainComponent();
@@ -13,20 +13,23 @@ public:
 
     void paint(juce::Graphics&) override;
     void resized() override;
-    void sendCC(int chan, int cc, int val);
-    void buttonClicked(juce::Button* button) override;
     void comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
+    void sendCC(int chan, int cc, int val);
 
 private:
+    // MIDI channel
     int channel;
     juce::ComboBox channelSelector;
-    juce::TextButton refreshButton;
-    juce::Slider testSlider;
-    juce::Label sliderLabel;
+    // MIDI out
     juce::ComboBox midiOutputSelector;
     juce::Array<juce::MidiDeviceInfo> availableMidiOutputs;
     std::unique_ptr<juce::MidiOutput> midiOut;
+    juce::TextButton refreshButton;
+    // oscillators section
+    juce::Slider testSlider;
+    juce::Label sliderLabel;
 
     void refreshMidiOutputs();
 

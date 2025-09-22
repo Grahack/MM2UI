@@ -4,6 +4,7 @@ MainComponent::MainComponent()
 {
     setSize(1000, 1000);
 
+    // MIDI channel
     channel = 0;
     channelSelector.addListener(this);
     channelSelector.setJustificationType(juce::Justification::centred);
@@ -14,10 +15,16 @@ MainComponent::MainComponent()
     }
     channelSelector.setSelectedId(1);
 
+    // MIDI out
+    midiOutputSelector.addListener(this);
+    addAndMakeVisible(midiOutputSelector);
+    refreshMidiOutputs();
+
     refreshButton.setButtonText("REFRESH");
     refreshButton.addListener(this);
     addAndMakeVisible(refreshButton);
 
+    // oscillators section
     testSlider.setRange(0, 127, 1);  // 1 for integer value to be displayed
     testSlider.addListener(this);
     testSlider.setColour(juce::Slider::backgroundColourId, juce::Colours::lightgrey);
@@ -32,17 +39,13 @@ MainComponent::MainComponent()
     addAndMakeVisible(sliderLabel);
     sliderLabel.attachToComponent(&testSlider, false);
 
-    midiOutputSelector.addListener(this);
-    addAndMakeVisible(midiOutputSelector);
-
-    refreshMidiOutputs();
 }
 
 MainComponent::~MainComponent()
 {
     channelSelector.removeListener(this);
-    refreshButton.removeListener(this);
     midiOutputSelector.removeListener(this);
+    refreshButton.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
 }
 
@@ -116,20 +119,6 @@ void MainComponent::comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged)
     }
 }
 
-void MainComponent::sendCC(int chan, int cc, int val)
-{
-    if (midiOut != nullptr)
-    {
-        auto msg = juce::MidiMessage::controllerEvent(chan, cc, val);
-        midiOut->sendMessageNow(msg);
-        DBG("CC" << cc << " = " << val << " on chan " << chan);
-    }
-    else
-    {
-        DBG("No active MIDI out!");
-    }
-}
-
 void MainComponent::buttonClicked(juce::Button* button)
 {
     if (button == &refreshButton)
@@ -143,4 +132,18 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
     int CC = 0;
     if (slider == &testSlider) CC = 7;
     sendCC(channel, CC, (*slider).getValue());
+}
+
+void MainComponent::sendCC(int chan, int cc, int val)
+{
+    if (midiOut != nullptr)
+    {
+        auto msg = juce::MidiMessage::controllerEvent(chan, cc, val);
+        midiOut->sendMessageNow(msg);
+        DBG("CC" << cc << " = " << val << " on chan " << chan);
+    }
+    else
+    {
+        DBG("No active MIDI out!");
+    }
 }
