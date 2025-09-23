@@ -26,7 +26,7 @@ MainComponent::MainComponent()
 
     // oscillators section
     // See numName init in MainComponent.h
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < slidersCount; i++)
     {
         slidersArray.add(new juce::Slider());
         slidersArray[i]->setRange(0, 127, 1);  // 1 for integer value to be displayed
@@ -52,7 +52,7 @@ MainComponent::~MainComponent()
     midiOutputSelector.removeListener(this);
     refreshButton.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < slidersCount; i++)
     {
         slidersArray[i]->removeListener(this);
     }
@@ -77,9 +77,15 @@ void MainComponent::resized()
     area.removeFromTop(slidersLabelHeight);
     auto oscArea = area.removeFromTop(slidersHeight);
     int oscSlidersWidth = oscArea.getWidth() / 16;
-    if (slidersArray.size() < 8) return;
-    for (int i = 0; i < 8; i++)
+    // Protect this section from a premature execution
+    // TODO: replace the hardcoded value with slidersCount
+    if (slidersArray.size() < 13) return;
+    for (int i = 0; i < slidersCount; i++)
     {
+        if (i >0 && i % 4 == 0)
+        {
+            oscArea.removeFromLeft(oscSlidersWidth);
+        }
         slidersArray[i]->setBounds(oscArea.removeFromLeft(oscSlidersWidth));
     }
 }
@@ -143,7 +149,7 @@ void MainComponent::buttonClicked(juce::Button* button)
 void MainComponent::sliderValueChanged(juce::Slider* slider)
 {
     int CC = 0;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < slidersCount; i++)
     {
         if (slider == slidersArray[i])
         {

@@ -31,13 +31,16 @@ private:
     std::unique_ptr<juce::MidiOutput> midiOut;
     juce::TextButton refreshButton;
     // controllers section
+    static const int slidersCount = 13;
     struct nameNum {
         char name[6];
         int  num;
     };
-    nameNum nameNumArray[8] = {
+    nameNum nameNumArray[slidersCount] = {
         {"LVL 1", 48}, {"SHP 1", 39}, {"TUNE1", 40}, {"F.TU1", 41},
-        {"LVL 2", 48}, {"SHP 2", 39}, {"TUNE2", 40}, {"F.TU2", 42}};
+        {"LVL 2", 49}, {"SHP 2", 42}, {"TUNE2", 43}, {"F.TU2", 44},
+        {"LVL 3", 50}, {"SHP 3", 45}, {"TUNE3", 46}, {"F.TU3", 47},
+        {"NZE",   51}};
     OwnedArray<Slider> slidersArray;
     OwnedArray<Label> labelsArray;
 
