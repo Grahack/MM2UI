@@ -77,7 +77,7 @@ void MainComponent::resized()
     // oscillators section
     int slidersHeight = 200;
     int slidersLabelHeight = 30;
-    area.removeFromTop(slidersLabelHeight);
+    area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto oscArea = area.removeFromTop(slidersHeight);
     int oscSlidersWidth = oscArea.getWidth() / 16;
     for (int i = 0; i < 13; i++)
