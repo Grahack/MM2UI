@@ -72,14 +72,15 @@ void MainComponent::resized()
     channelSelector.setBounds(headerArea.removeFromLeft(200));
     midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
     refreshButton.setBounds(headerArea.removeFromLeft(100));
+    // Protect this section from a premature execution
+    if (slidersArray.size() == 0) return;
+    // oscillators section
     int slidersHeight = 200;
     int slidersLabelHeight = 30;
     area.removeFromTop(slidersLabelHeight);
     auto oscArea = area.removeFromTop(slidersHeight);
     int oscSlidersWidth = oscArea.getWidth() / 16;
-    // Protect this section from a premature execution
-    if (slidersArray.size() == 0) return;
-    for (int i = 0; i < slidersCount; i++)
+    for (int i = 0; i < 13; i++)
     {
         if (i > 0 && i % 4 == 0)
         {
