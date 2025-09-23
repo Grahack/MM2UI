@@ -35,6 +35,26 @@ MainComponent::MainComponent()
         slidersArray[i]->setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
         slidersArray[i]->setSliderStyle(juce::Slider::LinearVertical);
         slidersArray[i]->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 30);
+        // TUNE is between -24 and +12 semitones
+        if ( i < 12 && (i-2) % 4 == 0 )
+        {
+            slidersArray[i]->textFromValueFunction = [](double value)
+            {
+                int tune = (value * (12 - (-24))) / 127 - 24;
+                return (tune > 0 ? "+" : "") + juce::String(tune);
+            };
+            slidersArray[i]->setValue(85);
+        }
+        // FINE TUNE is between -25 and +25 cents
+        if ( i < 12 && (i-3) % 4 == 0 )
+        {
+            slidersArray[i]->textFromValueFunction = [](double value)
+            {
+                int tune = (value * (25 - (-25))) / 127 - 25;
+                return (tune > 0 ? "+" : "") + juce::String(tune);
+            };
+            slidersArray[i]->setValue(63);
+        }
         addAndMakeVisible(*slidersArray[i]);
         labelsArray.add(new juce::Label());
         labelsArray[i]->setText(nameNumArray[i].name, juce::dontSendNotification);
