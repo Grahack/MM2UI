@@ -78,8 +78,7 @@ void MainComponent::resized()
     auto oscArea = area.removeFromTop(slidersHeight);
     int oscSlidersWidth = oscArea.getWidth() / 16;
     // Protect this section from a premature execution
-    // TODO: replace the hardcoded value with slidersCount
-    if (slidersArray.size() < 13) return;
+    if (slidersArray.size() == 0) return;
     for (int i = 0; i < slidersCount; i++)
     {
         if (i > 0 && i % 4 == 0)
