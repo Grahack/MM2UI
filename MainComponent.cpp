@@ -69,7 +69,7 @@ void MainComponent::resized()
     int w = area.getWidth();
     int headerHeight = 50;
     auto headerArea = area.removeFromTop(headerHeight);
-    channelSelector.setBounds(headerArea.removeFromLeft(100));
+    channelSelector.setBounds(headerArea.removeFromLeft(200));
     midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
     refreshButton.setBounds(headerArea.removeFromLeft(100));
     int slidersHeight = 200;
