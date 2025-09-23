@@ -31,7 +31,7 @@ private:
     std::unique_ptr<juce::MidiOutput> midiOut;
     juce::TextButton refreshButton;
     // controllers section
-    static const int slidersCount = 13;
+    static const int slidersCount = 25;
     struct nameNum {
         char name[6];
         int  num;
@@ -40,9 +40,15 @@ private:
         {"LVL 1", 48}, {"SHP 1", 39}, {"TUNE1", 40}, {"F.TU1", 41},
         {"LVL 2", 49}, {"SHP 2", 42}, {"TUNE2", 43}, {"F.TU2", 44},
         {"LVL 3", 50}, {"SHP 3", 45}, {"TUNE3", 46}, {"F.TU3", 47},
-        {"NZE",   51}};
+        {"NZE",   51},
+        {"A", 73}, {"D", 75}, {"S", 79}, {"R", 72},
+        {"A", 80}, {"D", 81}, {"S", 82}, {"R", 83},
+        {"A", 84}, {"D", 85}, {"S", 86}, {"R", 87}};
     OwnedArray<Slider> slidersArray;
     OwnedArray<Label> labelsArray;
+    juce::Label vcaEnvLabel;
+    juce::Label vcfEnvLabel;
+    juce::Label env3EnvLabel;
 
     void refreshMidiOutputs();
 

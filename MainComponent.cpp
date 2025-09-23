@@ -43,6 +43,24 @@ MainComponent::MainComponent()
         labelsArray[i]->attachToComponent(slidersArray[i], false);
         addAndMakeVisible(*labelsArray[i]);
     }
+
+    // env section
+    vcaEnvLabel.setText("ENV 1: VCA", juce::dontSendNotification);
+    vcaEnvLabel.setJustificationType(juce::Justification::centred);
+    vcaEnvLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    vcaEnvLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
+    addAndMakeVisible(vcaEnvLabel);
+    vcfEnvLabel.setText("ENV 2: VCF", juce::dontSendNotification);
+    vcfEnvLabel.setJustificationType(juce::Justification::centred);
+    vcfEnvLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    vcfEnvLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
+    addAndMakeVisible(vcfEnvLabel);
+    env3EnvLabel.setText("ENV 3", juce::dontSendNotification);
+    env3EnvLabel.setJustificationType(juce::Justification::centred);
+    env3EnvLabel.setColour(juce::Label::textColourId, juce::Colours::black);
+    env3EnvLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
+    addAndMakeVisible(env3EnvLabel);
+
     resized();
 }
 
@@ -87,6 +105,24 @@ void MainComponent::resized()
             oscArea.removeFromLeft(oscSlidersWidth);
         }
         slidersArray[i]->setBounds(oscArea.removeFromLeft(oscSlidersWidth));
+    }
+    // env section
+    int envHeaderHeight = 40;
+    auto envLabelsArea = area.removeFromTop(envHeaderHeight);
+    int envLabelsWidth = envLabelsArea.getWidth() / 3;
+    vcaEnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    vcfEnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    env3EnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
+    auto envArea = area.removeFromTop(slidersHeight);
+    int envSlidersWidth = envArea.getWidth() / 14;
+    for (int i = 13; i < 25; i++)
+    {
+        if (i > 13 && (i-1) % 4 == 0)
+        {
+            envArea.removeFromLeft(envSlidersWidth);
+        }
+        slidersArray[i]->setBounds(envArea.removeFromLeft(envSlidersWidth));
     }
 }
 
