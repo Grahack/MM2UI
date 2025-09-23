@@ -82,7 +82,7 @@ void MainComponent::resized()
     if (slidersArray.size() < 13) return;
     for (int i = 0; i < slidersCount; i++)
     {
-        if (i >0 && i % 4 == 0)
+        if (i > 0 && i % 4 == 0)
         {
             oscArea.removeFromLeft(oscSlidersWidth);
         }
