@@ -1,8 +1,20 @@
 #include "MainComponent.h"
+#include "CustomLookAndFeel.h"
 
 MainComponent::MainComponent()
 {
     setSize(1000, 1000);
+
+    getLookAndFeel().setColour(juce::Slider::thumbColourId,
+                               juce::Colours::red);
+    getLookAndFeel().setColour(juce::Slider::textBoxTextColourId,
+                               juce::Colours::black);
+    getLookAndFeel().setColour(juce::Slider::backgroundColourId,
+                               juce::Colours::lightgrey);
+    getLookAndFeel().setColour(juce::Label::backgroundColourId,
+                               juce::Colours::black);
+    getLookAndFeel().setColour(juce::Label::textColourId,
+                               juce::Colours::white);
 
     // MIDI channel
     channel = 0;
@@ -31,8 +43,6 @@ MainComponent::MainComponent()
         slidersArray.add(new juce::Slider());
         slidersArray[i]->setRange(0, 127, 1);  // 1 for integer value to be displayed
         slidersArray[i]->addListener(this);
-        slidersArray[i]->setColour(juce::Slider::backgroundColourId, juce::Colours::lightgrey);
-        slidersArray[i]->setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
         slidersArray[i]->setSliderStyle(juce::Slider::LinearVertical);
         slidersArray[i]->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 30);
         // TUNE is between -24 and +12 semitones
@@ -59,7 +69,6 @@ MainComponent::MainComponent()
         labelsArray.add(new juce::Label());
         labelsArray[i]->setText(nameNumArray[i].name, juce::dontSendNotification);
         labelsArray[i]->setJustificationType(juce::Justification::centred);
-        labelsArray[i]->setColour(juce::Label::backgroundColourId, juce::Colours::black);
         labelsArray[i]->attachToComponent(slidersArray[i], false);
         addAndMakeVisible(*labelsArray[i]);
     }
@@ -67,18 +76,12 @@ MainComponent::MainComponent()
     // env section
     vcaEnvLabel.setText("ENV 1: VCA", juce::dontSendNotification);
     vcaEnvLabel.setJustificationType(juce::Justification::centred);
-    vcaEnvLabel.setColour(juce::Label::textColourId, juce::Colours::black);
-    vcaEnvLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
     addAndMakeVisible(vcaEnvLabel);
     vcfEnvLabel.setText("ENV 2: VCF", juce::dontSendNotification);
     vcfEnvLabel.setJustificationType(juce::Justification::centred);
-    vcfEnvLabel.setColour(juce::Label::textColourId, juce::Colours::black);
-    vcfEnvLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
     addAndMakeVisible(vcfEnvLabel);
     env3EnvLabel.setText("ENV 3", juce::dontSendNotification);
     env3EnvLabel.setJustificationType(juce::Justification::centred);
-    env3EnvLabel.setColour(juce::Label::textColourId, juce::Colours::black);
-    env3EnvLabel.setColour(juce::Label::backgroundColourId, juce::Colours::lightgrey);
     addAndMakeVisible(env3EnvLabel);
 
     resized();
