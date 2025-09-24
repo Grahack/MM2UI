@@ -177,7 +177,7 @@ void MainComponent::comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == &channelSelector)
     {
         channel = channelSelector.getSelectedId();
-        DBG("MIDI is now: " + std::to_string(channel));
+        DBG("CHAN is now: " + std::to_string(channel));
     }
     if (comboBoxThatHasChanged == &midiOutputSelector)
     {
