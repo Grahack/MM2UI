@@ -207,15 +207,15 @@ void MainComponent::buttonClicked(juce::Button* button)
 
 void MainComponent::sliderValueChanged(juce::Slider* slider)
 {
-    int CC = 0;
+    int param = 0;
     for (int i = 0; i < slidersCount; i++)
     {
         if (slider == slidersArray[i])
         {
-            CC = nameNumArray[i].num;
+            param = nameNumArray[i].num;
         }
     }
-    sendCC(channel, CC, (*slider).getValue());
+    sendNRPN(channel, param, (*slider).getValue());
 }
 
 void MainComponent::sendCC(int chan, int cc, int val)
@@ -224,10 +224,29 @@ void MainComponent::sendCC(int chan, int cc, int val)
     {
         auto msg = juce::MidiMessage::controllerEvent(chan, cc, val);
         midiOut->sendMessageNow(msg);
-        DBG("CC" << cc << " = " << val << " on chan " << chan);
     }
     else
     {
         DBG("No active MIDI out!");
     }
+}
+
+void MainComponent::sendNRPN(int channel, int parameterNumber, int value)
+{
+    if (parameterNumber < 0 || parameterNumber > 16383 || value > 127)
+        return;
+
+    uint8_t nrpnMSB = (parameterNumber >> 7) & 0x7F;
+    uint8_t nrpnLSB = parameterNumber & 0x7F;
+
+    // NRPN MSB and LSB
+    sendCC(channel, 99, nrpnMSB); // NRPN MSB
+    sendCC(channel, 98, nrpnLSB); // NRPN LSB
+
+    // Data Entry MSB (value)
+    sendCC(channel, 6, value);
+
+    // Optionally clear NRPN selection (recommended good practice)
+    sendCC(channel, 99, 127);
+    sendCC(channel, 98, 127);
 }

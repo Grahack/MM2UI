@@ -20,6 +20,7 @@ public:
     void buttonClicked(juce::Button* button) override;
     void sliderValueChanged(juce::Slider* slider) override;
     void sendCC(int chan, int cc, int val);
+    void sendNRPN(int channel, int param, int value);
 
 private:
     // MIDI channel
@@ -37,13 +38,13 @@ private:
         int  num;
     };
     nameNum nameNumArray[slidersCount] = {
-        {"LVL 1", 48}, {"SHP 1", 39}, {"TUNE1", 40}, {"F.TU1", 41},
-        {"LVL 2", 49}, {"SHP 2", 42}, {"TUNE2", 43}, {"F.TU2", 44},
-        {"LVL 3", 50}, {"SHP 3", 45}, {"TUNE3", 46}, {"F.TU3", 47},
-        {"NZE",   51},
-        {"A", 73}, {"D", 75}, {"S", 79}, {"R", 72},
-        {"A", 80}, {"D", 81}, {"S", 82}, {"R", 83},
-        {"A", 84}, {"D", 85}, {"S", 86}, {"R", 87}};
+        {"LVL 1", 39}, {"SHP 1", 28}, {"TUNE1", 29}, {"F.TU1", 30},
+        {"LVL 2", 40}, {"SHP 2", 32}, {"TUNE2", 33}, {"F.TU2", 34},
+        {"LVL 3", 41}, {"SHP 3", 36}, {"TUNE3", 37}, {"F.TU3", 38},
+        {"NZE",   42},
+        {"A", 49}, {"D", 50}, {"S", 51}, {"R", 52},
+        {"A", 53}, {"D", 54}, {"S", 55}, {"R", 56},
+        {"A", 57}, {"D", 58}, {"S", 59}, {"R", 60}};
     OwnedArray<Slider> slidersArray;
     OwnedArray<Label> labelsArray;
     juce::Label vcaEnvLabel;
