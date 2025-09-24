@@ -53,7 +53,7 @@ MainComponent::MainComponent()
                 int tune = (value * (12 - (-24))) / 127 - 24;
                 return (tune > 0 ? "+" : "") + juce::String(tune);
             };
-            slidersArray[i]->setValue(85);
+            slidersArray[i]->setValue(85, juce::dontSendNotification);
         }
         // FINE TUNE is between -25 and +25 cents
         if ( i < 12 && (i-3) % 4 == 0 )
@@ -63,7 +63,7 @@ MainComponent::MainComponent()
                 int tune = (value * (25 - (-25))) / 127 - 25;
                 return (tune > 0 ? "+" : "") + juce::String(tune);
             };
-            slidersArray[i]->setValue(63);
+            slidersArray[i]->setValue(63, juce::dontSendNotification);
         }
         addAndMakeVisible(*slidersArray[i]);
         labelsArray.add(new juce::Label());
