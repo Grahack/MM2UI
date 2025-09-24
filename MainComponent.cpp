@@ -1,5 +1,4 @@
 #include "MainComponent.h"
-#include "CustomLookAndFeel.h"
 
 MainComponent::MainComponent()
 {
