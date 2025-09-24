@@ -19,6 +19,7 @@ target_sources(MM2UI PRIVATE
     Main.cpp
     MainComponent.cpp
     MainComponent.h
+    CustomLookAndFeel.h
 )
 
 target_compile_definitions(MM2UI PRIVATE

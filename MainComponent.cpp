@@ -83,6 +83,8 @@ MainComponent::MainComponent()
     env3EnvLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(env3EnvLabel);
 
+    //slidersArray[i]->setSliderStyle(juce::Slider::Rotary);
+    //slidersArray[i]->setLookAndFeel(&customLookAndFeel);
     resized();
 }
 
@@ -96,6 +98,7 @@ MainComponent::~MainComponent()
     {
         slidersArray[i]->removeListener(this);
     }
+    setLookAndFeel(nullptr);
 }
 
 void MainComponent::paint(juce::Graphics& g)

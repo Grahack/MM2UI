@@ -2,6 +2,7 @@
 
 #include <map>
 #include <JuceHeader.h>
+#include "CustomLookAndFeel.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
     void sendNRPN(int channel, int param, int value);
 
 private:
+    CustomLookAndFeel customLookAndFeel;
     // MIDI channel
     int channel;
     juce::ComboBox channelSelector;
