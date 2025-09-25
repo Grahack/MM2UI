@@ -131,6 +131,8 @@ void MainComponent::resized()
         }
         slidersArray[i]->setBounds(oscArea.removeFromLeft(oscSlidersWidth));
     }
+    // some space
+    area.removeFromTop(10);
     // env section
     int envHeaderHeight = 40;
     auto envLabelsArea = area.removeFromTop(envHeaderHeight);
