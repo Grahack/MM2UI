@@ -55,7 +55,7 @@ MainComponent::MainComponent()
             slidersArray[i]->setValue(85, juce::dontSendNotification);
         }
         // FINE TUNE is between -25 and +25 cents
-        if ( i < 12 && (i-3) % 4 == 0 )
+        else if ( i < 12 && (i-3) % 4 == 0 )
         {
             slidersArray[i]->textFromValueFunction = [](double value)
             {
@@ -176,14 +176,14 @@ void MainComponent::refreshMidiOutputs()
     }
 }
 
-void MainComponent::comboBoxChanged(juce::ComboBox* comboBoxThatHasChanged)
+void MainComponent::comboBoxChanged(juce::ComboBox* combo)
 {
-    if (comboBoxThatHasChanged == &channelSelector)
+    if (combo == &channelSelector)
     {
         channel = channelSelector.getSelectedId();
         DBG("CHAN is now: " + std::to_string(channel));
     }
-    if (comboBoxThatHasChanged == &midiOutputSelector)
+    else if (combo == &midiOutputSelector)
     {
         int index = midiOutputSelector.getSelectedId() - 1;
 
