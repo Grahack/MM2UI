@@ -34,11 +34,17 @@ private:
     std::unique_ptr<juce::MidiOutput> midiOut;
     juce::TextButton refreshButton;
     // controllers section
+    OwnedArray<ComboBox> oscAlgosArray;
     static const int slidersCount = 25;
     struct nameNum {
         char name[6];
         int  num;
     };
+    int oscAlgosNum[3] = {27, 31, 35};
+    std::string algosArray[12] = {"Sine", "SinF", "SinH",
+                                  "TrPs", "TrSw", "TrSq",
+                                  "Saw",  "Sup1", "Sup2",
+                                  "SwHs", "Squr", "SqHs"};
     nameNum nameNumArray[slidersCount] = {
         {"LVL 1", 39}, {"SHP 1", 28}, {"TUNE1", 29}, {"F.TU1", 30},
         {"LVL 2", 40}, {"SHP 2", 32}, {"TUNE2", 33}, {"F.TU2", 34},

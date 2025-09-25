@@ -36,6 +36,17 @@ MainComponent::MainComponent()
     addAndMakeVisible(refreshButton);
 
     // oscillators section
+    for (int i = 0; i < 3; i++)
+    {
+        oscAlgosArray.add(new ComboBox());
+        for (int j = 0; j < 12; j++)
+        {
+            oscAlgosArray[i]->addItem(algosArray[j], j+1);
+        }
+        oscAlgosArray[i]->setSelectedId(1, juce::dontSendNotification);
+        oscAlgosArray[i]->addListener(this);
+        addAndMakeVisible(*oscAlgosArray[i]);
+    }
     // See numName init in MainComponent.h
     for (int i = 0; i < slidersCount; i++)
     {
@@ -115,14 +126,25 @@ void MainComponent::resized()
     channelSelector.setBounds(headerArea.removeFromLeft(200));
     midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
     refreshButton.setBounds(headerArea.removeFromLeft(100));
+    // some space
+    area.removeFromTop(10);
+    // Oscillators section
+    // Protect this section from a premature execution
+    if (oscAlgosArray.size() < 3) return;
+    int algosComboBoxHeight = 30;
+    auto algosArea = area.removeFromTop(algosComboBoxHeight);
+    int oscSlidersWidth = algosArea.getWidth() / 16;
+    for (int i = 0; i < 3; i++)
+    {
+        oscAlgosArray[i]->setBounds(algosArea.removeFromLeft(oscSlidersWidth * 4));
+        algosArea.removeFromLeft(oscSlidersWidth);
+    }
     // Protect this section from a premature execution
     if (slidersArray.size() == 0) return;
-    // oscillators section
     int slidersHeight = 200;
     int slidersLabelHeight = 30;
     area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto oscArea = area.removeFromTop(slidersHeight);
-    int oscSlidersWidth = oscArea.getWidth() / 16;
     for (int i = 0; i < 13; i++)
     {
         if (i > 0 && i % 4 == 0)
@@ -197,6 +219,18 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
                 DBG("MIDI out is now: " + deviceInfo.name);
             else
                 DBG("Could not open MIDI out: " + deviceInfo.name);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            if (combo == oscAlgosArray[i])
+            {
+                int param = oscAlgosNum[i];
+                int algoIndex = (*combo).getSelectedId() - 1;
+                sendNRPN(channel, param, algoIndex);
+            }
         }
     }
 }
