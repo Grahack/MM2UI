@@ -106,7 +106,20 @@ MainComponent::MainComponent()
         addAndMakeVisible(*lfoArray[i]->waveform);
         addAndMakeVisible(*lfoArray[i]->mode);
         addAndMakeVisible(*lfoArray[i]->speed);
+        for (int j = 0; j < 19; j++)
+        {
+            lfoArray[i]->waveform->addItem("LFO " + std::to_string(i+1)
+                                           + " " + lfoWavesArray[j], j+1);
+        }
+        lfoArray[i]->waveform->setSelectedId(1, juce::dontSendNotification);
+        for (int j = 0; j < 4; j++)
+        {
+            lfoArray[i]->mode->addItem(lfoModesArray[j], j+1);
+        }
+        lfoArray[i]->mode->setJustificationType(juce::Justification::centred);
+        lfoArray[i]->mode->setSelectedId(1, juce::dontSendNotification);
         lfoArray[i]->speed->setSliderStyle(juce::Slider::Rotary);
+        lfoArray[i]->speed->setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
         lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
     }
     resized();

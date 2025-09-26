@@ -58,6 +58,12 @@ private:
     juce::Label vcaEnvLabel;
     juce::Label vcfEnvLabel;
     juce::Label env3EnvLabel;
+    std::string lfoWavesArray[19] = {"Sin", "Tri", "Saw", "Squ", "S&H", "Rnd",
+                                     "Atk A", "Atk B", "Atk C",
+                                     "Dcy A", "Dcy B", "Dcy C",
+                                     "A-D A", "A-D B", "A-D C",
+                                     "Sqr_", "_Sqr"};
+    std::string lfoModesArray[4] = {"vce", "one", "key", "free"};
     struct lfoNRPN {
         int waveform;
         int mode;
