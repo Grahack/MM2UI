@@ -204,7 +204,7 @@ void MainComponent::resized()
     // some space
     area.removeFromTop(10);
     // LFO section
-    auto lfoArea = area.removeFromTop(80);
+    auto lfoArea = area.removeFromTop(60);
     int lfoBaseWidth = lfoArea.getWidth() / 14;  // just to match env section
     int lfoW = lfoBaseWidth * 4 / 3;
     for (int i = 0; i < 3; i++)
