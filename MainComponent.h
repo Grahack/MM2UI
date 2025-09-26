@@ -58,6 +58,18 @@ private:
     juce::Label vcaEnvLabel;
     juce::Label vcfEnvLabel;
     juce::Label env3EnvLabel;
+    struct lfoNRPN {
+        int waveform;
+        int mode;
+        int speed;
+    };
+    lfoNRPN lfoNRPNs[3] = {{61, 63, 62}, {64, 66, 65}, {67, 69, 68}};
+    struct lfoBlock {
+        juce::ComboBox *waveform;
+        juce::ComboBox *mode;
+        juce::Slider *speed;
+    };
+    OwnedArray<lfoBlock> lfoArray;
 
     void refreshMidiOutputs();
 

@@ -95,8 +95,21 @@ MainComponent::MainComponent()
     env3EnvLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(env3EnvLabel);
 
-    //slidersArray[i]->setSliderStyle(juce::Slider::Rotary);
-    //slidersArray[i]->setLookAndFeel(&customLookAndFeel);
+    // LFO section
+    for (int i = 0; i < 3; i++)
+    {
+        lfoBlock* b = new lfoBlock {
+            new juce::ComboBox(),
+            new juce::ComboBox(),
+            new juce::Slider()
+        };
+        lfoArray.add(b);
+        addAndMakeVisible(lfoArray[i]->waveform);
+        addAndMakeVisible(lfoArray[i]->mode);
+        addAndMakeVisible(lfoArray[i]->speed);
+        lfoArray[i]->speed->setSliderStyle(juce::Slider::Rotary);
+        lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
+    }
     resized();
 }
 
@@ -173,6 +186,22 @@ void MainComponent::resized()
             envArea.removeFromLeft(envSlidersWidth);
         }
         slidersArray[i]->setBounds(envArea.removeFromLeft(envSlidersWidth));
+    }
+    // some space
+    area.removeFromTop(10);
+    // LFO section
+    auto lfoArea = area.removeFromTop(80);
+    int lfoBaseWidth = lfoArea.getWidth() / 14;  // just to match env section
+    int lfoW = lfoBaseWidth * 4 / 3;
+    for (int i = 0; i < 3; i++)
+    {
+        lfoArray[i]->waveform->setBounds(lfoArea.removeFromLeft(lfoW));
+        lfoArray[i]->mode->setBounds(lfoArea.removeFromLeft(lfoW));
+        lfoArray[i]->speed->setBounds(lfoArea.removeFromLeft(lfoW));
+        if (i < 2)
+        {
+            lfoArea.removeFromLeft(lfoBaseWidth);
+        }
     }
 }
 
