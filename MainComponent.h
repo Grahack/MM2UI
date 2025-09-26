@@ -37,7 +37,7 @@ private:
     OwnedArray<ComboBox> oscAlgosArray;
     static const int slidersCount = 25;
     struct nameNRPN {
-        char name[6];
+        char name[7];
         int  NRPN;
     };
     int oscAlgosNRPN[3] = {27, 31, 35};
@@ -46,9 +46,9 @@ private:
                                   "Saw",  "Sup1", "Sup2",
                                   "SwHs", "Squr", "SqHs"};
     nameNRPN oscNameNRPNs[slidersCount] = {
-        {"LVL 1", 39}, {"SHP 1", 28}, {"TUNE1", 29}, {"F.TU1", 30},
-        {"LVL 2", 40}, {"SHP 2", 32}, {"TUNE2", 33}, {"F.TU2", 34},
-        {"LVL 3", 41}, {"SHP 3", 36}, {"TUNE3", 37}, {"F.TU3", 38},
+        {"LVL", 39}, {"SHP", 28}, {"TUNE", 29}, {"F.TUNE", 30},
+        {"LVL", 40}, {"SHP", 32}, {"TUNE", 33}, {"F.TUNE", 34},
+        {"LVL", 41}, {"SHP", 36}, {"TUNE", 37}, {"F.TUNE", 38},
         {"NZE",   42},
         {"A", 49}, {"D", 50}, {"S", 51}, {"R", 52},
         {"A", 53}, {"D", 54}, {"S", 55}, {"R", 56},

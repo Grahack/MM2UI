@@ -41,7 +41,8 @@ MainComponent::MainComponent()
         oscAlgosArray.add(new ComboBox());
         for (int j = 0; j < 12; j++)
         {
-            oscAlgosArray[i]->addItem(algosArray[j], j+1);
+            oscAlgosArray[i]->addItem("OSC " + std::to_string(i+1) + ": " +
+                                      algosArray[j], j+1);
         }
         oscAlgosArray[i]->setSelectedId(1, juce::dontSendNotification);
         oscAlgosArray[i]->addListener(this);
