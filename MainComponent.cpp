@@ -98,15 +98,14 @@ MainComponent::MainComponent()
     // LFO section
     for (int i = 0; i < 3; i++)
     {
-        lfoBlock* b = new lfoBlock {
-            new juce::ComboBox(),
-            new juce::ComboBox(),
-            new juce::Slider()
-        };
-        lfoArray.add(b);
-        addAndMakeVisible(lfoArray[i]->waveform);
-        addAndMakeVisible(lfoArray[i]->mode);
-        addAndMakeVisible(lfoArray[i]->speed);
+        auto b = std::make_unique<lfoBlock>();
+        b->waveform = std::make_unique<juce::ComboBox>();
+        b->mode     = std::make_unique<juce::ComboBox>();
+        b->speed    = std::make_unique<juce::Slider>();
+        lfoArray.add(b.release());
+        addAndMakeVisible(*lfoArray[i]->waveform);
+        addAndMakeVisible(*lfoArray[i]->mode);
+        addAndMakeVisible(*lfoArray[i]->speed);
         lfoArray[i]->speed->setSliderStyle(juce::Slider::Rotary);
         lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
     }

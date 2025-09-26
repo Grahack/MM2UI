@@ -65,9 +65,9 @@ private:
     };
     lfoNRPN lfoNRPNs[3] = {{61, 63, 62}, {64, 66, 65}, {67, 69, 68}};
     struct lfoBlock {
-        juce::ComboBox *waveform;
-        juce::ComboBox *mode;
-        juce::Slider *speed;
+        std::unique_ptr<juce::ComboBox> waveform;
+        std::unique_ptr<juce::ComboBox> mode;
+        std::unique_ptr<juce::Slider> speed;
     };
     OwnedArray<lfoBlock> lfoArray;
 
