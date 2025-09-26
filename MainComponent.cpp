@@ -77,7 +77,7 @@ MainComponent::MainComponent()
         }
         addAndMakeVisible(*slidersArray[i]);
         labelsArray.add(new juce::Label());
-        labelsArray[i]->setText(nameNumArray[i].name, juce::dontSendNotification);
+        labelsArray[i]->setText(oscNameNRPNs[i].name, juce::dontSendNotification);
         labelsArray[i]->setJustificationType(juce::Justification::centred);
         labelsArray[i]->attachToComponent(slidersArray[i], false);
         addAndMakeVisible(*labelsArray[i]);
@@ -227,7 +227,7 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
         {
             if (combo == oscAlgosArray[i])
             {
-                int param = oscAlgosNum[i];
+                int param = oscAlgosNRPN[i];
                 int algoIndex = (*combo).getSelectedId() - 1;
                 sendNRPN(channel, param, algoIndex);
             }
@@ -250,7 +250,7 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
     {
         if (slider == slidersArray[i])
         {
-            param = nameNumArray[i].num;
+            param = oscNameNRPNs[i].NRPN;
         }
     }
     sendNRPN(channel, param, (*slider).getValue());
