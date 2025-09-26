@@ -182,15 +182,17 @@ void MainComponent::resized()
     // some space
     area.removeFromTop(10);
     // env section
+    int envSlidersWidth = area.getWidth() / 14;
     int envHeaderHeight = 40;
     auto envLabelsArea = area.removeFromTop(envHeaderHeight);
-    int envLabelsWidth = envLabelsArea.getWidth() / 3;
+    int envLabelsWidth = envSlidersWidth * 4;
     vcaEnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    envLabelsArea.removeFromLeft(envSlidersWidth);
     vcfEnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    envLabelsArea.removeFromLeft(envSlidersWidth);
     env3EnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
     area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto envArea = area.removeFromTop(slidersHeight);
-    int envSlidersWidth = envArea.getWidth() / 14;
     for (int i = 13; i < 25; i++)
     {
         if (i > 13 && (i-1) % 4 == 0)
