@@ -5,7 +5,7 @@ MainComponent::MainComponent()
     setSize(1000, 1000);
 
     getLookAndFeel().setColour(juce::Slider::thumbColourId,
-                               juce::Colours::red);
+                               juce::Colours::orange);
     getLookAndFeel().setColour(juce::Slider::textBoxTextColourId,
                                juce::Colours::black);
     getLookAndFeel().setColour(juce::Slider::backgroundColourId,
