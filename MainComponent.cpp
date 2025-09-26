@@ -131,9 +131,19 @@ MainComponent::~MainComponent()
     midiOutputSelector.removeListener(this);
     refreshButton.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
+    for (int i = 0; i < 3; i++)
+    {
+        oscAlgosArray[i]->removeListener(this);
+    }
     for (int i = 0; i < slidersCount; i++)
     {
         slidersArray[i]->removeListener(this);
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        lfoArray[i]->waveform->removeListener(this);
+        lfoArray[i]->mode->removeListener(this);
+        lfoArray[i]->speed->removeListener(this);
     }
     setLookAndFeel(nullptr);
 }
