@@ -335,7 +335,7 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
             if (midiIn)
             {
                 midiIn->start();
-                DBG("MIDI in is now: " + deviceInfo.name);
+                DBG("MIDI in  is now: " + deviceInfo.name);
             }
             else
             {
