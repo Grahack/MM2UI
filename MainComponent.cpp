@@ -26,11 +26,12 @@ MainComponent::MainComponent()
     }
     channelSelector.setSelectedId(1);
 
-    // MIDI out
+    // MIDI in/out
+    midiInputSelector.addListener(this);
+    addAndMakeVisible(midiInputSelector);
     midiOutputSelector.addListener(this);
     addAndMakeVisible(midiOutputSelector);
-    refreshMidiOutputs();
-
+    refreshMidiPorts();
     refreshButton.setButtonText("REFRESH");
     refreshButton.addListener(this);
     addAndMakeVisible(refreshButton);
@@ -150,6 +151,7 @@ MainComponent::MainComponent()
 MainComponent::~MainComponent()
 {
     channelSelector.removeListener(this);
+    midiInputSelector.removeListener(this);
     midiOutputSelector.removeListener(this);
     refreshButton.removeListener(this);
     midiOut.reset(); // Closes the MIDI out port
@@ -182,6 +184,7 @@ void MainComponent::resized()
     int headerHeight = 50;
     auto headerArea = area.removeFromTop(headerHeight);
     channelSelector.setBounds(headerArea.removeFromLeft(200));
+    midiInputSelector.setBounds(headerArea.removeFromLeft(200));
     midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
     refreshButton.setBounds(headerArea.removeFromLeft(100));
     // some space
@@ -253,19 +256,46 @@ void MainComponent::resized()
     }
 }
 
-void MainComponent::refreshMidiOutputs()
+void MainComponent::refreshMidiPorts()
 {
+    // IN
+    midiInputSelector.clear();
+    availableMidiInputs = juce::MidiInput::getAvailableDevices();
+
+    for (int i = 0; i < availableMidiInputs.size(); ++i)
+    {
+        midiInputSelector.addItem("IN: " + availableMidiInputs[i].name, i + 1);
+    }
+
+    if (availableMidiInputs.isEmpty())
+    {
+        midiInputSelector.addItem("IN: No MIDI in found!", 1);
+        midiInputSelector.setEnabled(false);
+    }
+    else if (availableMidiInputs.size() > 1)
+    {
+        // Selects the second available
+        midiInputSelector.setSelectedId(2);
+        comboBoxChanged(&midiInputSelector);
+    }
+    else
+    {
+        // Selects the first available
+        midiInputSelector.setSelectedId(1);
+        comboBoxChanged(&midiInputSelector);
+    }
+    // OUT
     midiOutputSelector.clear();
     availableMidiOutputs = juce::MidiOutput::getAvailableDevices();
 
     for (int i = 0; i < availableMidiOutputs.size(); ++i)
     {
-        midiOutputSelector.addItem(availableMidiOutputs[i].name, i + 1);
+        midiOutputSelector.addItem("OUT: " + availableMidiOutputs[i].name, i + 1);
     }
 
     if (availableMidiOutputs.isEmpty())
     {
-        midiOutputSelector.addItem("No MIDI out found!", 1);
+        midiOutputSelector.addItem("OUT: No MIDI out found!", 1);
         midiOutputSelector.setEnabled(false);
     }
     else if (availableMidiOutputs.size() > 1)
@@ -288,6 +318,30 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
     {
         channel = channelSelector.getSelectedId();
         DBG("CHAN is now: " + std::to_string(channel));
+    }
+    else if (combo == &midiInputSelector)
+    {
+        int index = midiInputSelector.getSelectedId() - 1;
+        if (index >= 0 && index < availableMidiInputs.size())
+        {
+            auto deviceInfo = availableMidiInputs[index];
+
+            // Arrêter l'entrée MIDI précédente si elle existe
+            if (midiIn)
+                midiIn->stop();
+
+            midiIn = juce::MidiInput::openDevice(deviceInfo.identifier, this);
+
+            if (midiIn)
+            {
+                midiIn->start();
+                DBG("MIDI in is now: " + deviceInfo.name);
+            }
+            else
+            {
+                DBG("Could not open MIDI in: " + deviceInfo.name);
+            }
+        }
     }
     else if (combo == &midiOutputSelector)
     {
@@ -337,7 +391,7 @@ void MainComponent::buttonClicked(juce::Button* button)
 {
     if (button == &refreshButton)
     {
-        refreshMidiOutputs();
+        refreshMidiPorts();
     }
 }
 
@@ -432,4 +486,10 @@ void MainComponent::sendNRPN_MSB_LSB(int channel, int parameterNumber, int value
     // Optionnel : nettoyage (bonne pratique)
     sendCC(channel, 99, 127);
     sendCC(channel, 98, 127);
+}
+
+void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
+                                              const juce::MidiMessage& message)
+{
+    DBG("Received MIDI message: " + message.getDescription());
 }

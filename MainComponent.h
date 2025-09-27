@@ -7,6 +7,7 @@
 using namespace std;
 
 class MainComponent  : public juce::Component,
+                       public juce::MidiInputCallback,
                        public juce::ComboBox::Listener,
                        public juce::Button::Listener,
                        public juce::Slider::Listener
@@ -23,13 +24,17 @@ public:
     void sendCC(int chan, int cc, int val);
     void sendNRPN(int channel, int param, int value);
     void sendNRPN_MSB_LSB(int channel, int param, int value);
+    void handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message) override;
 
 private:
     CustomLookAndFeel customLookAndFeel;
     // MIDI channel
     int channel;
     juce::ComboBox channelSelector;
-    // MIDI out
+    // MIDI in/out
+    juce::ComboBox midiInputSelector;
+    juce::Array<juce::MidiDeviceInfo> availableMidiInputs;
+    std::unique_ptr<juce::MidiInput> midiIn;
     juce::ComboBox midiOutputSelector;
     juce::Array<juce::MidiDeviceInfo> availableMidiOutputs;
     std::unique_ptr<juce::MidiOutput> midiOut;
@@ -78,7 +83,7 @@ private:
     };
     OwnedArray<lfoBlock> lfoArray;
 
-    void refreshMidiOutputs();
+    void refreshMidiPorts();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
