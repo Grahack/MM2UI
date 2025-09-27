@@ -106,6 +106,9 @@ MainComponent::MainComponent()
         addAndMakeVisible(*lfoArray[i]->waveform);
         addAndMakeVisible(*lfoArray[i]->mode);
         addAndMakeVisible(*lfoArray[i]->speed);
+        lfoArray[i]->waveform->addListener(this);
+        lfoArray[i]->mode->addListener(this);
+        lfoArray[i]->speed->addListener(this);
         for (int j = 0; j < 19; j++)
         {
             lfoArray[i]->waveform->addItem("LFO " + std::to_string(i+1)
@@ -119,6 +122,7 @@ MainComponent::MainComponent()
         lfoArray[i]->mode->setJustificationType(juce::Justification::centred);
         lfoArray[i]->mode->setSelectedId(1, juce::dontSendNotification);
         lfoArray[i]->speed->setSliderStyle(juce::Slider::Rotary);
+        lfoArray[i]->speed->setRange(0, 157, 1);  // 1 for integer value to be displayed
         lfoArray[i]->speed->setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
         lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
     }
@@ -294,6 +298,20 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
                 sendNRPN(channel, param, algoIndex);
             }
         }
+        for (int i = 0; i < 3; ++i)
+        {
+            int value = 0;
+            if (combo == lfoArray[i]->waveform.get())
+            {
+                int param = lfoNRPNs[i].waveform;
+                sendNRPN(channel, param, (*combo).getSelectedId() - 1);
+            }
+            else if (combo == lfoArray[i]->mode.get())
+            {
+                int param = lfoNRPNs[i].mode;
+                sendNRPN(channel, param, (*combo).getSelectedId() - 1);
+            }
+        }
     }
 }
 
@@ -315,7 +333,14 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
             param = oscNameNRPNs[i].NRPN;
         }
     }
-    sendNRPN(channel, param, (*slider).getValue());
+    for (int i = 0; i < 3; i++)
+    {
+        if (slider == lfoArray[i]->speed.get())
+        {
+            param = lfoNRPNs[i].speed;
+        }
+    }
+    sendNRPN_MSB_LSB(channel, param, (*slider).getValue());
 }
 
 void MainComponent::sendCC(int chan, int cc, int val)
@@ -347,6 +372,33 @@ void MainComponent::sendNRPN(int channel, int parameterNumber, int value)
     sendCC(channel, 6, value);
 
     // Optionally clear NRPN selection (recommended good practice)
+    sendCC(channel, 99, 127);
+    sendCC(channel, 98, 127);
+}
+
+void MainComponent::sendNRPN_MSB_LSB(int channel, int parameterNumber, int value)
+{
+    // Vérification des plages valides
+    if (parameterNumber < 0 || parameterNumber > 16383 || value < 0 || value > 16383)
+        return;
+
+    // Découpage du paramètre en MSB/LSB
+    uint8_t nrpnMSB = (parameterNumber >> 7) & 0x7F;
+    uint8_t nrpnLSB = parameterNumber & 0x7F;
+
+    // Découpage de la valeur en MSB/LSB
+    uint8_t valueMSB = (value >> 7) & 0x7F;
+    uint8_t valueLSB = value & 0x7F;
+
+    // Envoi du paramètre NRPN (MSB, LSB)
+    sendCC(channel, 99, nrpnMSB); // NRPN MSB
+    sendCC(channel, 98, nrpnLSB); // NRPN LSB
+
+    // Envoi de la valeur (MSB, LSB)
+    sendCC(channel, 6, valueMSB);  // Data Entry MSB
+    sendCC(channel, 38, valueLSB); // Data Entry LSB
+
+    // Optionnel : nettoyage (bonne pratique)
     sendCC(channel, 99, 127);
     sendCC(channel, 98, 127);
 }

@@ -22,6 +22,7 @@ public:
     void sliderValueChanged(juce::Slider* slider) override;
     void sendCC(int chan, int cc, int val);
     void sendNRPN(int channel, int param, int value);
+    void sendNRPN_MSB_LSB(int channel, int param, int value);
 
 private:
     CustomLookAndFeel customLookAndFeel;
