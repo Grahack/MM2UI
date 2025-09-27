@@ -246,10 +246,16 @@ void MainComponent::refreshMidiOutputs()
         midiOutputSelector.addItem("No MIDI out found!", 1);
         midiOutputSelector.setEnabled(false);
     }
+    else if (availableMidiOutputs.size() > 1)
+    {
+        // Selects the second available
+        midiOutputSelector.setSelectedId(2);
+        comboBoxChanged(&midiOutputSelector);
+    }
     else
     {
-        midiOutputSelector.setSelectedId(1);
         // Selects the first available
+        midiOutputSelector.setSelectedId(1);
         comboBoxChanged(&midiOutputSelector);
     }
 }
