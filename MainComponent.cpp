@@ -65,6 +65,11 @@ MainComponent::MainComponent()
                 int tune = value - 64;
                 return (tune > 0 ? "+" : "") + juce::String(tune);
             };
+            slidersArray[i]->valueFromTextFunction = [](const String &text)
+            {
+                int val = text.getIntValue();
+                return val + 64;
+            };
             slidersArray[i]->setValue(64, juce::dontSendNotification);
         }
         // FINE TUNE is between -25 and +25 cents
@@ -76,6 +81,11 @@ MainComponent::MainComponent()
             {
                 int tune = value - 64;
                 return (tune > 0 ? "+" : "") + juce::String(tune);
+            };
+            slidersArray[i]->valueFromTextFunction = [](const String &text)
+            {
+                int val = text.getIntValue();
+                return val + 64;
             };
             slidersArray[i]->setValue(64, juce::dontSendNotification);
         }
