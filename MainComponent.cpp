@@ -183,10 +183,10 @@ void MainComponent::resized()
     int w = area.getWidth();
     int headerHeight = 50;
     auto headerArea = area.removeFromTop(headerHeight);
-    channelSelector.setBounds(headerArea.removeFromLeft(200));
-    midiInputSelector.setBounds(headerArea.removeFromLeft(200));
-    midiOutputSelector.setBounds(headerArea.removeFromLeft(200));
-    refreshButton.setBounds(headerArea.removeFromLeft(100));
+    channelSelector.setBounds(headerArea.removeFromLeft(w * 1 / 10));
+    midiInputSelector.setBounds(headerArea.removeFromLeft(w * 4 / 10));
+    midiOutputSelector.setBounds(headerArea.removeFromLeft(w * 4 / 10));
+    refreshButton.setBounds(headerArea.removeFromLeft(w * 1 / 10));
     // some space
     area.removeFromTop(10);
     // Oscillators section
