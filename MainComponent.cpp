@@ -52,29 +52,37 @@ MainComponent::MainComponent()
     for (int i = 0; i < slidersCount; i++)
     {
         slidersArray.add(new juce::Slider());
-        slidersArray[i]->setRange(0, 127, 1);  // 1 for integer value to be displayed
         slidersArray[i]->addListener(this);
         slidersArray[i]->setSliderStyle(juce::Slider::LinearVertical);
         slidersArray[i]->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 30);
         // TUNE is between -24 and +12 semitones
         if ( i < 12 && (i-2) % 4 == 0 )
         {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(40, 76, 1);
             slidersArray[i]->textFromValueFunction = [](double value)
             {
-                int tune = (value * (12 - (-24))) / 127 - 24;
+                int tune = value - 64;
                 return (tune > 0 ? "+" : "") + juce::String(tune);
             };
-            slidersArray[i]->setValue(85, juce::dontSendNotification);
+            slidersArray[i]->setValue(64, juce::dontSendNotification);
         }
         // FINE TUNE is between -25 and +25 cents
         else if ( i < 12 && (i-3) % 4 == 0 )
         {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(39, 89, 1);
             slidersArray[i]->textFromValueFunction = [](double value)
             {
-                int tune = (value * (25 - (-25))) / 127 - 25;
+                int tune = value - 64;
                 return (tune > 0 ? "+" : "") + juce::String(tune);
             };
-            slidersArray[i]->setValue(63, juce::dontSendNotification);
+            slidersArray[i]->setValue(64, juce::dontSendNotification);
+        }
+        else
+        {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(0, 127, 1);
         }
         addAndMakeVisible(*slidersArray[i]);
         labelsArray.add(new juce::Label());
