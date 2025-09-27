@@ -339,6 +339,20 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
         {
             int value = (*slider).getValue();
             sendNRPN(channel, oscNameNRPNs[i].NRPN, value);
+            // color code tuning sliders
+            if ( i < 12 && ((i-2) % 4 == 0 || (i-3) % 4 == 0 ))
+            {
+                juce::Colour colour = juce::Colours::black;
+                if (value < 64)
+                {
+                    colour = juce::Colours::red;
+                }
+                else if (value > 64)
+                {
+                    colour = juce::Colours::green;
+                }
+                slider->setColour(juce::Slider::backgroundColourId, colour);
+            }
         }
     }
     for (int i = 0; i < 3; i++)
