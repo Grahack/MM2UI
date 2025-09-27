@@ -359,9 +359,9 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
                 }
                 else if (value > 64)
                 {
-                    colour = juce::Colours::green;
+                    colour = juce::Colours::lightgreen;
                 }
-                slider->setColour(juce::Slider::backgroundColourId, colour);
+                slider->setColour(juce::Slider::trackColourId, colour);
             }
         }
     }
