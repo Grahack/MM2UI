@@ -333,22 +333,21 @@ void MainComponent::buttonClicked(juce::Button* button)
 
 void MainComponent::sliderValueChanged(juce::Slider* slider)
 {
-    int param = 0;
     for (int i = 0; i < slidersCount; i++)
     {
         if (slider == slidersArray[i])
         {
-            param = oscNameNRPNs[i].NRPN;
+            int value = (*slider).getValue();
+            sendNRPN(channel, oscNameNRPNs[i].NRPN, value);
         }
     }
     for (int i = 0; i < 3; i++)
     {
         if (slider == lfoArray[i]->speed.get())
         {
-            param = lfoNRPNs[i].speed;
+            sendNRPN_MSB_LSB(channel, lfoNRPNs[i].speed, (*slider).getValue());
         }
     }
-    sendNRPN_MSB_LSB(channel, param, (*slider).getValue());
 }
 
 void MainComponent::sendCC(int chan, int cc, int val)
