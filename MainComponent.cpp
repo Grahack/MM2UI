@@ -518,6 +518,7 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
     {
         DBG("Received an MM2 message!");
 
+        // progName is 8 chars: programNameCharX
         std::string progName;
         for (int i = 0; i < 8; ++i)
         {
@@ -527,16 +528,93 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
             progName += c;
         }
         DBG("Program name: " << progName);
-        int category = readParamValue(data, paramMap.at("programCategory"));
-        DBG("Category: " << category);
 
-        int tempo = readParamValue(data, paramMap.at("programTempo"));
+        // programCategory
+        // fKnobAssignment
+        // qKnobAssignment
+        // mKnobAssignment
+        // encoder1Assignment
+        // encoder2Assignment
+        // encoder3Assignment
+        // encoder4Assignment
+        // programVolume
+        // programTempo (from 0->40 to 255->295)
+        int tempo = readParamValue(data, paramMap.at("programTempo")) + 40;
         DBG("Tempo: " << tempo);
-
-        // Lire une valeur centrée (ex: filterEnvAmount - offset 54/55, centre 128)
-        int filterEnvAmount = readParamValue(data, paramMap.at("filterEnvAmount"));
-        int centeredEnv = filterEnvAmount -128;
-        DBG("Filter Env Amount (centered): " << centeredEnv);
+        // voiceDetune
+        // oscDetune
+        // panSpread
+        // glide
+        // pitchBendDown
+        // pitchBendUp
+        // vcaVelocitySensitivity
+        // filterEnvVelocity
+        // osc1Algorithm from 1 to 3
+        // osc1Shape
+        // osc1Coarse
+        // osc1Fine
+        // osc1Volume
+        // osc2Volume
+        // osc3Volume
+        // whiteNoiseVolume
+        // filterCutoff
+        // filterResonance
+        // filterEnvAmount (from 29->-99 to 227->99, 128->0)
+        int fltEnvAmt = readParamValue(data, paramMap.at("filterEnvAmount"));
+        int centeredEnv = fltEnvAmt - 128;
+        DBG("Filter Env Amount: " << centeredEnv);
+        // keyTracking
+        // filterFMAmtFromOSC
+        // driveLevel
+        // env1Attack from 1 to 3
+        // env1Decay
+        // env1Sustain
+        // env1Release
+        // lfo1Waveform
+        // lfo1Speed
+        // lfo2Mode
+        // lfo2Waveform
+        // lfo2Speed
+        // lfo2ModeDup
+        // lfo3Waveform
+        // lfo3Speed
+        // lfo3Mode
+        // matrix1Source from 1 to 10
+        // matrix1Destination
+        // matrix1Amount
+        // op1Source
+        // op1Amount
+        // op2SourceA
+        // op2SourceB
+        // op3SourceA
+        // op3SourceB
+        // modulationKnob
+        // eqFrequencyControl
+        // delayTime
+        // delayFeedback
+        // delaySendLevel
+        // reverbDecay
+        // reverbModAmount
+        // reverbSendLevel
+        // arpStyle
+        // arpGateLength
+        // arpSpeed
+        // voiceMode
+        // voiceUnisonCount
+        // panSpreadMode
+        // env1Reset
+        // env2Reset
+        // env3Reset
+        // oscPhaseReset
+        // filterType
+        // filterCharacter
+        // chorus
+        // delayMode
+        // arpOnOff
+        // arpLatch
+        // arpOctaveSpread
+        // arpPatternLength
+        // arpStep1 to arpStep16
     }
 }
 
