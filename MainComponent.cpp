@@ -535,6 +535,7 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         }
         DBG("Program name: " << progName);
 
+        int val = 0;
         // programCategory
         // fKnobAssignment
         // qKnobAssignment
@@ -555,14 +556,44 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // pitchBendUp
         // vcaVelocitySensitivity
         // filterEnvVelocity
-        // osc1Algorithm from 1 to 3
-        // osc1Shape
-        // osc1Coarse
-        // osc1Fine
-        // osc1Volume
-        // osc2Volume
-        // osc3Volume
-        // whiteNoiseVolume
+        // oscXAlgorithm, X from 1 to 3
+        val = readParamValue(data, paramMap.at("osc1Algorithm"));
+        oscAlgosArray[0]->setSelectedId(val+1, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc2Algorithm"));
+        oscAlgosArray[1]->setSelectedId(val+1, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc3Algorithm"));
+        oscAlgosArray[2]->setSelectedId(val+1, juce::dontSendNotification);
+        // oscXShape, X from 1 to 3
+        val = readParamValue(data, paramMap.at("osc1Shape"));
+        slidersArray[1]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc2Shape"));
+        slidersArray[5]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc3Shape"));
+        slidersArray[9]->setValue(val, juce::dontSendNotification);
+        // oscXCoarse, X from 1 to 3
+        val = readParamValue(data, paramMap.at("osc1Coarse"));
+        slidersArray[2]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc2Coarse"));
+        slidersArray[6]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc3Coarse"));
+        slidersArray[10]->setValue(val, juce::dontSendNotification);
+        // oscXFine, X from 1 to 3
+        val = readParamValue(data, paramMap.at("osc1Fine"));
+        slidersArray[3]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc2Fine"));
+        slidersArray[7]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc3Fine"));
+        slidersArray[11]->setValue(val, juce::dontSendNotification);
+        // oscXVolume, X from 1 to 3
+        val = readParamValue(data, paramMap.at("osc1Volume"));
+        slidersArray[0]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc2Volume"));
+        slidersArray[4]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("osc3Volume"));
+        slidersArray[8]->setValue(val, juce::dontSendNotification);
+        // whiteNoiseVolume, X from 1 to 3
+        val = readParamValue(data, paramMap.at("whiteNoiseVolume"));
+        slidersArray[12]->setValue(val, juce::dontSendNotification);
         // filterCutoff
         // filterResonance
         // filterEnvAmount (from 29->-99 to 227->99, 128->0)
@@ -572,22 +603,46 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // keyTracking
         // filterFMAmtFromOSC
         // driveLevel
-        // env1Attack from 1 to 3
-        // env1Decay
-        // env1Sustain
-        // env1Release
-        // lfo1Waveform
-        // lfo1Speed
-        // lfo2Mode
-        // lfo2Waveform
-        // lfo2Speed
-        // lfo2ModeDup
-        // lfo3Waveform
-        // lfo3Speed
-        // lfo3Mode
-        // matrix1Source from 1 to 10
-        // matrix1Destination
-        // matrix1Amount
+        // envXAttack envXDecay envXSustain envXRelease (X from 1 to 3)
+        val = readParamValue(data, paramMap.at("env1Attack"));
+        slidersArray[13]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env1Decay"));
+        slidersArray[14]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env1Sustain"));
+        slidersArray[15]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env1Release"));
+        slidersArray[16]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env2Attack"));
+        slidersArray[17]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env2Decay"));
+        slidersArray[18]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env2Sustain"));
+        slidersArray[19]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env2Release"));
+        slidersArray[20]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env3Attack"));
+        slidersArray[21]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env3Decay"));
+        slidersArray[22]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env3Sustain"));
+        slidersArray[23]->setValue(val, juce::dontSendNotification);
+        val = readParamValue(data, paramMap.at("env3Release"));
+        slidersArray[24]->setValue(val, juce::dontSendNotification);
+        // lfoXWaveform lfoXSpeed lfoXMode (X from 1 to 3)
+        for (int i = 0; i < 3; i++)
+        {
+            val = readParamValue(data,
+                    paramMap.at("lfo" + std::to_string(i+1) + "Waveform"));
+            lfoArray[i]->waveform->setSelectedId(val+1,
+                                                 juce::dontSendNotification);
+            val = readParamValue(data,
+                    paramMap.at("lfo" + std::to_string(i+1) + "Speed"));
+            lfoArray[i]->speed->setValue(val, juce::dontSendNotification);
+            val = readParamValue(data,
+                    paramMap.at("lfo" + std::to_string(i+1) + "Mode"));
+            lfoArray[i]->mode->setSelectedId(val+1, juce::dontSendNotification);
+        }
+        // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
         // op1Source
         // op1Amount
         // op2SourceA
