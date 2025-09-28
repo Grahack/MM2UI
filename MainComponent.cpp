@@ -4,14 +4,20 @@ MainComponent::MainComponent()
 {
     setSize(1000, 1000);
 
-    getLookAndFeel().setColour(juce::Slider::thumbColourId,
-                               juce::Colours::orange);
+    juce::Colour dark = juce::Colour (40, 40, 40);
+    juce::Colour mm2 = juce::Colour (0xffD27812);
+
+    getLookAndFeel().setColour(juce::Slider::thumbColourId, mm2);
     getLookAndFeel().setColour(juce::Slider::textBoxTextColourId,
-                               juce::Colours::black);
+                               juce::Colours::white);
+    getLookAndFeel().setColour(juce::Slider::textBoxBackgroundColourId, dark);
+    getLookAndFeel().setColour(juce::Slider::trackColourId,
+                               juce::Colours::darkblue);
     getLookAndFeel().setColour(juce::Slider::backgroundColourId,
                                juce::Colours::lightgrey);
-    getLookAndFeel().setColour(juce::Label::backgroundColourId,
-                               juce::Colours::black);
+    getLookAndFeel().setColour(juce::TextButton::buttonColourId, dark);
+    getLookAndFeel().setColour(juce::ComboBox::backgroundColourId, dark);
+    getLookAndFeel().setColour(juce::Label::backgroundColourId, mm2);
     getLookAndFeel().setColour(juce::Label::textColourId,
                                juce::Colours::white);
 
@@ -177,7 +183,7 @@ MainComponent::~MainComponent()
 
 void MainComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::white);
+    g.fillAll(juce::Colours::black);
 }
 
 void MainComponent::resized()
@@ -409,14 +415,14 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
             // color code tuning sliders
             if ( i < 12 && ((i-2) % 4 == 0 || (i-3) % 4 == 0 ))
             {
-                juce::Colour colour = juce::Colours::black;
+                juce::Colour colour = juce::Colours::darkblue;
                 if (value < 64)
                 {
-                    colour = juce::Colours::red;
+                    colour = juce::Colours::darkred;
                 }
                 else if (value > 64)
                 {
-                    colour = juce::Colours::lightgreen;
+                    colour = juce::Colours::darkgreen;
                 }
                 slider->setColour(juce::Slider::trackColourId, colour);
             }

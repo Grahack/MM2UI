@@ -18,7 +18,7 @@ public:
         auto angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
         // fill
-        g.setColour (juce::Colours::orange);
+        g.setColour (juce::Colour(0xffD27812));
         g.fillEllipse (rx, ry, rw, rw);
 
         // outline
