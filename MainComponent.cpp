@@ -491,8 +491,205 @@ void MainComponent::sendNRPN_MSB_LSB(int channel, int parameterNumber, int value
     sendCC(channel, 98, 127);
 }
 
+int MainComponent::readParamValue(const uint8_t* data, const ParamSpec& spec)
+{
+    int realOffset = spec.offset - 1;
+    if (spec.resolution == 7)
+        return data[realOffset];
+    else
+        return (data[realOffset] << 7) | data[realOffset + 1];
+}
+
 void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                                               const juce::MidiMessage& message)
 {
     DBG("Received MIDI message: " + message.getDescription());
+    if (!message.isSysEx()) return;
+
+    const uint8_t* data = message.getSysExData();
+    int size = message.getSysExDataSize();
+
+    // Only handle MM2 messages
+    // F0 doesn't seem to belong to the data var
+    if (size >= 8 && data[0] == 0x00
+                  && data[1] == 0x21 && data[2] == 0x22
+                  && data[3] == 0x4D && data[4] == 0x02
+                  && data[5] == 0x03 && data[6] == 0x10)
+    {
+        DBG("Received an MM2 message!");
+
+        std::string progName;
+        for (int i = 0; i < 8; ++i)
+        {
+            std::string key = "programNameChar" + std::to_string(i);
+            int ascii = readParamValue(data, paramMap.at(key));
+            char c = static_cast<char>(ascii);
+            progName += c;
+        }
+        DBG("Program name: " << progName);
+        int category = readParamValue(data, paramMap.at("programCategory"));
+        DBG("Category: " << category);
+
+        int tempo = readParamValue(data, paramMap.at("programTempo"));
+        DBG("Tempo: " << tempo);
+
+        // Lire une valeur centrée (ex: filterEnvAmount - offset 54/55, centre 128)
+        int filterEnvAmount = readParamValue(data, paramMap.at("filterEnvAmount"));
+        int centeredEnv = filterEnvAmount -128;
+        DBG("Filter Env Amount (centered): " << centeredEnv);
+    }
 }
+
+// https://www.reddit.com/r/synthesizers/comments/1m5hgju/micromonsta_2_web_editor_and_librarian/?chainedPosts=t3_1nmn0h9
+const std::unordered_map<std::string,
+                         MainComponent::ParamSpec> MainComponent::paramMap = {
+    { "programNameChar0", {8, 7} },
+    { "programNameChar1", {9, 7} },
+    { "programNameChar2", {10, 7} },
+    { "programNameChar3", {11, 7} },
+    { "programNameChar4", {12, 7} },
+    { "programNameChar5", {13, 7} },
+    { "programNameChar6", {14, 7} },
+    { "programNameChar7", {15, 7} },
+    { "programCategory", {16, 7} },
+    { "fKnobAssignment", {17, 7} },
+    { "qKnobAssignment", {18, 7} },
+    { "mKnobAssignment", {19, 7} },
+    { "encoder1Assignment", {20, 7} },
+    { "encoder2Assignment", {21, 7} },
+    { "encoder3Assignment", {22, 7} },
+    { "encoder4Assignment", {23, 7} },
+    { "programVolume", {24, 7} },
+    { "programTempo", {25, 14} },
+    { "voiceDetune", {27, 7} },
+    { "oscDetune", {28, 7} },
+    { "panSpread", {29, 7} },
+    { "glide", {30, 7} },
+    { "pitchBendDown", {31, 7} },
+    { "pitchBendUp", {32, 7} },
+    { "vcaVelocitySensitivity", {33, 7} },
+    { "filterEnvVelocity", {34, 7} },
+    { "osc1Algorithm", {35, 7} },
+    { "osc1Shape", {36, 7} },
+    { "osc1Coarse", {37, 7} },
+    { "osc1Fine", {38, 7} },
+    { "osc2Algorithm", {39, 7} },
+    { "osc2Shape", {40, 7} },
+    { "osc2Coarse", {41, 7} },
+    { "osc2Fine", {42, 7} },
+    { "osc3Algorithm", {43, 7} },
+    { "osc3Shape", {44, 7} },
+    { "osc3Coarse", {45, 7} },
+    { "osc3Fine", {46, 7} },
+    { "osc1Volume", {47, 7} },
+    { "osc2Volume", {48, 7} },
+    { "osc3Volume", {49, 7} },
+    { "whiteNoiseVolume", {50, 7} },
+    { "filterCutoff", {51, 14} },
+    { "filterResonance", {53, 7} },
+    { "filterEnvAmount", {54, 14} },
+    { "keyTracking", {56, 7} },
+    { "filterFMAmtFromOSC", {57, 7} },
+    { "driveLevel", {58, 7} },
+    { "env1Attack", {59, 7} },
+    { "env1Decay", {60, 7} },
+    { "env1Sustain", {61, 7} },
+    { "env1Release", {62, 7} },
+    { "env2Attack", {63, 7} },
+    { "env2Decay", {64, 7} },
+    { "env2Sustain", {65, 7} },
+    { "env2Release", {66, 7} },
+    { "env3Attack", {67, 7} },
+    { "env3Decay", {68, 7} },
+    { "env3Sustain", {69, 7} },
+    { "env3Release", {70, 7} },
+    { "lfo1Waveform", {71, 7} },
+    { "lfo1Speed", {72, 14} },
+    { "lfo2Mode", {74, 7} },
+    { "lfo2Waveform", {75, 7} },
+    { "lfo2Speed", {76, 14} },
+    { "lfo2ModeDup", {78, 7} },
+    { "lfo3Waveform", {79, 7} },
+    { "lfo3Speed", {80, 14} },
+    { "lfo3Mode", {82, 7} },
+    { "matrix1Source", {83, 7} },
+    { "matrix1Destination", {84, 7} },
+    { "matrix1Amount", {85, 14} },
+    { "matrix2Source", {87, 7} },
+    { "matrix2Destination", {88, 7} },
+    { "matrix2Amount", {89, 14} },
+    { "matrix3Source", {91, 7} },
+    { "matrix3Destination", {92, 7} },
+    { "matrix3Amount", {93, 14} },
+    { "matrix4Source", {95, 7} },
+    { "matrix4Destination", {96, 7} },
+    { "matrix4Amount", {97, 14} },
+    { "matrix5Source", {99, 7} },
+    { "matrix5Destination", {100, 7} },
+    { "matrix5Amount", {101, 14} },
+    { "matrix6Source", {103, 7} },
+    { "matrix6Destination", {104, 7} },
+    { "matrix6Amount", {105, 14} },
+    { "matrix7Source", {107, 7} },
+    { "matrix7Destination", {108, 7} },
+    { "matrix7Amount", {109, 14} },
+    { "matrix8Source", {111, 7} },
+    { "matrix8Destination", {112, 7} },
+    { "matrix8Amount", {113, 14} },
+    { "matrix9Source", {115, 7} },
+    { "matrix9Destination", {116, 7} },
+    { "matrix9Amount", {117, 14} },
+    { "matrix10Source", {119, 7} },
+    { "matrix10Destination", {120, 7} },
+    { "matrix10Amount", {121, 14} },
+    { "op1Source", {123, 7} },
+    { "op1Amount", {124, 7} },
+    { "op2SourceA", {125, 7} },
+    { "op2SourceB", {126, 7} },
+    { "op3SourceA", {127, 7} },
+    { "op3SourceB", {128, 7} },
+    { "modulationKnob", {129, 7} },
+    { "eqFrequencyControl", {130, 14} },
+    { "delayTime", {132, 14} },
+    { "delayFeedback", {134, 7} },
+    { "delaySendLevel", {135, 7} },
+    { "reverbDecay", {136, 7} },
+    { "reverbModAmount", {137, 7} },
+    { "reverbSendLevel", {138, 7} },
+    { "arpStyle", {139, 7} },
+    { "arpGateLength", {140, 7} },
+    { "arpSpeed", {141, 7} },
+    { "voiceMode", {142, 7} },
+    { "voiceUnisonCount", {143, 7} },
+    { "panSpreadMode", {144, 7} },
+    { "env1Reset", {145, 7} },
+    { "env2Reset", {146, 7} },
+    { "env3Reset", {147, 7} },
+    // NRPN 123 not used
+    { "oscPhaseReset", {149, 7} },
+    { "filterType", {150, 7} },
+    { "filterCharacter", {151, 7} },
+    { "chorus", {152, 7} },
+    { "delayMode", {153, 7} },
+    // NRPN 129 not used
+    { "arpOnOff", {155, 7} },
+    { "arpLatch", {156, 7} },
+    { "arpOctaveSpread", {157, 7} },
+    { "arpPatternLength", {158, 7} },
+    { "arpStep1", {159, 7} },
+    { "arpStep2", {160, 7} },
+    { "arpStep3", {161, 7} },
+    { "arpStep4", {162, 7} },
+    { "arpStep5", {163, 7} },
+    { "arpStep6", {164, 7} },
+    { "arpStep7", {165, 7} },
+    { "arpStep8", {166, 7} },
+    { "arpStep9", {167, 7} },
+    { "arpStep10", {168, 7} },
+    { "arpStep11", {169, 7} },
+    { "arpStep12", {170, 7} },
+    { "arpStep13", {171, 7} },
+    { "arpStep14", {172, 7} },
+    { "arpStep15", {173, 7} },
+    { "arpStep16", {174, 7} },
+};

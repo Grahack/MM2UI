@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <JuceHeader.h>
 #include "CustomLookAndFeel.h"
 
@@ -24,7 +25,8 @@ public:
     void sendCC(int chan, int cc, int val);
     void sendNRPN(int channel, int param, int value);
     void sendNRPN_MSB_LSB(int channel, int param, int value);
-    void handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message) override;
+    void handleIncomingMidiMessage(juce::MidiInput* source,
+                                   const juce::MidiMessage& message) override;
 
 private:
     CustomLookAndFeel customLookAndFeel;
@@ -84,6 +86,13 @@ private:
     OwnedArray<lfoBlock> lfoArray;
 
     void refreshMidiPorts();
+
+    struct ParamSpec {
+        int offset;
+        int resolution;  // 7 for MSB and 14 for MSB/LSB
+    };
+    static const std::unordered_map<std::string, ParamSpec> paramMap;
+    int readParamValue(const uint8_t* data, const ParamSpec& spec);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
