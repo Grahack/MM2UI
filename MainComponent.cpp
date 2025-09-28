@@ -145,6 +145,9 @@ MainComponent::MainComponent()
         lfoArray[i]->speed->setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
         lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
     }
+
+    // First drawing request because previous ones were aborted
+    // because of arrays not full of what we needed.
     resized();
 }
 
