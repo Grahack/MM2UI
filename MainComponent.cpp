@@ -5,7 +5,7 @@ MainComponent::MainComponent()
     setSize(1000, 1000);
 
     juce::Colour dark = juce::Colour (40, 40, 40);
-    juce::Colour mm2 = juce::Colour (0xffD27812);
+    juce::Colour mm2 = juce::Colour (0xffF76D22);
 
     getLookAndFeel().setColour(juce::Slider::thumbColourId, mm2);
     getLookAndFeel().setColour(juce::Slider::textBoxTextColourId,
@@ -19,7 +19,7 @@ MainComponent::MainComponent()
     getLookAndFeel().setColour(juce::ComboBox::backgroundColourId, dark);
     getLookAndFeel().setColour(juce::Label::backgroundColourId, mm2);
     getLookAndFeel().setColour(juce::Label::textColourId,
-                               juce::Colours::white);
+                               juce::Colours::black);
 
     // MIDI channel
     channel = 0;
