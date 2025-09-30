@@ -105,19 +105,25 @@ MainComponent::MainComponent()
         labelsArray.add(new juce::Label());
         labelsArray[i]->setText(oscNameNRPNs[i].name, juce::dontSendNotification);
         labelsArray[i]->setJustificationType(juce::Justification::centred);
+        auto sliderLabelFont = juce::FontOptions(16.0f, juce::Font::bold);
+        labelsArray[i]->setFont(sliderLabelFont);
         labelsArray[i]->attachToComponent(slidersArray[i], false);
         addAndMakeVisible(*labelsArray[i]);
     }
 
     // env section
+    auto envLabelFont = juce::FontOptions(22.0f, juce::Font::bold);
     vcaEnvLabel.setText("ENV 1: VCA", juce::dontSendNotification);
     vcaEnvLabel.setJustificationType(juce::Justification::centred);
+    vcaEnvLabel.setFont(envLabelFont);
     addAndMakeVisible(vcaEnvLabel);
     vcfEnvLabel.setText("ENV 2: VCF", juce::dontSendNotification);
     vcfEnvLabel.setJustificationType(juce::Justification::centred);
+    vcfEnvLabel.setFont(envLabelFont);
     addAndMakeVisible(vcfEnvLabel);
     env3EnvLabel.setText("ENV 3", juce::dontSendNotification);
     env3EnvLabel.setJustificationType(juce::Justification::centred);
+    env3EnvLabel.setFont(envLabelFont);
     addAndMakeVisible(env3EnvLabel);
 
     // LFO section
