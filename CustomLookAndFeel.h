@@ -3,7 +3,10 @@ class CustomLookAndFeel : public juce::LookAndFeel_V4
 public:
     CustomLookAndFeel()
     {
+        juce::Colour mm2 = juce::Colour (0xffF76D22);
         setColour (juce::Slider::thumbColourId, juce::Colours::red);
+        setColour (juce::ComboBox::backgroundColourId, mm2);
+        setColour (juce::ComboBox::arrowColourId, juce::Colours::black);
     }
 
     Font getComboBoxFont (ComboBox& box) override

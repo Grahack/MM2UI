@@ -16,7 +16,6 @@ MainComponent::MainComponent()
     getLookAndFeel().setColour(juce::Slider::backgroundColourId,
                                juce::Colours::lightgrey);
     getLookAndFeel().setColour(juce::TextButton::buttonColourId, dark);
-    getLookAndFeel().setColour(juce::ComboBox::backgroundColourId, dark);
     getLookAndFeel().setColour(juce::Label::backgroundColourId, mm2);
     getLookAndFeel().setColour(juce::Label::textColourId,
                                juce::Colours::black);
@@ -54,8 +53,6 @@ MainComponent::MainComponent()
         oscAlgosArray[i]->setSelectedId(1, juce::dontSendNotification);
         oscAlgosArray[i]->setColour(juce::ComboBox::textColourId,
                                     juce::Colours::black);
-        oscAlgosArray[i]->setColour(juce::ComboBox::backgroundColourId,
-                                    juce::Colour(0xffF76D22));
         oscAlgosArray[i]->setLookAndFeel(&customLookAndFeel);
         oscAlgosArray[i]->addListener(this);
         addAndMakeVisible(*oscAlgosArray[i]);
