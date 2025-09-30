@@ -12,7 +12,7 @@ MainComponent::MainComponent()
                                juce::Colours::white);
     getLookAndFeel().setColour(juce::Slider::textBoxBackgroundColourId, dark);
     getLookAndFeel().setColour(juce::Slider::trackColourId,
-                               juce::Colours::darkblue);
+                               juce::Colours::darkgrey);
     getLookAndFeel().setColour(juce::Slider::backgroundColourId,
                                juce::Colours::lightgrey);
     getLookAndFeel().setColour(juce::TextButton::buttonColourId, dark);
@@ -415,7 +415,7 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
             // color code tuning sliders
             if ( i < 12 && ((i-2) % 4 == 0 || (i-3) % 4 == 0 ))
             {
-                juce::Colour colour = juce::Colours::darkblue;
+                juce::Colour colour = juce::Colours::darkgrey;
                 if (value < 64)
                 {
                     colour = juce::Colours::darkred;
