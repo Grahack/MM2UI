@@ -6,6 +6,11 @@ public:
         setColour (juce::Slider::thumbColourId, juce::Colours::red);
     }
 
+    Font getComboBoxFont (ComboBox& box) override
+    {
+        return Font(FontOptions(22.f, juce::Font::bold));
+    }
+
     void drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
                            const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider&) override
     {

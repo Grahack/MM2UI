@@ -56,6 +56,7 @@ MainComponent::MainComponent()
                                     juce::Colours::black);
         oscAlgosArray[i]->setColour(juce::ComboBox::backgroundColourId,
                                     juce::Colour(0xffF76D22));
+        oscAlgosArray[i]->setLookAndFeel(&customLookAndFeel);
         oscAlgosArray[i]->addListener(this);
         addAndMakeVisible(*oscAlgosArray[i]);
     }
@@ -211,7 +212,7 @@ void MainComponent::resized()
     // Oscillators section
     // Protect this section from a premature execution
     if (oscAlgosArray.size() < 3) return;
-    int algosComboBoxHeight = 30;
+    int algosComboBoxHeight = 40;
     auto algosArea = area.removeFromTop(algosComboBoxHeight);
     int oscSlidersWidth = algosArea.getWidth() / 16;
     for (int i = 0; i < 3; i++)
