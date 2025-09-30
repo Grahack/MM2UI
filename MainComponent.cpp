@@ -582,18 +582,18 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         slidersArray[9]->setValue(val, juce::dontSendNotification);
         // oscXCoarse, X from 1 to 3
         val = readParamValue(data, paramMap.at("osc1Coarse"));
-        slidersArray[2]->setValue(val, juce::dontSendNotification);
+        slidersArray[2]->setValue(val);
         val = readParamValue(data, paramMap.at("osc2Coarse"));
-        slidersArray[6]->setValue(val, juce::dontSendNotification);
+        slidersArray[6]->setValue(val);
         val = readParamValue(data, paramMap.at("osc3Coarse"));
-        slidersArray[10]->setValue(val, juce::dontSendNotification);
+        slidersArray[10]->setValue(val);
         // oscXFine, X from 1 to 3
         val = readParamValue(data, paramMap.at("osc1Fine"));
-        slidersArray[3]->setValue(val, juce::dontSendNotification);
+        slidersArray[3]->setValue(val);
         val = readParamValue(data, paramMap.at("osc2Fine"));
-        slidersArray[7]->setValue(val, juce::dontSendNotification);
+        slidersArray[7]->setValue(val);
         val = readParamValue(data, paramMap.at("osc3Fine"));
-        slidersArray[11]->setValue(val, juce::dontSendNotification);
+        slidersArray[11]->setValue(val);
         // oscXVolume, X from 1 to 3
         val = readParamValue(data, paramMap.at("osc1Volume"));
         slidersArray[0]->setValue(val, juce::dontSendNotification);
