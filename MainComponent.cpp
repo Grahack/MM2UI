@@ -550,10 +550,7 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // fKnobAssignment
         // qKnobAssignment
         // mKnobAssignment
-        // encoder1Assignment
-        // encoder2Assignment
-        // encoder3Assignment
-        // encoder4Assignment
+        // encoderXAssignment (X from 1 to 4)
         // programVolume
         // programTempo (from 0->40 to 255->295)
         int tempo = readParamValue(data, paramMap.at("programTempo")) + 40;
