@@ -108,7 +108,6 @@ MainComponent::MainComponent()
         auto sliderLabelFont = juce::FontOptions(16.0f, juce::Font::bold);
         labelsArray[i]->setFont(sliderLabelFont);
         labelsArray[i]->attachToComponent(slidersArray[i], false);
-        //addAndMakeVisible(*labelsArray[i]);
     }
 
     // env section
