@@ -520,7 +520,7 @@ int MainComponent::readParamValue(const uint8_t* data, const ParamSpec& spec)
 void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                                               const juce::MidiMessage& message)
 {
-    DBG("Received MIDI message: " + message.getDescription());
+    //DBG("Received MIDI message: " + message.getDescription());
     if (!message.isSysEx()) return;
 
     const uint8_t* data = message.getSysExData();
