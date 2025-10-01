@@ -51,8 +51,6 @@ MainComponent::MainComponent()
                                       algosArray[j], j+1);
         }
         oscAlgosArray[i]->setSelectedId(1, juce::dontSendNotification);
-        oscAlgosArray[i]->setColour(juce::ComboBox::textColourId,
-                                    juce::Colours::black);
         oscAlgosArray[i]->setLookAndFeel(&customLookAndFeel);
         oscAlgosArray[i]->addListener(this);
         addAndMakeVisible(*oscAlgosArray[i]);
