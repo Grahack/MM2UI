@@ -546,7 +546,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         }
         DBG("Program name: " << progName);
 
-        int val = 0;
         // programCategory
         // fKnobAssignment
         // qKnobAssignment
@@ -559,6 +558,28 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // programTempo (from 0->40 to 255->295)
         int tempo = readParamValue(data, paramMap.at("programTempo")) + 40;
         DBG("Tempo: " << tempo);
+
+        for (const auto& [key, spec] : paramMap)
+        {
+            int val = readParamValue(data, paramMap.at(key));
+            std::string uiElt = spec.uiElement;
+            int num = spec.num;
+            juce::MessageManager::callAsync([this, val, uiElt, num] {
+                if ( uiElt == "slidersArray" )
+                    slidersArray[num]->setValue(val);
+                else if ( uiElt == "oscAlgosArray" )
+                    oscAlgosArray[num]->setSelectedId(val+1);
+                else if ( uiElt == "lfo_waveform" )
+                    lfoArray[num]->waveform->setSelectedId(val+1);
+                else if ( uiElt == "lfo_speed" )
+                    lfoArray[num]->speed->setValue(val);
+                else if ( uiElt == "lfo_mode" )
+                    lfoArray[num]->mode->setSelectedId(val+1);
+                else if ( uiElt != "" )
+                    DBG("Unknown UI element: " + uiElt);
+            });
+        }
+
         // voiceDetune
         // oscDetune
         // panSpread
@@ -567,44 +588,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // pitchBendUp
         // vcaVelocitySensitivity
         // filterEnvVelocity
-        // oscXAlgorithm, X from 1 to 3
-        val = readParamValue(data, paramMap.at("osc1Algorithm"));
-        oscAlgosArray[0]->setSelectedId(val+1, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("osc2Algorithm"));
-        oscAlgosArray[1]->setSelectedId(val+1, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("osc3Algorithm"));
-        oscAlgosArray[2]->setSelectedId(val+1, juce::dontSendNotification);
-        // oscXShape, X from 1 to 3
-        val = readParamValue(data, paramMap.at("osc1Shape"));
-        slidersArray[1]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("osc2Shape"));
-        slidersArray[5]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("osc3Shape"));
-        slidersArray[9]->setValue(val, juce::dontSendNotification);
-        // oscXCoarse, X from 1 to 3
-        val = readParamValue(data, paramMap.at("osc1Coarse"));
-        slidersArray[2]->setValue(val);
-        val = readParamValue(data, paramMap.at("osc2Coarse"));
-        slidersArray[6]->setValue(val);
-        val = readParamValue(data, paramMap.at("osc3Coarse"));
-        slidersArray[10]->setValue(val);
-        // oscXFine, X from 1 to 3
-        val = readParamValue(data, paramMap.at("osc1Fine"));
-        slidersArray[3]->setValue(val);
-        val = readParamValue(data, paramMap.at("osc2Fine"));
-        slidersArray[7]->setValue(val);
-        val = readParamValue(data, paramMap.at("osc3Fine"));
-        slidersArray[11]->setValue(val);
-        // oscXVolume, X from 1 to 3
-        val = readParamValue(data, paramMap.at("osc1Volume"));
-        slidersArray[0]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("osc2Volume"));
-        slidersArray[4]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("osc3Volume"));
-        slidersArray[8]->setValue(val, juce::dontSendNotification);
-        // whiteNoiseVolume, X from 1 to 3
-        val = readParamValue(data, paramMap.at("whiteNoiseVolume"));
-        slidersArray[12]->setValue(val, juce::dontSendNotification);
         // filterCutoff
         // filterResonance
         // filterEnvAmount (from 29->-99 to 227->99, 128->0)
@@ -614,45 +597,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // keyTracking
         // filterFMAmtFromOSC
         // driveLevel
-        // envXAttack envXDecay envXSustain envXRelease (X from 1 to 3)
-        val = readParamValue(data, paramMap.at("env1Attack"));
-        slidersArray[13]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env1Decay"));
-        slidersArray[14]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env1Sustain"));
-        slidersArray[15]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env1Release"));
-        slidersArray[16]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env2Attack"));
-        slidersArray[17]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env2Decay"));
-        slidersArray[18]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env2Sustain"));
-        slidersArray[19]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env2Release"));
-        slidersArray[20]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env3Attack"));
-        slidersArray[21]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env3Decay"));
-        slidersArray[22]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env3Sustain"));
-        slidersArray[23]->setValue(val, juce::dontSendNotification);
-        val = readParamValue(data, paramMap.at("env3Release"));
-        slidersArray[24]->setValue(val, juce::dontSendNotification);
-        // lfoXWaveform lfoXSpeed lfoXMode (X from 1 to 3)
-        for (int i = 0; i < 3; i++)
-        {
-            val = readParamValue(data,
-                    paramMap.at("lfo" + std::to_string(i+1) + "Waveform"));
-            lfoArray[i]->waveform->setSelectedId(val+1,
-                                                 juce::dontSendNotification);
-            val = readParamValue(data,
-                    paramMap.at("lfo" + std::to_string(i+1) + "Speed"));
-            lfoArray[i]->speed->setValue(val, juce::dontSendNotification);
-            val = readParamValue(data,
-                    paramMap.at("lfo" + std::to_string(i+1) + "Mode"));
-            lfoArray[i]->mode->setSelectedId(val+1, juce::dontSendNotification);
-        }
         // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
         // op1Source
         // op1Amount
@@ -693,153 +637,153 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
 // https://www.reddit.com/r/synthesizers/comments/1m5hgju/micromonsta_2_web_editor_and_librarian/?chainedPosts=t3_1nmn0h9
 const std::unordered_map<std::string,
                          MainComponent::ParamSpec> MainComponent::paramMap = {
-    { "programNameChar0", {8, 7} },
-    { "programNameChar1", {9, 7} },
-    { "programNameChar2", {10, 7} },
-    { "programNameChar3", {11, 7} },
-    { "programNameChar4", {12, 7} },
-    { "programNameChar5", {13, 7} },
-    { "programNameChar6", {14, 7} },
-    { "programNameChar7", {15, 7} },
-    { "programCategory", {16, 7} },
-    { "fKnobAssignment", {17, 7} },
-    { "qKnobAssignment", {18, 7} },
-    { "mKnobAssignment", {19, 7} },
-    { "encoder1Assignment", {20, 7} },
-    { "encoder2Assignment", {21, 7} },
-    { "encoder3Assignment", {22, 7} },
-    { "encoder4Assignment", {23, 7} },
-    { "programVolume", {24, 7} },
-    { "programTempo", {25, 14} },
-    { "voiceDetune", {27, 7} },
-    { "oscDetune", {28, 7} },
-    { "panSpread", {29, 7} },
-    { "glide", {30, 7} },
-    { "pitchBendDown", {31, 7} },
-    { "pitchBendUp", {32, 7} },
-    { "vcaVelocitySensitivity", {33, 7} },
-    { "filterEnvVelocity", {34, 7} },
-    { "osc1Algorithm", {35, 7} },
-    { "osc1Shape", {36, 7} },
-    { "osc1Coarse", {37, 7} },
-    { "osc1Fine", {38, 7} },
-    { "osc2Algorithm", {39, 7} },
-    { "osc2Shape", {40, 7} },
-    { "osc2Coarse", {41, 7} },
-    { "osc2Fine", {42, 7} },
-    { "osc3Algorithm", {43, 7} },
-    { "osc3Shape", {44, 7} },
-    { "osc3Coarse", {45, 7} },
-    { "osc3Fine", {46, 7} },
-    { "osc1Volume", {47, 7} },
-    { "osc2Volume", {48, 7} },
-    { "osc3Volume", {49, 7} },
-    { "whiteNoiseVolume", {50, 7} },
-    { "filterCutoff", {51, 14} },
-    { "filterResonance", {53, 7} },
-    { "filterEnvAmount", {54, 14} },
-    { "keyTracking", {56, 7} },
-    { "filterFMAmtFromOSC", {57, 7} },
-    { "driveLevel", {58, 7} },
-    { "env1Attack", {59, 7} },
-    { "env1Decay", {60, 7} },
-    { "env1Sustain", {61, 7} },
-    { "env1Release", {62, 7} },
-    { "env2Attack", {63, 7} },
-    { "env2Decay", {64, 7} },
-    { "env2Sustain", {65, 7} },
-    { "env2Release", {66, 7} },
-    { "env3Attack", {67, 7} },
-    { "env3Decay", {68, 7} },
-    { "env3Sustain", {69, 7} },
-    { "env3Release", {70, 7} },
-    { "lfo1Waveform", {71, 7} },
-    { "lfo1Speed",    {72, 14} },
-    { "lfo1Mode",     {74, 7} },
-    { "lfo2Waveform", {75, 7} },
-    { "lfo2Speed",    {76, 14} },
-    { "lfo2Mode",     {78, 7} },
-    { "lfo3Waveform", {79, 7} },
-    { "lfo3Speed",    {80, 14} },
-    { "lfo3Mode",     {82, 7} },
-    { "matrix1Source",      {83, 7} },
-    { "matrix1Destination", {84, 7} },
-    { "matrix1Amount",      {85, 14} },
-    { "matrix2Source",      {87, 7} },
-    { "matrix2Destination", {88, 7} },
-    { "matrix2Amount",      {89, 14} },
-    { "matrix3Source",      {91, 7} },
-    { "matrix3Destination", {92, 7} },
-    { "matrix3Amount",      {93, 14} },
-    { "matrix4Source",      {95, 7} },
-    { "matrix4Destination", {96, 7} },
-    { "matrix4Amount",      {97, 14} },
-    { "matrix5Source",      {99, 7} },
-    { "matrix5Destination", {100, 7} },
-    { "matrix5Amount",      {101, 14} },
-    { "matrix6Source",      {103, 7} },
-    { "matrix6Destination", {104, 7} },
-    { "matrix6Amount",      {105, 14} },
-    { "matrix7Source",      {107, 7} },
-    { "matrix7Destination", {108, 7} },
-    { "matrix7Amount",      {109, 14} },
-    { "matrix8Source",      {111, 7} },
-    { "matrix8Destination", {112, 7} },
-    { "matrix8Amount",      {113, 14} },
-    { "matrix9Source",      {115, 7} },
-    { "matrix9Destination", {116, 7} },
-    { "matrix9Amount",      {117, 14} },
-    { "matrix10Source",      {119, 7} },
-    { "matrix10Destination", {120, 7} },
-    { "matrix10Amount",      {121, 14} },
-    { "op1Source", {123, 7} },
-    { "op1Amount", {124, 7} },
-    { "op2SourceA", {125, 7} },
-    { "op2SourceB", {126, 7} },
-    { "op3SourceA", {127, 7} },
-    { "op3SourceB", {128, 7} },
-    { "modulationKnob", {129, 7} },
-    { "eqFrequencyControl", {130, 14} },
-    { "delayTime", {132, 14} },
-    { "delayFeedback", {134, 7} },
-    { "delaySendLevel", {135, 7} },
-    { "reverbDecay", {136, 7} },
-    { "reverbModAmount", {137, 7} },
-    { "reverbSendLevel", {138, 7} },
-    { "arpStyle", {139, 7} },
-    { "arpGateLength", {140, 7} },
-    { "arpSpeed", {141, 7} },
-    { "voiceMode", {142, 7} },
-    { "voiceUnisonCount", {143, 7} },
-    { "panSpreadMode", {144, 7} },
-    { "env1Reset", {145, 7} },
-    { "env2Reset", {146, 7} },
-    { "env3Reset", {147, 7} },
+    { "programNameChar0", {8, 7, "", 0} },
+    { "programNameChar1", {9, 7, "", 0} },
+    { "programNameChar2", {10, 7, "", 0} },
+    { "programNameChar3", {11, 7, "", 0} },
+    { "programNameChar4", {12, 7, "", 0} },
+    { "programNameChar5", {13, 7, "", 0} },
+    { "programNameChar6", {14, 7, "", 0} },
+    { "programNameChar7", {15, 7, "", 0} },
+    { "programCategory", {16, 7, "", 0} },
+    { "fKnobAssignment", {17, 7, "", 0} },
+    { "qKnobAssignment", {18, 7, "", 0} },
+    { "mKnobAssignment", {19, 7, "", 0} },
+    { "encoder1Assignment", {20, 7, "", 0} },
+    { "encoder2Assignment", {21, 7, "", 0} },
+    { "encoder3Assignment", {22, 7, "", 0} },
+    { "encoder4Assignment", {23, 7, "", 0} },
+    { "programVolume", {24, 7, "", 0} },
+    { "programTempo", {25, 14, "", 0} },
+    { "voiceDetune", {27, 7, "", 0} },
+    { "oscDetune", {28, 7, "", 0} },
+    { "panSpread", {29, 7, "", 0} },
+    { "glide", {30, 7, "", 0} },
+    { "pitchBendDown", {31, 7, "", 0} },
+    { "pitchBendUp", {32, 7, "", 0} },
+    { "vcaVelocitySensitivity", {33, 7, "", 0} },
+    { "filterEnvVelocity", {34, 7, "", 0} },
+    { "osc1Algorithm", {35, 7, "oscAlgosArray", 0} },
+    { "osc1Shape", {36, 7, "slidersArray", 1} },
+    { "osc1Coarse", {37, 7, "slidersArray", 2} },
+    { "osc1Fine", {38, 7, "slidersArray", 3} },
+    { "osc2Algorithm", {39, 7, "oscAlgosArray", 1} },
+    { "osc2Shape", {40, 7, "slidersArray", 5} },
+    { "osc2Coarse", {41, 7, "slidersArray", 6} },
+    { "osc2Fine", {42, 7, "slidersArray", 7} },
+    { "osc3Algorithm", {43, 7, "oscAlgosArray", 2} },
+    { "osc3Shape", {44, 7, "slidersArray", 9} },
+    { "osc3Coarse", {45, 7, "slidersArray", 10} },
+    { "osc3Fine", {46, 7, "slidersArray", 11} },
+    { "osc1Volume", {47, 7, "slidersArray", 0} },
+    { "osc2Volume", {48, 7, "slidersArray", 4} },
+    { "osc3Volume", {49, 7, "slidersArray", 8} },
+    { "whiteNoiseVolume", {50, 7, "slidersArray", 12} },
+    { "filterCutoff", {51, 14, "", 0} },
+    { "filterResonance", {53, 7, "", 0} },
+    { "filterEnvAmount", {54, 14, "", 0} },
+    { "keyTracking", {56, 7, "", 0} },
+    { "filterFMAmtFromOSC", {57, 7, "", 0} },
+    { "driveLevel", {58, 7, "", 0} },
+    { "env1Attack", {59, 7, "slidersArray", 13} },
+    { "env1Decay", {60, 7, "slidersArray", 14} },
+    { "env1Sustain", {61, 7, "slidersArray", 15} },
+    { "env1Release", {62, 7, "slidersArray", 16} },
+    { "env2Attack", {63, 7, "slidersArray", 17} },
+    { "env2Decay", {64, 7, "slidersArray", 18} },
+    { "env2Sustain", {65, 7, "slidersArray", 19} },
+    { "env2Release", {66, 7, "slidersArray", 20} },
+    { "env3Attack", {67, 7, "slidersArray", 21} },
+    { "env3Decay", {68, 7, "slidersArray", 22} },
+    { "env3Sustain", {69, 7, "slidersArray", 23} },
+    { "env3Release", {70, 7, "slidersArray", 24} },
+    { "lfo1Waveform", {71, 7,  "lfo_waveform", 0} },
+    { "lfo1Speed",    {72, 14, "lfo_speed", 0} },
+    { "lfo1Mode",     {74, 7,  "lfo_mode", 0} },
+    { "lfo2Waveform", {75, 7,  "lfo_waveform", 1} },
+    { "lfo2Speed",    {76, 14, "lfo_speed", 1} },
+    { "lfo2Mode",     {78, 7,  "lfo_mode", 1} },
+    { "lfo3Waveform", {79, 7,  "lfo_waveform", 2} },
+    { "lfo3Speed",    {80, 14, "lfo_speed", 2} },
+    { "lfo3Mode",     {82, 7,  "lfo_mode", 2} },
+    { "matrix1Source",      {83, 7, "", 0} },
+    { "matrix1Destination", {84, 7, "", 0} },
+    { "matrix1Amount",      {85, 14, "", 0} },
+    { "matrix2Source",      {87, 7, "", 0} },
+    { "matrix2Destination", {88, 7, "", 0} },
+    { "matrix2Amount",      {89, 14, "", 0} },
+    { "matrix3Source",      {91, 7, "", 0} },
+    { "matrix3Destination", {92, 7, "", 0} },
+    { "matrix3Amount",      {93, 14, "", 0} },
+    { "matrix4Source",      {95, 7, "", 0} },
+    { "matrix4Destination", {96, 7, "", 0} },
+    { "matrix4Amount",      {97, 14, "", 0} },
+    { "matrix5Source",      {99, 7, "", 0} },
+    { "matrix5Destination", {100, 7, "", 0} },
+    { "matrix5Amount",      {101, 14, "", 0} },
+    { "matrix6Source",      {103, 7, "", 0} },
+    { "matrix6Destination", {104, 7, "", 0} },
+    { "matrix6Amount",      {105, 14, "", 0} },
+    { "matrix7Source",      {107, 7, "", 0} },
+    { "matrix7Destination", {108, 7, "", 0} },
+    { "matrix7Amount",      {109, 14, "", 0} },
+    { "matrix8Source",      {111, 7, "", 0} },
+    { "matrix8Destination", {112, 7, "", 0} },
+    { "matrix8Amount",      {113, 14, "", 0} },
+    { "matrix9Source",      {115, 7, "", 0} },
+    { "matrix9Destination", {116, 7, "", 0} },
+    { "matrix9Amount",      {117, 14, "", 0} },
+    { "matrix10Source",      {119, 7, "", 0} },
+    { "matrix10Destination", {120, 7, "", 0} },
+    { "matrix10Amount",      {121, 14, "", 0} },
+    { "op1Source", {123, 7, "", 0} },
+    { "op1Amount", {124, 7, "", 0} },
+    { "op2SourceA", {125, 7, "", 0} },
+    { "op2SourceB", {126, 7, "", 0} },
+    { "op3SourceA", {127, 7, "", 0} },
+    { "op3SourceB", {128, 7, "", 0} },
+    { "modulationKnob", {129, 7, "", 0} },
+    { "eqFrequencyControl", {130, 14, "", 0} },
+    { "delayTime", {132, 14, "", 0} },
+    { "delayFeedback", {134, 7, "", 0} },
+    { "delaySendLevel", {135, 7, "", 0} },
+    { "reverbDecay", {136, 7, "", 0} },
+    { "reverbModAmount", {137, 7, "", 0} },
+    { "reverbSendLevel", {138, 7, "", 0} },
+    { "arpStyle", {139, 7, "", 0} },
+    { "arpGateLength", {140, 7, "", 0} },
+    { "arpSpeed", {141, 7, "", 0} },
+    { "voiceMode", {142, 7, "", 0} },
+    { "voiceUnisonCount", {143, 7, "", 0} },
+    { "panSpreadMode", {144, 7, "", 0} },
+    { "env1Reset", {145, 7, "", 0} },
+    { "env2Reset", {146, 7, "", 0} },
+    { "env3Reset", {147, 7, "", 0} },
     // NRPN 123 not used
-    { "oscPhaseReset", {149, 7} },
-    { "filterType", {150, 7} },
-    { "filterCharacter", {151, 7} },
-    { "chorus", {152, 7} },
-    { "delayMode", {153, 7} },
+    { "oscPhaseReset", {149, 7, "", 0} },
+    { "filterType", {150, 7, "", 0} },
+    { "filterCharacter", {151, 7, "", 0} },
+    { "chorus", {152, 7, "", 0} },
+    { "delayMode", {153, 7, "", 0} },
     // NRPN 129 not used
-    { "arpOnOff", {155, 7} },
-    { "arpLatch", {156, 7} },
-    { "arpOctaveSpread", {157, 7} },
-    { "arpPatternLength", {158, 7} },
-    { "arpStep1", {159, 7} },
-    { "arpStep2", {160, 7} },
-    { "arpStep3", {161, 7} },
-    { "arpStep4", {162, 7} },
-    { "arpStep5", {163, 7} },
-    { "arpStep6", {164, 7} },
-    { "arpStep7", {165, 7} },
-    { "arpStep8", {166, 7} },
-    { "arpStep9", {167, 7} },
-    { "arpStep10", {168, 7} },
-    { "arpStep11", {169, 7} },
-    { "arpStep12", {170, 7} },
-    { "arpStep13", {171, 7} },
-    { "arpStep14", {172, 7} },
-    { "arpStep15", {173, 7} },
-    { "arpStep16", {174, 7} }
+    { "arpOnOff", {155, 7, "", 0} },
+    { "arpLatch", {156, 7, "", 0} },
+    { "arpOctaveSpread", {157, 7, "", 0} },
+    { "arpPatternLength", {158, 7, "", 0} },
+    { "arpStep1", {159, 7, "", 0} },
+    { "arpStep2", {160, 7, "", 0} },
+    { "arpStep3", {161, 7, "", 0} },
+    { "arpStep4", {162, 7, "", 0} },
+    { "arpStep5", {163, 7, "", 0} },
+    { "arpStep6", {164, 7, "", 0} },
+    { "arpStep7", {165, 7, "", 0} },
+    { "arpStep8", {166, 7, "", 0} },
+    { "arpStep9", {167, 7, "", 0} },
+    { "arpStep10", {168, 7, "", 0} },
+    { "arpStep11", {169, 7, "", 0} },
+    { "arpStep12", {170, 7, "", 0} },
+    { "arpStep13", {171, 7, "", 0} },
+    { "arpStep14", {172, 7, "", 0} },
+    { "arpStep15", {173, 7, "", 0} },
+    { "arpStep16", {174, 7, "", 0} }
 };

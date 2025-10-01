@@ -92,6 +92,8 @@ private:
     struct ParamSpec {
         int offset;
         int resolution;  // 7 for MSB and 14 for MSB/LSB
+        std::string uiElement;
+        int num;
     };
     static const std::unordered_map<std::string, ParamSpec> paramMap;
     int readParamValue(const uint8_t* data, const ParamSpec& spec);
