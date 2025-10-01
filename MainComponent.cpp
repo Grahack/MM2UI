@@ -142,7 +142,7 @@ MainComponent::MainComponent()
         for (int j = 0; j < 19; j++)
         {
             lfoArray[i]->waveform->addItem("LFO " + std::to_string(i+1)
-                                           + " " + lfoWavesArray[j], j+1);
+                                           + ": " + lfoWavesArray[j], j+1);
         }
         lfoArray[i]->waveform->setSelectedId(1, juce::dontSendNotification);
         lfoArray[i]->waveform->setLookAndFeel(&customLookAndFeel);
