@@ -108,7 +108,7 @@ MainComponent::MainComponent()
         labelsArray.add(new juce::Label());
         labelsArray[i]->setText(oscNameNRPNs[i].name, juce::dontSendNotification);
         labelsArray[i]->setJustificationType(juce::Justification::centred);
-        auto sliderLabelFont = juce::FontOptions(16.0f, juce::Font::bold);
+        auto sliderLabelFont = juce::FontOptions(18.0f, juce::Font::bold);
         labelsArray[i]->setFont(sliderLabelFont);
         labelsArray[i]->attachToComponent(slidersArray[i], false);
     }
