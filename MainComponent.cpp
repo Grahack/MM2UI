@@ -145,6 +145,7 @@ MainComponent::MainComponent()
                                            + " " + lfoWavesArray[j], j+1);
         }
         lfoArray[i]->waveform->setSelectedId(1, juce::dontSendNotification);
+        lfoArray[i]->waveform->setLookAndFeel(&customLookAndFeel);
         for (int j = 0; j < 4; j++)
         {
             lfoArray[i]->mode->addItem(lfoModesArray[j], j+1);
