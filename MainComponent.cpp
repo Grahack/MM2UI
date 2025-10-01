@@ -183,8 +183,11 @@ MainComponent::~MainComponent()
     for (int i = 0; i < 3; i++)
     {
         lfoArray[i]->waveform->removeListener(this);
+        lfoArray[i]->waveform->setLookAndFeel(nullptr);
         lfoArray[i]->mode->removeListener(this);
+        lfoArray[i]->mode->setLookAndFeel(nullptr);
         lfoArray[i]->speed->removeListener(this);
+        lfoArray[i]->speed->setLookAndFeel(nullptr);
     }
     setLookAndFeel(nullptr);
 }
