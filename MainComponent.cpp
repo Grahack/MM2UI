@@ -24,6 +24,7 @@ MainComponent::MainComponent()
     channel = 0;
     channelSelector.addListener(this);
     channelSelector.setJustificationType(juce::Justification::centred);
+    channelSelector.setColour(ComboBox::ColourIds::backgroundColourId, dark);
     addAndMakeVisible(channelSelector);
     for (int i = 0; i < 16; i++)
     {
@@ -33,8 +34,10 @@ MainComponent::MainComponent()
 
     // MIDI in/out
     midiInputSelector.addListener(this);
+    midiInputSelector.setColour(ComboBox::ColourIds::backgroundColourId, dark);
     addAndMakeVisible(midiInputSelector);
     midiOutputSelector.addListener(this);
+    midiOutputSelector.setColour(ComboBox::ColourIds::backgroundColourId, dark);
     addAndMakeVisible(midiOutputSelector);
     refreshMidiPorts();
     refreshButton.setButtonText("REFRESH");
@@ -152,9 +155,12 @@ MainComponent::MainComponent()
         }
         lfoArray[i]->mode->setJustificationType(juce::Justification::centred);
         lfoArray[i]->mode->setSelectedId(1, juce::dontSendNotification);
+        lfoArray[i]->mode->setColour(
+                ComboBox::ColourIds::backgroundColourId, dark);
         lfoArray[i]->speed->setSliderStyle(juce::Slider::Rotary);
         lfoArray[i]->speed->setRange(0, 157, 1);  // 1 for integer value to be displayed
-        lfoArray[i]->speed->setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+        lfoArray[i]->speed->setColour(
+                Slider::ColourIds::textBoxBackgroundColourId, dark);
         lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
         const char* txt[] = {"32/", "24/", "16/", "12/",
                              "8/", "6/", "4/", "3/", "2/", "3/2",
