@@ -156,6 +156,28 @@ MainComponent::MainComponent()
         lfoArray[i]->speed->setRange(0, 157, 1);  // 1 for integer value to be displayed
         lfoArray[i]->speed->setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
         lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
+        const char* txt[] = {"32/", "24/", "16/", "12/",
+                             "8/", "6/", "4/", "3/", "2/", "3/2",
+                             "/1", "2d", "1t", "/2", "4d", "2t",
+                             "/4", "8d", "4t", "/8", "16d", "8t",
+                             "/16", "32d", "16t", "/32", "64d", "32t",
+                             "/64", "64t"};
+        lfoArray[i]->speed->textFromValueFunction = [txt](double value)
+        {
+            if ( value < 128 ) return juce::String(value);
+            if ( value >= 128 + size(txt)) return juce::String("");
+            return juce::String(txt[int(value - 128)]);
+        };
+        lfoArray[i]->speed->valueFromTextFunction = [txt](const String &text)
+        {
+            for (int i = 0; i < size(txt); i++)
+            {
+                if ( text == txt[i] ) return 128 + i;
+            }
+            int value = text.getDoubleValue();
+            if ( 0 <= value < 128 ) return value;
+            return 0;
+        };
     }
 
     // First drawing request because previous ones were aborted
@@ -259,14 +281,17 @@ void MainComponent::resized()
     // LFO section
     // Protect this section from a premature execution
     if (oscAlgosArray.size() < 3) return;
-    auto lfoArea = area.removeFromTop(60);
+    auto lfoArea = area.removeFromTop(headerHeight + 50);
     int lfoBaseWidth = lfoArea.getWidth() / 14;  // just to match env section
-    int lfoW = lfoBaseWidth * 4 / 3;
+    int lfoW = lfoBaseWidth * 4;
     for (int i = 0; i < 3; i++)
     {
-        lfoArray[i]->waveform->setBounds(lfoArea.removeFromLeft(lfoW));
-        lfoArray[i]->mode->setBounds(lfoArea.removeFromLeft(lfoW));
-        lfoArray[i]->speed->setBounds(lfoArea.removeFromLeft(lfoW));
+        auto lfoBlockArea = lfoArea.removeFromLeft(lfoW);
+        lfoArray[i]->waveform->setBounds(lfoBlockArea.removeFromTop(headerHeight));
+        lfoArray[i]->mode->setBounds(lfoBlockArea.removeFromLeft(lfoW / 3));
+        // position, readonly, width, height
+        lfoArray[i]->speed->setTextBoxStyle(juce::Slider::TextBoxLeft, false, lfoW / 3, 50);
+        lfoArray[i]->speed->setBounds(lfoBlockArea.removeFromLeft(lfoW * 2 / 3));
         if (i < 2)
         {
             lfoArea.removeFromLeft(lfoBaseWidth);
