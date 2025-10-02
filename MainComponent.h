@@ -66,6 +66,9 @@ private:
     juce::Label vcaEnvLabel;
     juce::Label vcfEnvLabel;
     juce::Label env3EnvLabel;
+    juce::ToggleButton vcaEnvReset;
+    juce::ToggleButton vcfEnvReset;
+    juce::ToggleButton env3EnvReset;
     std::string lfoWavesArray[19] = {"BI Sin", "BI Tri", "BI Saw", "BI Squ",
                                      "BI S&H", "BI Rnd",
                                      "UNI Atk A", "UNI Atk B", "UNI Atk C",

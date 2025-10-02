@@ -119,14 +119,23 @@ MainComponent::MainComponent()
     vcaEnvLabel.setJustificationType(juce::Justification::centred);
     vcaEnvLabel.setFont(envLabelFont);
     addAndMakeVisible(vcaEnvLabel);
+    vcaEnvReset.setButtonText("Reset");
+    vcaEnvReset.addListener(this);
+    addAndMakeVisible(vcaEnvReset);
     vcfEnvLabel.setText("ENV 2: VCF", juce::dontSendNotification);
     vcfEnvLabel.setJustificationType(juce::Justification::centred);
     vcfEnvLabel.setFont(envLabelFont);
     addAndMakeVisible(vcfEnvLabel);
+    vcfEnvReset.setButtonText("Reset");
+    vcfEnvReset.addListener(this);
+    addAndMakeVisible(vcfEnvReset);
     env3EnvLabel.setText("ENV 3", juce::dontSendNotification);
     env3EnvLabel.setJustificationType(juce::Justification::centred);
     env3EnvLabel.setFont(envLabelFont);
     addAndMakeVisible(env3EnvLabel);
+    env3EnvReset.setButtonText("Reset");
+    env3EnvReset.addListener(this);
+    addAndMakeVisible(env3EnvReset);
 
     // LFO section
     for (int i = 0; i < 3; i++)
@@ -206,6 +215,9 @@ MainComponent::~MainComponent()
     {
         slidersArray[i]->removeListener(this);
     }
+    vcaEnvReset.removeListener(this);
+    vcfEnvReset.removeListener(this);
+    env3EnvReset.removeListener(this);
     for (int i = 0; i < 3; i++)
     {
         lfoArray[i]->waveform->removeListener(this);
@@ -266,12 +278,15 @@ void MainComponent::resized()
     int envSlidersWidth = area.getWidth() / 14;
     int envHeaderHeight = 40;
     auto envLabelsArea = area.removeFromTop(envHeaderHeight);
-    int envLabelsWidth = envSlidersWidth * 4;
+    int envLabelsWidth = envSlidersWidth * 3;
     vcaEnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    vcaEnvReset.setBounds(envLabelsArea.removeFromLeft(envSlidersWidth));
     envLabelsArea.removeFromLeft(envSlidersWidth);
     vcfEnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    vcfEnvReset.setBounds(envLabelsArea.removeFromLeft(envSlidersWidth));
     envLabelsArea.removeFromLeft(envSlidersWidth);
     env3EnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
+    env3EnvReset.setBounds(envLabelsArea.removeFromLeft(envSlidersWidth));
     area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto envArea = area.removeFromTop(slidersHeight);
     for (int i = 13; i < 25; i++)
@@ -441,6 +456,21 @@ void MainComponent::buttonClicked(juce::Button* button)
     if (button == &refreshButton)
     {
         refreshMidiPorts();
+    }
+    else if (button == &vcaEnvReset)
+    {
+        int value = button->getToggleState() ? 1 : 0;
+        sendNRPN(channel, 120, value);
+    }
+    else if (button == &vcfEnvReset)
+    {
+        int value = button->getToggleState() ? 1 : 0;
+        sendNRPN(channel, 121, value);
+    }
+    else if (button == &env3EnvReset)
+    {
+        int value = button->getToggleState() ? 1 : 0;
+        sendNRPN(channel, 122, value);
     }
 }
 
