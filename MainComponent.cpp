@@ -251,6 +251,7 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
+    int internalMargin = 25;
     auto area = getLocalBounds();
     int w = area.getWidth();
     int headerHeight = 50;
@@ -260,7 +261,7 @@ void MainComponent::resized()
     midiOutputSelector.setBounds(headerArea.removeFromLeft(w * 4 / 10));
     refreshButton.setBounds(headerArea.removeFromLeft(w * 1 / 10));
     // some space
-    area.removeFromTop(10);
+    area.removeFromTop(internalMargin);
     // Oscillators section
     // Protect this section from a premature execution
     if (oscAlgosArray.size() < 3) return;
@@ -287,7 +288,7 @@ void MainComponent::resized()
         slidersArray[i]->setBounds(oscArea.removeFromLeft(oscSlidersWidth));
     }
     // some space
-    area.removeFromTop(10);
+    area.removeFromTop(internalMargin);
     // env section
     int envSlidersWidth = area.getWidth() / 14;
     int envHeaderHeight = 40;
@@ -312,7 +313,7 @@ void MainComponent::resized()
         slidersArray[i]->setBounds(envArea.removeFromLeft(envSlidersWidth));
     }
     // some space
-    area.removeFromTop(10);
+    area.removeFromTop(internalMargin);
     // LFO section
     // Protect this section from a premature execution
     if (oscAlgosArray.size() < 3) return;
