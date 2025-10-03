@@ -129,25 +129,26 @@ MainComponent::MainComponent()
 
     // env section
     auto envLabelFont = juce::FontOptions(22.0f, juce::Font::bold);
+    auto rtzText = "RTZ";
     vcaEnvLabel.setText("ENV 1: VCA", juce::dontSendNotification);
     vcaEnvLabel.setJustificationType(juce::Justification::centred);
     vcaEnvLabel.setFont(envLabelFont);
     addAndMakeVisible(vcaEnvLabel);
-    vcaEnvReset.setButtonText("Reset");
+    vcaEnvReset.setButtonText(rtzText);
     vcaEnvReset.addListener(this);
     addAndMakeVisible(vcaEnvReset);
     vcfEnvLabel.setText("ENV 2: VCF", juce::dontSendNotification);
     vcfEnvLabel.setJustificationType(juce::Justification::centred);
     vcfEnvLabel.setFont(envLabelFont);
     addAndMakeVisible(vcfEnvLabel);
-    vcfEnvReset.setButtonText("Reset");
+    vcfEnvReset.setButtonText(rtzText);
     vcfEnvReset.addListener(this);
     addAndMakeVisible(vcfEnvReset);
     env3EnvLabel.setText("ENV 3", juce::dontSendNotification);
     env3EnvLabel.setJustificationType(juce::Justification::centred);
     env3EnvLabel.setFont(envLabelFont);
     addAndMakeVisible(env3EnvLabel);
-    env3EnvReset.setButtonText("Reset");
+    env3EnvReset.setButtonText(rtzText);
     env3EnvReset.addListener(this);
     addAndMakeVisible(env3EnvReset);
 
