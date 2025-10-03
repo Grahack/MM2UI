@@ -327,7 +327,10 @@ void MainComponent::resized()
         lfoArray[i]->waveform->setBounds(lfoBlockArea.removeFromTop(headerHeight));
         lfoArray[i]->mode->setBounds(lfoBlockArea.removeFromLeft(lfoW / 3));
         // position, readonly, width, height
-        lfoArray[i]->speed->setTextBoxStyle(juce::Slider::TextBoxLeft, false, lfoW / 3, 50);
+        lfoArray[i]->speed->setTextBoxStyle(juce::Slider::TextBoxLeft,
+                                            false,
+                                            lfoW / 3,
+                                            50);
         lfoArray[i]->speed->setBounds(lfoBlockArea.removeFromLeft(lfoW * 2 / 3));
         if (i < 2)
         {
