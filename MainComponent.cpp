@@ -290,10 +290,14 @@ void MainComponent::resized()
     }
     // some space
     area.removeFromTop(internalMargin);
-    // env section
-    int envSlidersWidth = area.getWidth() / 14;
+    // env + LFO section
     int envHeaderHeight = 40;
-    auto envLabelsArea = area.removeFromTop(envHeaderHeight);
+    int envLFOHeight = envHeaderHeight + slidersLabelHeight + slidersHeight;
+    auto envLFOArea = area.removeFromTop(envLFOHeight);
+    // env section : labels
+    int envSlidersWidth = area.getWidth() / 19;
+    auto envArea = envLFOArea.removeFromLeft(envSlidersWidth * 14);
+    auto envLabelsArea = envArea.removeFromTop(envHeaderHeight);
     int envLabelsWidth = envSlidersWidth * 3;
     vcaEnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
     vcaEnvReset.setBounds(envLabelsArea.removeFromLeft(envSlidersWidth));
@@ -303,28 +307,28 @@ void MainComponent::resized()
     envLabelsArea.removeFromLeft(envSlidersWidth);
     env3EnvLabel.setBounds(envLabelsArea.removeFromLeft(envLabelsWidth));
     env3EnvReset.setBounds(envLabelsArea.removeFromLeft(envSlidersWidth));
-    area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
-    auto envArea = area.removeFromTop(slidersHeight);
+    // env section : sliders
+    envArea.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
+    auto envSlidersArea = envArea.removeFromTop(slidersHeight);
     for (int i = 13; i < 25; i++)
     {
         if (i > 13 && (i-1) % 4 == 0)
         {
-            envArea.removeFromLeft(envSlidersWidth);
+            envSlidersArea.removeFromLeft(envSlidersWidth);
         }
-        slidersArray[i]->setBounds(envArea.removeFromLeft(envSlidersWidth));
+        slidersArray[i]->setBounds(envSlidersArea.removeFromLeft(envSlidersWidth));
     }
-    // some space
-    area.removeFromTop(internalMargin);
     // LFO section
     // Protect this section from a premature execution
     if (lfoArray.size() < 3) return;
-    auto lfoArea = area.removeFromTop(headerHeight + 50);
-    int lfoBaseWidth = lfoArea.getWidth() / 14;  // just to match env section
-    int lfoW = lfoBaseWidth * 4;
+    envLFOArea.removeFromLeft(envSlidersWidth);
+    auto lfoArea = envLFOArea.removeFromLeft(envLabelsWidth * 4);
+    int lfoW = lfoArea.getWidth();
     for (int i = 0; i < 3; i++)
     {
-        auto lfoBlockArea = lfoArea.removeFromLeft(lfoW);
-        lfoArray[i]->waveform->setBounds(lfoBlockArea.removeFromTop(headerHeight));
+        auto lfoBlockArea = lfoArea.removeFromTop(envLFOHeight / 3);
+        int h1 = lfoBlockArea.getHeight() / 7 * 3;  // slightly less than half
+        lfoArray[i]->waveform->setBounds(lfoBlockArea.removeFromTop(h1));
         lfoArray[i]->mode->setBounds(lfoBlockArea.removeFromLeft(lfoW / 3));
         // position, readonly, width, height
         lfoArray[i]->speed->setTextBoxStyle(juce::Slider::TextBoxLeft,
@@ -332,10 +336,6 @@ void MainComponent::resized()
                                             lfoW / 3,
                                             50);
         lfoArray[i]->speed->setBounds(lfoBlockArea.removeFromLeft(lfoW * 2 / 3));
-        if (i < 2)
-        {
-            lfoArea.removeFromLeft(lfoBaseWidth);
-        }
     }
 }
 
