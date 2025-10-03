@@ -317,7 +317,7 @@ void MainComponent::resized()
     area.removeFromTop(internalMargin);
     // LFO section
     // Protect this section from a premature execution
-    if (oscAlgosArray.size() < 3) return;
+    if (lfoArray.size() < 3) return;
     auto lfoArea = area.removeFromTop(headerHeight + 50);
     int lfoBaseWidth = lfoArea.getWidth() / 14;  // just to match env section
     int lfoW = lfoBaseWidth * 4;
