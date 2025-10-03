@@ -53,6 +53,20 @@ MainComponent::MainComponent()
             oscAlgosArray[i]->addItem("OSC " + std::to_string(i+1) + ": " +
                                       algosArray[j], j+1);
         }
+        if ( i == 0 ) // Osc1 specials
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                oscAlgosArray[i]->addItem("OSC " + std::to_string(i+1) + ": " +
+                                          algosArrayOsc1[j], j+1+12);
+            }
+        } else {  // Osc2 and Osc3 specials
+            for (int j = 0; j < 8; j++)
+            {
+                oscAlgosArray[i]->addItem("OSC " + std::to_string(i+1) + ": " +
+                                          "Wt0" + std::to_string(j+1), j+1+12);
+            }
+        }
         oscAlgosArray[i]->setSelectedId(1, juce::dontSendNotification);
         oscAlgosArray[i]->setLookAndFeel(&customLookAndFeel);
         oscAlgosArray[i]->addListener(this);

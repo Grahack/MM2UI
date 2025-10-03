@@ -53,6 +53,7 @@ private:
                                   "TrPs", "TrSw", "TrSq",
                                   "Saw",  "Sup1", "Sup2",
                                   "SwHs", "Squr", "SqHs"};
+    std::string algosArrayOsc1[4] = {"fmSi", "fmTr", "fmSw", "fmSq"};
     nameNRPN oscNameNRPNs[slidersCount] = {
         {"LVL", 39}, {"SHP", 28}, {"TUNE", 29}, {"F.TUNE", 30},
         {"LVL", 40}, {"SHP", 32}, {"TUNE", 33}, {"F.TUNE", 34},
