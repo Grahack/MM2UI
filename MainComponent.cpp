@@ -119,6 +119,12 @@ MainComponent::MainComponent()
             slidersArray[i]->setRange(0, 127, 1);
         }
         addAndMakeVisible(*slidersArray[i]);
+        // SHAPE not visible on startup
+        if ( i < 12 && (i-1) % 4 == 0 )
+        {
+            slidersArray[i]->setVisible(false);
+        }
+        // labels
         labelsArray.add(new juce::Label());
         labelsArray[i]->setText(oscNameNRPNs[i].name, juce::dontSendNotification);
         labelsArray[i]->setJustificationType(juce::Justification::centred);
@@ -451,6 +457,9 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
                 int param = oscAlgosNRPN[i];
                 int algoIndex = (*combo).getSelectedId() - 1;
                 sendNRPN(channel, param, algoIndex);
+                // disable SHAPE slider
+                bool visible = ( algoIndex >= 3 );
+                slidersArray[4*i + 1]->setVisible(visible);
             }
         }
         for (int i = 0; i < 3; ++i)
