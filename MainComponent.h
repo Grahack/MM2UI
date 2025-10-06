@@ -43,7 +43,7 @@ private:
     juce::TextButton refreshButton;
     // controllers section
     OwnedArray<ComboBox> oscAlgosArray;
-    static const int slidersCount = 25;
+    static const int slidersCount = 29;
     struct nameNRPN {
         char name[7];
         int  NRPN;
@@ -58,7 +58,7 @@ private:
         {"LVL", 39}, {"SHP", 28}, {"TUNE", 29}, {"F.TUNE", 30},
         {"LVL", 40}, {"SHP", 32}, {"TUNE", 33}, {"F.TUNE", 34},
         {"LVL", 41}, {"SHP", 36}, {"TUNE", 37}, {"F.TUNE", 38},
-        {"NZE", 42},
+        {"NZE", 42}, {"DRV", 48}, {"EQ", 107}, {"VEL", 25}, {"MIX", 17},
         {"A", 49}, {"D", 50}, {"S", 51}, {"R", 52},
         {"A", 53}, {"D", 54}, {"S", 55}, {"R", 56},
         {"A", 57}, {"D", 58}, {"S", 59}, {"R", 60}};

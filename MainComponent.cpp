@@ -113,6 +113,40 @@ MainComponent::MainComponent()
             };
             slidersArray[i]->setValue(64, juce::dontSendNotification);
         }
+        // EQ
+        else if ( i == 14 )
+        {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(29, 227, 1);
+            slidersArray[i]->textFromValueFunction = [](double value)
+            {
+                int eq = value - 128;
+                return (eq > 0 ? "+" : "") + juce::String(eq);
+            };
+            slidersArray[i]->valueFromTextFunction = [](const String &text)
+            {
+                int val = text.getIntValue();
+                return val + 128;
+            };
+            slidersArray[i]->setValue(128, juce::dontSendNotification);
+        }
+        // MIX
+        else if ( i == 16 )
+        {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(40, 88, 1);
+            slidersArray[i]->textFromValueFunction = [](double value)
+            {
+                int mix = value - 64;
+                return (mix > 0 ? "+" : "") + juce::String(mix);
+            };
+            slidersArray[i]->valueFromTextFunction = [](const String &text)
+            {
+                int val = text.getIntValue();
+                return val + 64;
+            };
+            slidersArray[i]->setValue(64, juce::dontSendNotification);
+        }
         else
         {
             // 1 for integer value to be displayed
@@ -134,6 +168,7 @@ MainComponent::MainComponent()
     }
 
     // env section
+    // sliders are created in the previous section
     auto envLabelFont = juce::FontOptions(22.0f, juce::Font::bold);
     auto rtzText = "RTZ";
     vcaEnvLabel.setText("ENV 1: VCA", juce::dontSendNotification);
@@ -274,7 +309,7 @@ void MainComponent::resized()
     if (oscAlgosArray.size() < 3) return;
     int algosComboBoxHeight = 40;
     auto algosArea = area.removeFromTop(algosComboBoxHeight);
-    int oscSlidersWidth = algosArea.getWidth() / 16;
+    int oscSlidersWidth = algosArea.getWidth() / 20;
     for (int i = 0; i < 3; i++)
     {
         oscAlgosArray[i]->setBounds(algosArea.removeFromLeft(oscSlidersWidth * 4));
@@ -286,9 +321,9 @@ void MainComponent::resized()
     int slidersLabelHeight = 30;
     area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto oscArea = area.removeFromTop(slidersHeight);
-    for (int i = 0; i < 13; i++)
+    for (int i = 0; i < 17; i++)
     {
-        if (i > 0 && i % 4 == 0)
+        if (i == 4 || i == 8 || i == 12)
         {
             oscArea.removeFromLeft(oscSlidersWidth);
         }
@@ -316,9 +351,9 @@ void MainComponent::resized()
     // env section : sliders
     envArea.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto envSlidersArea = envArea.removeFromTop(slidersHeight);
-    for (int i = 13; i < 25; i++)
+    for (int i = 17; i < slidersCount; i++)
     {
-        if (i > 13 && (i-1) % 4 == 0)
+        if (i > 17 && (i-1) % 4 == 0)
         {
             envSlidersArea.removeFromLeft(envSlidersWidth);
         }
@@ -509,9 +544,16 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
         if (slider == slidersArray[i])
         {
             int value = (*slider).getValue();
-            sendNRPN(channel, oscNameNRPNs[i].NRPN, value);
-            // color code tuning sliders
-            if ( i < 12 && ((i-2) % 4 == 0 || (i-3) % 4 == 0 ))
+            if ( i == 14 )  // EQ
+            {
+                sendNRPN_MSB_LSB(channel, oscNameNRPNs[i].NRPN, value);
+            }
+            else
+            {
+                sendNRPN(channel, oscNameNRPNs[i].NRPN, value);
+            }
+            // color code tuning and mix sliders
+            if ( i < 12 && ((i-2) % 4 == 0 || (i-3) % 4 == 0 ) || i == 16 )
             {
                 juce::Colour colour = juce::Colours::darkgrey;
                 if (value < 64)
@@ -519,6 +561,20 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
                     colour = juce::Colours::darkred;
                 }
                 else if (value > 64)
+                {
+                    colour = juce::Colours::darkgreen;
+                }
+                slider->setColour(juce::Slider::trackColourId, colour);
+            }
+            // color code eq slider
+            if ( i == 14 )
+            {
+                juce::Colour colour = juce::Colours::darkgrey;
+                if (value < 128)
+                {
+                    colour = juce::Colours::darkred;
+                }
+                else if (value > 128)
                 {
                     colour = juce::Colours::darkgreen;
                 }
@@ -638,7 +694,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // qKnobAssignment
         // mKnobAssignment
         // encoderXAssignment (X from 1 to 4)
-        // programVolume
         // programTempo (from 0->40 to 255->295)
         int tempo = readParamValue(data, paramMap.at("programTempo")) + 40;
         DBG("Tempo: " << tempo);
@@ -670,7 +725,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // glide
         // pitchBendDown
         // pitchBendUp
-        // vcaVelocitySensitivity
         // filterEnvVelocity
         // filterCutoff
         // filterResonance
@@ -680,7 +734,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         DBG("Filter Env Amount: " << centeredEnv);
         // keyTracking
         // filterFMAmtFromOSC
-        // driveLevel
         // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
         // op1Source
         // op1Amount
@@ -689,7 +742,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // op3SourceA
         // op3SourceB
         // modulationKnob
-        // eqFrequencyControl
         // delayTime
         // delayFeedback
         // delaySendLevel
@@ -737,7 +789,7 @@ const std::unordered_map<std::string,
     { "encoder2Assignment", {21, 7, "", 0} },
     { "encoder3Assignment", {22, 7, "", 0} },
     { "encoder4Assignment", {23, 7, "", 0} },
-    { "programVolume", {24, 7, "", 0} },
+    { "programVolume", {24, 7, "slidersArray", 16} },
     { "programTempo", {25, 14, "", 0} },
     { "voiceDetune", {27, 7, "", 0} },
     { "oscDetune", {28, 7, "", 0} },
@@ -745,7 +797,7 @@ const std::unordered_map<std::string,
     { "glide", {30, 7, "", 0} },
     { "pitchBendDown", {31, 7, "", 0} },
     { "pitchBendUp", {32, 7, "", 0} },
-    { "vcaVelocitySensitivity", {33, 7, "", 0} },
+    { "vcaVelocitySensitivity", {33, 7, "slidersArray", 15} },
     { "filterEnvVelocity", {34, 7, "", 0} },
     { "osc1Algorithm", {35, 7, "oscAlgosArray", 0} },
     { "osc1Shape", {36, 7, "slidersArray", 1} },
@@ -768,19 +820,19 @@ const std::unordered_map<std::string,
     { "filterEnvAmount", {54, 14, "", 0} },
     { "keyTracking", {56, 7, "", 0} },
     { "filterFMAmtFromOSC", {57, 7, "", 0} },
-    { "driveLevel", {58, 7, "", 0} },
-    { "env1Attack", {59, 7, "slidersArray", 13} },
-    { "env1Decay", {60, 7, "slidersArray", 14} },
-    { "env1Sustain", {61, 7, "slidersArray", 15} },
-    { "env1Release", {62, 7, "slidersArray", 16} },
-    { "env2Attack", {63, 7, "slidersArray", 17} },
-    { "env2Decay", {64, 7, "slidersArray", 18} },
-    { "env2Sustain", {65, 7, "slidersArray", 19} },
-    { "env2Release", {66, 7, "slidersArray", 20} },
-    { "env3Attack", {67, 7, "slidersArray", 21} },
-    { "env3Decay", {68, 7, "slidersArray", 22} },
-    { "env3Sustain", {69, 7, "slidersArray", 23} },
-    { "env3Release", {70, 7, "slidersArray", 24} },
+    { "driveLevel", {58, 7,  "slidersArray", 13} },
+    { "env1Attack", {59, 7,  "slidersArray", 17} },
+    { "env1Decay", {60, 7,   "slidersArray", 18} },
+    { "env1Sustain", {61, 7, "slidersArray", 19} },
+    { "env1Release", {62, 7, "slidersArray", 20} },
+    { "env2Attack", {63, 7,  "slidersArray", 21} },
+    { "env2Decay", {64, 7,   "slidersArray", 22} },
+    { "env2Sustain", {65, 7, "slidersArray", 23} },
+    { "env2Release", {66, 7, "slidersArray", 24} },
+    { "env3Attack", {67, 7,  "slidersArray", 25} },
+    { "env3Decay", {68, 7,   "slidersArray", 26} },
+    { "env3Sustain", {69, 7, "slidersArray", 27} },
+    { "env3Release", {70, 7, "slidersArray", 28} },
     { "lfo1Waveform", {71, 7,  "lfo_waveform", 0} },
     { "lfo1Speed",    {72, 14, "lfo_speed", 0} },
     { "lfo1Mode",     {74, 7,  "lfo_mode", 0} },
@@ -827,7 +879,7 @@ const std::unordered_map<std::string,
     { "op3SourceA", {127, 7, "", 0} },
     { "op3SourceB", {128, 7, "", 0} },
     { "modulationKnob", {129, 7, "", 0} },
-    { "eqFrequencyControl", {130, 14, "", 0} },
+    { "eqFrequencyControl", {130, 14, "slidersArray", 14} },
     { "delayTime", {132, 14, "", 0} },
     { "delayFeedback", {134, 7, "", 0} },
     { "delaySendLevel", {135, 7, "", 0} },
