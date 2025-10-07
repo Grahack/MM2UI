@@ -42,8 +42,9 @@ private:
     std::unique_ptr<juce::MidiOutput> midiOut;
     juce::TextButton refreshButton;
     // controllers section
+    // OSC waveforms
     OwnedArray<ComboBox> oscAlgosArray;
-    static const int slidersCount = 29;
+    static const int slidersCount = 34;
     struct nameNRPN {
         char name[7];
         int  NRPN;
@@ -54,6 +55,7 @@ private:
                                   "Saw",  "Sup1", "Sup2",
                                   "SwHs", "Squr", "SqHs"};
     std::string algosArrayOsc1[4] = {"fmSi", "fmTr", "fmSw", "fmSq"};
+    // all the sliders
     nameNRPN oscNameNRPNs[slidersCount] = {
         {"LVL", 39}, {"SHP", 28}, {"TUNE", 29}, {"F.TUNE", 30},
         {"LVL", 40}, {"SHP", 32}, {"TUNE", 33}, {"F.TUNE", 34},
@@ -61,15 +63,19 @@ private:
         {"NZE", 42}, {"DRV", 48}, {"EQ", 107}, {"VEL", 25}, {"MIX", 17},
         {"A", 49}, {"D", 50}, {"S", 51}, {"R", 52},
         {"A", 53}, {"D", 54}, {"S", 55}, {"R", 56},
-        {"A", 57}, {"D", 58}, {"S", 59}, {"R", 60}};
+        {"A", 57}, {"D", 58}, {"S", 59}, {"R", 60},
+        {"V.DET", 19}, {"O.DET", 20}, {"GLD", 22}, {"PB.D", 23}, {"PB.U", 24}
+    };
     OwnedArray<Slider> slidersArray;
     OwnedArray<Label> labelsArray;
+    // env section
     juce::Label vcaEnvLabel;
     juce::Label vcfEnvLabel;
     juce::Label env3EnvLabel;
     juce::ToggleButton vcaEnvReset;
     juce::ToggleButton vcfEnvReset;
     juce::ToggleButton env3EnvReset;
+    // LFOs section
     std::string lfoWavesArray[19] = {"BI Sin", "BI Tri", "BI Saw", "BI Squ",
                                      "BI S&H", "BI Rnd",
                                      "UNI Atk A", "UNI Atk B", "UNI Atk C",
@@ -90,6 +96,16 @@ private:
         std::unique_ptr<juce::Slider> speed;
     };
     OwnedArray<lfoBlock> lfoArray;
+    // voice + filter + fx section
+    // voice
+    juce::Label voiceLabel;
+    juce::ComboBox voiceAssign;
+    juce::ComboBox voiceUnison;
+    juce::ToggleButton voicePhaseReset;
+    // filter
+    juce::Label filterLabel;
+    // fx
+    juce::Label fxLabel;
 
     void refreshMidiPorts();
 

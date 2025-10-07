@@ -147,6 +147,34 @@ MainComponent::MainComponent()
             };
             slidersArray[i]->setValue(64, juce::dontSendNotification);
         }
+        // PB Down
+        else if ( i == 32 )
+        {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(52, 64, 1);
+            slidersArray[i]->textFromValueFunction = [](double value)
+            {
+                int pb = value - 64;
+                return (pb == 0 ? "-" : "") + juce::String(pb);
+            };
+            slidersArray[i]->valueFromTextFunction = [](const String &text)
+            {
+                int val = text.getIntValue();
+                return val + 64;
+            };
+            slidersArray[i]->setValue(64, juce::dontSendNotification);
+        }
+        // PB Up
+        else if ( i == 33 )
+        {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(0, 12, 1);
+            slidersArray[i]->textFromValueFunction = [](double value)
+            {
+                return "+" + juce::String(value);
+            };
+            slidersArray[i]->setValue(0);  // TODO: for the + to appear ??
+        }
         else
         {
             // 1 for integer value to be displayed
@@ -251,6 +279,37 @@ MainComponent::MainComponent()
         };
     }
 
+    // Voice + Filter + FX section
+    auto VFFXLabelFont = juce::FontOptions(22.0f, juce::Font::bold);
+    // Voice label
+    voiceLabel.setText("VOICE", juce::dontSendNotification);
+    voiceLabel.setJustificationType(juce::Justification::centred);
+    voiceLabel.setFont(envLabelFont);
+    addAndMakeVisible(voiceLabel);
+    voicePhaseReset.setButtonText(rtzText);
+    voicePhaseReset.addListener(this);
+    addAndMakeVisible(voicePhaseReset);
+    // Assign ComboBox
+    addAndMakeVisible(voiceAssign);
+    voiceAssign.setLookAndFeel(&customLookAndFeel);
+    voiceAssign.addListener(this);
+    std::string assignsArray[4] = {"Modern", "Vintage", "Mono", "Legato"};
+    for (int i = 0; i < 4; i++)
+    {
+        voiceAssign.addItem("Assign: "  + assignsArray[i], i+1);
+    }
+    voiceAssign.setSelectedId(1, juce::dontSendNotification);
+    // Unisson ComboBox
+    addAndMakeVisible(voiceUnison);
+    voiceUnison.setLookAndFeel(&customLookAndFeel);
+    voiceUnison.addListener(this);
+    std::string unisonsArray[4] = {"1", "2", "3", "6"};
+    for (int i = 0; i < 4; i++)
+    {
+        voiceUnison.addItem(unisonsArray[i], i+1);
+    }
+    voiceUnison.setSelectedId(1, juce::dontSendNotification);
+
     // First drawing request because previous ones were aborted
     // because of arrays not full of what we needed.
     resized();
@@ -283,6 +342,10 @@ MainComponent::~MainComponent()
         lfoArray[i]->speed->removeListener(this);
         lfoArray[i]->speed->setLookAndFeel(nullptr);
     }
+    voiceAssign.removeListener(this);
+    voiceUnison.removeListener(this);
+    voicePhaseReset.removeListener(this);;
+
     setLookAndFeel(nullptr);
 }
 
@@ -351,7 +414,7 @@ void MainComponent::resized()
     // env section : sliders
     envArea.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto envSlidersArea = envArea.removeFromTop(slidersHeight);
-    for (int i = 17; i < slidersCount; i++)
+    for (int i = 17; i < 29; i++)
     {
         if (i > 17 && (i-1) % 4 == 0)
         {
@@ -377,6 +440,27 @@ void MainComponent::resized()
                                             lfoW / 3,
                                             50);
         lfoArray[i]->speed->setBounds(lfoBlockArea.removeFromLeft(lfoW * 2 / 3));
+    }
+    // some space
+    area.removeFromTop(internalMargin);
+    // Voice + Filter + FX section: VFFX
+    int VFFXHeaderHeight = 40;
+    int VFFXHeight = 2*VFFXHeaderHeight + slidersLabelHeight + slidersHeight;
+    auto VFFXArea = area.removeFromTop(VFFXHeight);
+    int VFFXSlidersWidth = area.getWidth() / 19;
+    // voice
+    auto voiceArea = VFFXArea.removeFromLeft(VFFXSlidersWidth * 5);
+    auto voiceHeadersArea = voiceArea.removeFromTop(VFFXHeaderHeight);
+    voiceLabel.setBounds(voiceHeadersArea.removeFromLeft(VFFXSlidersWidth * 4));
+    voicePhaseReset.setBounds(voiceHeadersArea.removeFromLeft(VFFXSlidersWidth * 1));
+    auto voiceCombosArea = voiceArea.removeFromTop(VFFXHeaderHeight);
+    voiceAssign.setBounds(voiceCombosArea.removeFromLeft(VFFXSlidersWidth * 4));
+    voiceUnison.setBounds(voiceCombosArea.removeFromLeft(VFFXSlidersWidth * 1));
+    voiceArea.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
+    auto voiceSlidersArea = voiceArea.removeFromTop(slidersLabelHeight + slidersHeight);
+    for (int i = 29; i < 34; i++)
+    {
+        slidersArray[i]->setBounds(voiceSlidersArea.removeFromLeft(VFFXSlidersWidth));
     }
 }
 
@@ -480,6 +564,14 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
                 DBG("Could not open MIDI out: " + deviceInfo.name);
         }
     }
+    else if (combo == &voiceAssign)
+    {
+        sendNRPN(channel, 117, (*combo).getSelectedId() - 1);
+    }
+    else if (combo == &voiceUnison)
+    {
+        sendNRPN(channel, 118, (*combo).getSelectedId() - 1);
+    }
     else
     {
         for (int i = 0; i < 3; ++i)
@@ -531,6 +623,11 @@ void MainComponent::buttonClicked(juce::Button* button)
     {
         int value = button->getToggleState() ? 1 : 0;
         sendNRPN(channel, 122, value);
+    }
+    else if (button == &voicePhaseReset)
+    {
+        int value = button->getToggleState() ? 1 : 0;
+        sendNRPN(channel, 124, value);
     }
 }
 
@@ -722,17 +819,16 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                     lfoArray[num]->speed->setValue(val);
                 else if ( uiElt == "lfo_mode" )
                     lfoArray[num]->mode->setSelectedId(val+1);
+                else if ( uiElt == "voiceAssign" )
+                    voiceAssign.setSelectedId(val+1);
+                else if ( uiElt == "voiceUnison" )
+                    voiceUnison.setSelectedId(val+1);
                 else if ( uiElt != "" )
                     DBG("Unknown UI element: " + uiElt);
             });
         }
 
-        // voiceDetune
-        // oscDetune
         // panSpread
-        // glide
-        // pitchBendDown
-        // pitchBendUp
         // filterEnvVelocity
         // filterCutoff
         // filterResonance
@@ -759,8 +855,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // arpStyle
         // arpGateLength
         // arpSpeed
-        // voiceMode
-        // voiceUnisonCount
         // panSpreadMode
         // filterType
         // filterCharacter
@@ -795,12 +889,12 @@ const std::unordered_map<std::string,
     { "encoder4Assignment", {23, 7, "", 0} },
     { "programVolume", {24, 7, "slidersArray", 16} },
     { "programTempo", {25, 14, "", 0} },
-    { "voiceDetune", {27, 7, "", 0} },
-    { "oscDetune", {28, 7, "", 0} },
+    { "voiceDetune", {27, 7, "slidersArray", 29} },
+    { "oscDetune", {28, 7, "slidersArray", 30} },
     { "panSpread", {29, 7, "", 0} },
-    { "glide", {30, 7, "", 0} },
-    { "pitchBendDown", {31, 7, "", 0} },
-    { "pitchBendUp", {32, 7, "", 0} },
+    { "glide", {30, 7, "slidersArray", 31} },
+    { "pitchBendDown", {31, 7, "slidersArray", 32} },
+    { "pitchBendUp", {32, 7, "slidersArray", 33} },
     { "vcaVelocitySensitivity", {33, 7, "slidersArray", 15} },
     { "filterEnvVelocity", {34, 7, "", 0} },
     { "osc1Algorithm", {35, 7, "oscAlgosArray", 0} },
@@ -893,8 +987,8 @@ const std::unordered_map<std::string,
     { "arpStyle", {139, 7, "", 0} },
     { "arpGateLength", {140, 7, "", 0} },
     { "arpSpeed", {141, 7, "", 0} },
-    { "voiceMode", {142, 7, "", 0} },
-    { "voiceUnisonCount", {143, 7, "", 0} },
+    { "voiceMode", {142, 7, "voiceAssign", 0} },
+    { "voiceUnisonCount", {143, 7, "voiceUnison", 0} },
     { "panSpreadMode", {144, 7, "", 0} },
     { "env1Reset", {145, 7, "Reset", 0} },
     { "env2Reset", {146, 7, "Reset", 1} },
