@@ -173,13 +173,8 @@ MainComponent::MainComponent()
             {
                 return "+" + juce::String(value);
             };
-            // TODO: the rest is not needed
-            // but is an attempt for the + to appear
-            slidersArray[i]->valueFromTextFunction = [](const String &text)
-            {
-                return text.getIntValue();
-            };
-            slidersArray[i]->setValue(0, juce::dontSendNotification);
+            // needed for the + to appear but not for pitch bend down...
+            slidersArray[i]->updateText();
         }
         else
         {
