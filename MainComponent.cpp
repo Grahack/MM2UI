@@ -449,13 +449,10 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
         if (index >= 0 && index < availableMidiInputs.size())
         {
             auto deviceInfo = availableMidiInputs[index];
-
             // Arrêter l'entrée MIDI précédente si elle existe
             if (midiIn)
                 midiIn->stop();
-
             midiIn = juce::MidiInput::openDevice(deviceInfo.identifier, this);
-
             if (midiIn)
             {
                 midiIn->start();
