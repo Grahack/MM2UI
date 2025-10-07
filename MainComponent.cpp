@@ -705,6 +705,17 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                     slidersArray[num]->setValue(val);
                 else if ( uiElt == "oscAlgosArray" )
                     oscAlgosArray[num]->setSelectedId(val+1);
+                else if ( uiElt == "Reset" )
+                {
+                    auto dsn = juce::NotificationType::dontSendNotification;
+                    switch ( num )
+                    {
+                        case 0: vcaEnvReset.setToggleState(val==1, dsn); break;
+                        case 1: vcfEnvReset.setToggleState(val==1, dsn); break;
+                        case 2: env3EnvReset.setToggleState(val==1, dsn); break;
+                        case 3: voicePhaseReset.setToggleState(val==1, dsn); break;
+                    }
+                }
                 else if ( uiElt == "lfo_waveform" )
                     lfoArray[num]->waveform->setSelectedId(val+1);
                 else if ( uiElt == "lfo_speed" )
@@ -751,10 +762,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // voiceMode
         // voiceUnisonCount
         // panSpreadMode
-        // env1Reset
-        // env2Reset
-        // env3Reset
-        // oscPhaseReset
         // filterType
         // filterCharacter
         // chorus
@@ -889,11 +896,11 @@ const std::unordered_map<std::string,
     { "voiceMode", {142, 7, "", 0} },
     { "voiceUnisonCount", {143, 7, "", 0} },
     { "panSpreadMode", {144, 7, "", 0} },
-    { "env1Reset", {145, 7, "", 0} },
-    { "env2Reset", {146, 7, "", 0} },
-    { "env3Reset", {147, 7, "", 0} },
+    { "env1Reset", {145, 7, "Reset", 0} },
+    { "env2Reset", {146, 7, "Reset", 1} },
+    { "env3Reset", {147, 7, "Reset", 2} },
     // NRPN 123 not used
-    { "oscPhaseReset", {149, 7, "", 0} },
+    { "oscPhaseReset", {149, 7, "Reset", 3} },
     { "filterType", {150, 7, "", 0} },
     { "filterCharacter", {151, 7, "", 0} },
     { "chorus", {152, 7, "", 0} },
