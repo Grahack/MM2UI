@@ -173,7 +173,13 @@ MainComponent::MainComponent()
             {
                 return "+" + juce::String(value);
             };
-            slidersArray[i]->setValue(0);  // TODO: for the + to appear ??
+            // TODO: the rest is not needed
+            // but is an attempt for the + to appear
+            slidersArray[i]->valueFromTextFunction = [](const String &text)
+            {
+                return text.getIntValue();
+            };
+            slidersArray[i]->setValue(0, juce::dontSendNotification);
         }
         else
         {
