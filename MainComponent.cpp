@@ -551,13 +551,11 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
     else if (combo == &midiOutputSelector)
     {
         int index = midiOutputSelector.getSelectedId() - 1;
-
         if (index >= 0 && index < availableMidiOutputs.size())
         {
             midiOut.reset(); // Closes the current one
             auto deviceInfo = availableMidiOutputs[index];
             midiOut = juce::MidiOutput::openDevice(deviceInfo.identifier);
-
             if (midiOut != nullptr)
                 DBG("MIDI out is now: " + deviceInfo.name);
             else
