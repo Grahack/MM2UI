@@ -72,7 +72,7 @@ MainComponent::MainComponent()
         oscAlgosArray[i]->addListener(this);
         addAndMakeVisible(*oscAlgosArray[i]);
     }
-    // See numName init in MainComponent.h
+    // See controllers section in MainComponent.h
     for (int i = 0; i < slidersCount; i++)
     {
         slidersArray.add(new juce::Slider());
