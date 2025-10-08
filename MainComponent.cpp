@@ -470,7 +470,7 @@ void MainComponent::resized()
     // Protect this section from a premature execution
     if (slidersArray.size() == 0) return;
     int slidersHeight = 150;
-    int slidersLabelHeight = 30;
+    int slidersLabelHeight = 26;
     area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto oscArea = area.removeFromTop(slidersHeight);
     for (int i = 0; i < 17; i++)
