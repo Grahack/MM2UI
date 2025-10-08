@@ -252,7 +252,8 @@ MainComponent::MainComponent()
         lfoArray[i]->mode->setColour(
                 ComboBox::ColourIds::backgroundColourId, dark);
         lfoArray[i]->speed->setSliderStyle(juce::Slider::Rotary);
-        lfoArray[i]->speed->setRange(0, 157, 1);  // 1 for integer value to be displayed
+        // 1 for integer value to be displayed
+        lfoArray[i]->speed->setRange(0, 157, 1);
         lfoArray[i]->speed->setColour(
                 Slider::ColourIds::textBoxBackgroundColourId, dark);
         lfoArray[i]->speed->setLookAndFeel(&customLookAndFeel);
