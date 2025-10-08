@@ -64,4 +64,32 @@ public:
         g.setColour (backgroundColour);
         g.fillRect (buttonArea);
     }
+
+    void drawLabel(Graphics& g, Label& label) override
+    {
+        g.fillAll(label.findColour(Label::backgroundColourId));
+        g.setColour(label.findColour(Label::textColourId));
+        g.setFont(label.getFont());
+        g.drawText(label.getText(), label.getLocalBounds(),
+                   label.getJustificationType(),
+                   true);
+        if (!isLabelInComboBox(label))
+        {
+            g.setColour(juce::Colours::black);
+            g.drawRect(label.getLocalBounds(), 1);
+        }
+    }
+
+private:
+    bool isLabelInComboBox(juce::Label& label)
+    {
+        auto* parent = label.getParentComponent();
+        while (parent != nullptr)
+        {
+            if (dynamic_cast<juce::ComboBox*>(parent) != nullptr)
+                return true;
+            parent = parent->getParentComponent();
+        }
+        return false;
+    }
 };

@@ -16,8 +16,8 @@ MainComponent::MainComponent()
     getLookAndFeel().setColour(juce::Slider::backgroundColourId,
                                juce::Colours::lightgrey);
     getLookAndFeel().setColour(juce::TextButton::buttonColourId, dark);
-    getLookAndFeel().setColour(juce::Label::backgroundColourId, mm2);
-    getLookAndFeel().setColour(juce::Label::textColourId,
+    customLookAndFeel.setColour(juce::Label::backgroundColourId, mm2);
+    customLookAndFeel.setColour(juce::Label::textColourId,
                                juce::Colours::black);
 
     // MIDI channel
@@ -193,6 +193,7 @@ MainComponent::MainComponent()
         labelsArray[i]->setJustificationType(juce::Justification::centred);
         auto sliderLabelFont = juce::FontOptions(18.0f, juce::Font::bold);
         labelsArray[i]->setFont(sliderLabelFont);
+        labelsArray[i]->setLookAndFeel(&customLookAndFeel);
         labelsArray[i]->attachToComponent(slidersArray[i], false);
     }
 
@@ -203,6 +204,7 @@ MainComponent::MainComponent()
     vcaEnvLabel.setText("ENV 1: VCA", juce::dontSendNotification);
     vcaEnvLabel.setJustificationType(juce::Justification::centred);
     vcaEnvLabel.setFont(headerLabelFont);
+    vcaEnvLabel.setLookAndFeel(&customLookAndFeel);
     addAndMakeVisible(vcaEnvLabel);
     vcaEnvReset.setButtonText(rtzText);
     vcaEnvReset.addListener(this);
@@ -210,6 +212,7 @@ MainComponent::MainComponent()
     vcfEnvLabel.setText("ENV 2: VCF", juce::dontSendNotification);
     vcfEnvLabel.setJustificationType(juce::Justification::centred);
     vcfEnvLabel.setFont(headerLabelFont);
+    vcfEnvLabel.setLookAndFeel(&customLookAndFeel);
     addAndMakeVisible(vcfEnvLabel);
     vcfEnvReset.setButtonText(rtzText);
     vcfEnvReset.addListener(this);
@@ -217,6 +220,7 @@ MainComponent::MainComponent()
     env3EnvLabel.setText("ENV 3", juce::dontSendNotification);
     env3EnvLabel.setJustificationType(juce::Justification::centred);
     env3EnvLabel.setFont(headerLabelFont);
+    env3EnvLabel.setLookAndFeel(&customLookAndFeel);
     addAndMakeVisible(env3EnvLabel);
     env3EnvReset.setButtonText(rtzText);
     env3EnvReset.addListener(this);
@@ -287,6 +291,7 @@ MainComponent::MainComponent()
     voiceLabel.setText("VOICE", juce::dontSendNotification);
     voiceLabel.setJustificationType(juce::Justification::centred);
     voiceLabel.setFont(headerLabelFont);
+    voiceLabel.setLookAndFeel(&customLookAndFeel);
     addAndMakeVisible(voiceLabel);
     voicePhaseReset.setButtonText(rtzText);
     voicePhaseReset.addListener(this);
