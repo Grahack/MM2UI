@@ -44,7 +44,7 @@ private:
     // controllers section
     // OSC waveforms
     OwnedArray<ComboBox> oscAlgosArray;
-    static const int slidersCount = 34;
+    static const int slidersCount = 36;
     struct nameNRPN {
         char name[7];
         int  NRPN;
@@ -64,7 +64,8 @@ private:
         {"A", 49}, {"D", 50}, {"S", 51}, {"R", 52},
         {"A", 53}, {"D", 54}, {"S", 55}, {"R", 56},
         {"A", 57}, {"D", 58}, {"S", 59}, {"R", 60},
-        {"V.DET", 19}, {"O.DET", 20}, {"GLD", 22}, {"PB.D", 23}, {"PB.U", 24}
+        {"V.DET", 19}, {"O.DET", 20}, {"GLD", 22}, {"PB.D", 23}, {"PB.U", 24},
+        {"C.O.", 43}, {"RESO", 44}
     };
     OwnedArray<Slider> slidersArray;
     OwnedArray<Label> labelsArray;
@@ -104,6 +105,12 @@ private:
     juce::ToggleButton voicePhaseReset;
     // filter
     juce::Label filterLabel;
+    juce::ComboBox filterType;
+    juce::ComboBox filterChar;
+    OwnedArray<juce::Slider> filterArray;
+    // Rotary sliders: env amt, env vel, kbd, fm3
+    int filterNRPNs[4] = {45, 26, 46, 47};
+    OwnedArray<juce::Label> filterLblArray;
     // fx
     juce::Label fxLabel;
 

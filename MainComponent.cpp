@@ -176,6 +176,12 @@ MainComponent::MainComponent()
             // needed for the + to appear but not for pitch bend down...
             slidersArray[i]->updateText();
         }
+        // Cutoff
+        else if ( i == 34 )
+        {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(0, 255, 1);
+        }
         else
         {
             // 1 for integer value to be displayed
@@ -316,6 +322,75 @@ MainComponent::MainComponent()
         voiceUnison.addItem(unisonsArray[i], i+1);
     }
     voiceUnison.setSelectedId(1, juce::dontSendNotification);
+    // Filter Label
+    filterLabel.setText("FILTER", juce::dontSendNotification);
+    filterLabel.setJustificationType(juce::Justification::centred);
+    filterLabel.setFont(headerLabelFont);
+    filterLabel.setLookAndFeel(&customLookAndFeel);
+    addAndMakeVisible(filterLabel);
+    // Filter Type
+    addAndMakeVisible(filterType);
+    filterType.setLookAndFeel(&customLookAndFeel);
+    filterType.addListener(this);
+    std::string filterTypesArray[8] = {"Low-pass 1", "Low-pass 2",
+                                       "Low-pass 3", "Low-pass 4",
+                                       "Hi-pass 2", "Band-pass 2",
+                                       "Notch", "Phaser"};
+    for (int i = 0; i < 8; i++)
+    {
+        filterType.addItem(filterTypesArray[i], i+1);
+    }
+    filterType.setSelectedId(1, juce::dontSendNotification);
+    // Filter Character
+    addAndMakeVisible(filterChar);
+    filterChar.setLookAndFeel(&customLookAndFeel);
+    filterChar.addListener(this);
+    std::string filterCharsArray[4] = {"Soft", "Mild", "Hard", "Mean"};
+    for (int i = 0; i < 4; i++)
+    {
+        filterChar.addItem(filterCharsArray[i], i+1);
+    }
+    filterChar.setSelectedId(1, juce::dontSendNotification);
+    // Rotary sliders: env amt, env vel, kbd, fm3
+    std::string filterLblTextArray[4] = {"env", "vel", "kbd", "fm3"};
+    for (int i = 0; i < 4; i++)
+    {
+        // labels
+        auto l = std::make_unique<juce::Label>();
+        filterLblArray.add(l.release());
+        addAndMakeVisible(*filterLblArray[i]);
+        filterLblArray[i]->setText(filterLblTextArray[i],
+                                   juce::dontSendNotification);
+        filterLblArray[i]->setJustificationType(juce::Justification::centred);
+        auto filterLblFont = juce::FontOptions(18.0f, juce::Font::bold);
+        filterLblArray[i]->setFont(filterLblFont);
+        filterLblArray[i]->setLookAndFeel(&customLookAndFeel);
+        filterLblArray[i]->setColour(juce::Label::backgroundColourId, mm2);
+        filterLblArray[i]->setColour(juce::Label::textColourId,
+                                     juce::Colours::black);
+        // rotary sliders
+        auto s = std::make_unique<juce::Slider>();
+        filterArray.add(s.release());
+        addAndMakeVisible(*filterArray[i]);
+        filterArray[i]->addListener(this);
+        filterArray[i]->setSliderStyle(juce::Slider::Rotary);
+        filterArray[i]->setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+        // range: 1 for integer value to be displayed
+        switch ( i )
+        {
+            case 0: // env amt
+                filterArray[i]->setRange(29, 227, 1);
+                filterArray[i]->setValue(128, juce::dontSendNotification);
+                break;
+            case 1: // env vel
+                filterArray[i]->setRange(0, 127, 1); break;
+            case 2: // kbd
+                filterArray[i]->setRange(0, 100, 1); break;
+            case 3: // fm3
+                filterArray[i]->setRange(0, 127, 1); break;
+        }
+        filterArray[i]->setLookAndFeel(&customLookAndFeel);
+    }
 
     // First drawing request because previous ones were aborted
     // because of arrays not full of what we needed.
@@ -352,6 +427,13 @@ MainComponent::~MainComponent()
     voiceAssign.removeListener(this);
     voiceUnison.removeListener(this);
     voicePhaseReset.removeListener(this);;
+    filterType.removeListener(this);
+    filterChar.removeListener(this);
+    for (int i = 0; i < 4; i++)
+    {
+        filterArray[i]->removeListener(this);
+        filterLblArray[i]->setLookAndFeel(nullptr);
+    }
 
     setLookAndFeel(nullptr);
 }
@@ -469,6 +551,38 @@ void MainComponent::resized()
     {
         slidersArray[i]->setBounds(voiceSlidersArea.removeFromLeft(VFFXSlidersWidth));
     }
+    // space between sections
+    VFFXArea.removeFromLeft(VFFXSlidersWidth);
+    // filter
+    auto filterArea = VFFXArea.removeFromLeft(VFFXSlidersWidth * 5);
+    auto filterHeadersArea = filterArea.removeFromTop(VFFXHeaderHeight);
+    filterLabel.setBounds(filterHeadersArea.removeFromLeft(VFFXSlidersWidth * 5));
+    auto filterCombosArea = filterArea.removeFromTop(VFFXHeaderHeight);
+    filterType.setBounds(filterCombosArea.removeFromLeft(VFFXSlidersWidth * 3));
+    filterChar.setBounds(filterCombosArea.removeFromLeft(VFFXSlidersWidth * 2));
+    auto filterSlidersArea = filterArea.removeFromLeft(VFFXSlidersWidth * 2);
+    // spacer for the attached labels
+    filterSlidersArea.removeFromTop(slidersLabelHeight);
+    for (int i = 34; i < 36; i++)
+    {
+        slidersArray[i]->setBounds(filterSlidersArea.removeFromLeft(VFFXSlidersWidth));
+    }
+    auto filterRotaryArea = filterArea.removeFromLeft(VFFXSlidersWidth * 3);
+    int w = filterRotaryArea.getWidth();
+    int h = filterRotaryArea.getHeight();
+    int lblHeight = slidersLabelHeight;
+    auto topArea = filterRotaryArea.removeFromTop(h/2);
+    auto topLblArea = topArea.removeFromTop(lblHeight);
+    filterLblArray[0]->setBounds(topLblArea.removeFromLeft(w/2));
+    filterLblArray[1]->setBounds(topLblArea.removeFromLeft(w/2));
+    filterArray[0]->setBounds(topArea.removeFromLeft(w/2));
+    filterArray[1]->setBounds(topArea.removeFromLeft(w/2));
+    auto bottomArea = filterRotaryArea.removeFromTop(h/2);
+    auto bottomLblArea = bottomArea.removeFromTop(lblHeight);
+    filterLblArray[2]->setBounds(bottomLblArea.removeFromLeft(w/2));
+    filterLblArray[3]->setBounds(bottomLblArea.removeFromLeft(w/2));
+    filterArray[2]->setBounds(bottomArea.removeFromLeft(w/2));
+    filterArray[3]->setBounds(bottomArea.removeFromLeft(w/2));
 }
 
 void MainComponent::refreshMidiPorts()
@@ -577,6 +691,14 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
     {
         sendNRPN(channel, 118, (*combo).getSelectedId() - 1);
     }
+    else if (combo == &filterType)
+    {
+        sendNRPN(channel, 125, (*combo).getSelectedId() - 1);
+    }
+    else if (combo == &filterChar)
+    {
+        sendNRPN(channel, 126, (*combo).getSelectedId() - 1);
+    }
     else
     {
         for (int i = 0; i < 3; ++i)
@@ -647,6 +769,10 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
             {
                 sendNRPN_MSB_LSB(channel, oscNameNRPNs[i].NRPN, value);
             }
+            else if ( i == 34 )  // Cutoff
+            {
+                sendNRPN_MSB_LSB(channel, oscNameNRPNs[i].NRPN, value);
+            }
             else
             {
                 sendNRPN(channel, oscNameNRPNs[i].NRPN, value);
@@ -686,6 +812,20 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
         if (slider == lfoArray[i]->speed.get())
         {
             sendNRPN_MSB_LSB(channel, lfoNRPNs[i].speed, (*slider).getValue());
+        }
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        if (slider == filterArray[i])
+        {
+            if ( i == 0 )
+            {
+                sendNRPN_MSB_LSB(channel, filterNRPNs[i], (*slider).getValue());
+            }
+            else
+            {
+                sendNRPN(channel, filterNRPNs[i], (*slider).getValue());
+            }
         }
     }
 }
@@ -828,21 +968,18 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                     voiceAssign.setSelectedId(val+1);
                 else if ( uiElt == "voiceUnison" )
                     voiceUnison.setSelectedId(val+1);
+                else if ( uiElt == "filterType" )
+                    filterType.setSelectedId(val+1);
+                else if ( uiElt == "filterChar" )
+                    filterChar.setSelectedId(val+1);
+                else if ( uiElt == "filterRotary" )
+                    filterArray[num]->setValue(val);
                 else if ( uiElt != "" )
                     DBG("Unknown UI element: " + uiElt);
             });
         }
 
         // panSpread
-        // filterEnvVelocity
-        // filterCutoff
-        // filterResonance
-        // filterEnvAmount (from 29->-99 to 227->99, 128->0)
-        int fltEnvAmt = readParamValue(data, paramMap.at("filterEnvAmount"));
-        int centeredEnv = fltEnvAmt - 128;
-        DBG("Filter Env Amount: " << centeredEnv);
-        // keyTracking
-        // filterFMAmtFromOSC
         // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
         // op1Source
         // op1Amount
@@ -861,8 +998,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // arpGateLength
         // arpSpeed
         // panSpreadMode
-        // filterType
-        // filterCharacter
         // chorus
         // delayMode
         // arpOnOff
@@ -901,7 +1036,7 @@ const std::unordered_map<std::string,
     { "pitchBendDown", {31, 7, "slidersArray", 32} },
     { "pitchBendUp", {32, 7, "slidersArray", 33} },
     { "vcaVelocitySensitivity", {33, 7, "slidersArray", 15} },
-    { "filterEnvVelocity", {34, 7, "", 0} },
+    { "filterEnvVelocity", {34, 7, "filterRotary", 1} },
     { "osc1Algorithm", {35, 7, "oscAlgosArray", 0} },
     { "osc1Shape", {36, 7, "slidersArray", 1} },
     { "osc1Coarse", {37, 7, "slidersArray", 2} },
@@ -918,11 +1053,11 @@ const std::unordered_map<std::string,
     { "osc2Volume", {48, 7, "slidersArray", 4} },
     { "osc3Volume", {49, 7, "slidersArray", 8} },
     { "whiteNoiseVolume", {50, 7, "slidersArray", 12} },
-    { "filterCutoff", {51, 14, "", 0} },
-    { "filterResonance", {53, 7, "", 0} },
-    { "filterEnvAmount", {54, 14, "", 0} },
-    { "keyTracking", {56, 7, "", 0} },
-    { "filterFMAmtFromOSC", {57, 7, "", 0} },
+    { "filterCutoff", {51, 14, "slidersArray", 34} },
+    { "filterResonance", {53, 7, "slidersArray", 35} },
+    { "filterEnvAmount", {54, 14, "filterRotary", 0} },
+    { "keyTracking", {56, 7, "filterRotary", 2} },
+    { "filterFMAmtFromOSC", {57, 7, "filterRotary", 3} },
     { "driveLevel", {58, 7,  "slidersArray", 13} },
     { "env1Attack", {59, 7,  "slidersArray", 17} },
     { "env1Decay", {60, 7,   "slidersArray", 18} },
@@ -1000,8 +1135,8 @@ const std::unordered_map<std::string,
     { "env3Reset", {147, 7, "Reset", 2} },
     // NRPN 123 not used
     { "oscPhaseReset", {149, 7, "Reset", 3} },
-    { "filterType", {150, 7, "", 0} },
-    { "filterCharacter", {151, 7, "", 0} },
+    { "filterType", {150, 7, "filterType", 0} },
+    { "filterCharacter", {151, 7, "filterChar", 0} },
     { "chorus", {152, 7, "", 0} },
     { "delayMode", {153, 7, "", 0} },
     // NRPN 129 not used
