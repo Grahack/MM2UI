@@ -198,25 +198,25 @@ MainComponent::MainComponent()
 
     // env section
     // sliders are created in the previous section
-    auto envLabelFont = juce::FontOptions(22.0f, juce::Font::bold);
+    auto headerLabelFont = juce::FontOptions(22.0f, juce::Font::bold);
     auto rtzText = "RTZ";
     vcaEnvLabel.setText("ENV 1: VCA", juce::dontSendNotification);
     vcaEnvLabel.setJustificationType(juce::Justification::centred);
-    vcaEnvLabel.setFont(envLabelFont);
+    vcaEnvLabel.setFont(headerLabelFont);
     addAndMakeVisible(vcaEnvLabel);
     vcaEnvReset.setButtonText(rtzText);
     vcaEnvReset.addListener(this);
     addAndMakeVisible(vcaEnvReset);
     vcfEnvLabel.setText("ENV 2: VCF", juce::dontSendNotification);
     vcfEnvLabel.setJustificationType(juce::Justification::centred);
-    vcfEnvLabel.setFont(envLabelFont);
+    vcfEnvLabel.setFont(headerLabelFont);
     addAndMakeVisible(vcfEnvLabel);
     vcfEnvReset.setButtonText(rtzText);
     vcfEnvReset.addListener(this);
     addAndMakeVisible(vcfEnvReset);
     env3EnvLabel.setText("ENV 3", juce::dontSendNotification);
     env3EnvLabel.setJustificationType(juce::Justification::centred);
-    env3EnvLabel.setFont(envLabelFont);
+    env3EnvLabel.setFont(headerLabelFont);
     addAndMakeVisible(env3EnvLabel);
     env3EnvReset.setButtonText(rtzText);
     env3EnvReset.addListener(this);
@@ -285,7 +285,7 @@ MainComponent::MainComponent()
     // Voice label
     voiceLabel.setText("VOICE", juce::dontSendNotification);
     voiceLabel.setJustificationType(juce::Justification::centred);
-    voiceLabel.setFont(envLabelFont);
+    voiceLabel.setFont(headerLabelFont);
     addAndMakeVisible(voiceLabel);
     voicePhaseReset.setButtonText(rtzText);
     voicePhaseReset.addListener(this);
