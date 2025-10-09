@@ -352,7 +352,7 @@ MainComponent::MainComponent()
     }
     filterChar.setSelectedId(1, juce::dontSendNotification);
     // Rotary sliders: env amt, env vel, kbd, fm3
-    std::string filterLblTextArray[4] = {"env", "vel", "kbd", "fm3"};
+    std::string filterLblTextArray[4] = {"ENV", "VEL", "KBD", "FM3"};
     for (int i = 0; i < 4; i++)
     {
         // labels
