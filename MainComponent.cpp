@@ -928,11 +928,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         }
         DBG("Program name: " << progName);
 
-        // programCategory
-        // fKnobAssignment
-        // qKnobAssignment
-        // mKnobAssignment
-        // encoderXAssignment (X from 1 to 4)
         // programTempo (from 0->40 to 255->295)
         int tempo = readParamValue(data, paramMap.at("programTempo")) + 40;
         DBG("Tempo: " << tempo);
@@ -979,6 +974,11 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
             });
         }
 
+        // programCategory
+        // fKnobAssignment
+        // qKnobAssignment
+        // mKnobAssignment
+        // encoderXAssignment (X from 1 to 4)
         // panSpread
         // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
         // op1Source
