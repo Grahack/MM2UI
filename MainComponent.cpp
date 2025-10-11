@@ -689,7 +689,7 @@ void MainComponent::resized()
 
 void MainComponent::refreshMidiPorts()
 {
-    // IN
+    // MIDI IN
     midiInputSelector.clear();
     availableMidiInputs = juce::MidiInput::getAvailableDevices();
 
@@ -715,7 +715,7 @@ void MainComponent::refreshMidiPorts()
         midiInputSelector.setSelectedId(1);
         comboBoxChanged(&midiInputSelector);
     }
-    // OUT
+    // MIDI OUT
     midiOutputSelector.clear();
     availableMidiOutputs = juce::MidiOutput::getAvailableDevices();
 
