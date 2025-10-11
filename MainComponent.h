@@ -44,7 +44,7 @@ private:
     // controllers section
     // OSC waveforms
     OwnedArray<ComboBox> oscAlgosArray;
-    static const int slidersCount = 36;
+    static const int slidersCount = 42;
     struct nameNRPN {
         char name[7];
         int  NRPN;
@@ -65,7 +65,9 @@ private:
         {"A", 53}, {"D", 54}, {"S", 55}, {"R", 56},
         {"A", 57}, {"D", 58}, {"S", 59}, {"R", 60},
         {"V.DET", 19}, {"O.DET", 20}, {"GLD", 22}, {"PB.D", 23}, {"PB.U", 24},
-        {"C.O.", 43}, {"RESO", 44}
+        {"C.O.", 43}, {"RESO", 44},
+        {"tim", 108}, {"fbk", 109}, {"lvl", 110},
+        {"dcy", 111}, {"mod", 112}, {"lvl", 113}
     };
     OwnedArray<Slider> slidersArray;
     OwnedArray<Label> labelsArray;
@@ -112,7 +114,11 @@ private:
     int filterNRPNs[4] = {45, 26, 46, 47};
     OwnedArray<juce::Label> filterLblArray;
     // fx
-    juce::Label fxLabel;
+    juce::ComboBox chorusCombo;
+    juce::ComboBox panCombo;
+    juce::Slider panSpread;
+    juce::ComboBox delayCombo;
+    juce::Label reverbLabel;
 
     void refreshMidiPorts();
 

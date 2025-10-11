@@ -182,6 +182,29 @@ MainComponent::MainComponent()
             // 1 for integer value to be displayed
             slidersArray[i]->setRange(0, 255, 1);
         }
+        // Delay time
+        else if ( i == 36 )
+        {
+            // 1 for integer value to be displayed
+            slidersArray[i]->setRange(0, 133, 1);
+            const char* dlyTxt[] = {"16/", "/8t", "/8", "/4t", "/8.", "/4"};
+            slidersArray[i]->textFromValueFunction = [dlyTxt](double value)
+            {
+                if ( value < 128 ) return juce::String(value);
+                if ( value >= 128 + size(dlyTxt)) return juce::String("");
+                return juce::String(dlyTxt[int(value - 128)]);
+            };
+            slidersArray[i]->valueFromTextFunction = [dlyTxt](const String &text)
+            {
+                for (int i = 0; i < size(dlyTxt); i++)
+                {
+                    if ( text == dlyTxt[i] ) return 128 + i;
+                }
+                int value = text.getDoubleValue();
+                if ( 0 <= value < 128 ) return value;
+                return 0;
+            };
+        }
         else
         {
             // 1 for integer value to be displayed
@@ -391,6 +414,51 @@ MainComponent::MainComponent()
         }
         filterArray[i]->setLookAndFeel(&customLookAndFeel);
     }
+    // FX
+    // chorus
+    addAndMakeVisible(chorusCombo);
+    chorusCombo.setLookAndFeel(&customLookAndFeel);
+    chorusCombo.addListener(this);
+    std::string chorusArray[4] = {"off", "1", "2", "1 + 2"};
+    for (int i = 0; i < 4; i++)
+    {
+        chorusCombo.addItem("CHORUS: "  + chorusArray[i], i+1);
+    }
+    chorusCombo.setSelectedId(1, juce::dontSendNotification);
+    // pan
+    addAndMakeVisible(panCombo);
+    panCombo.setLookAndFeel(&customLookAndFeel);
+    panCombo.addListener(this);
+    std::string panArray[2] = {"dif", "bal"};
+    for (int i = 0; i < 2; i++)
+    {
+        panCombo.addItem(panArray[i], i+1);
+    }
+    panCombo.setSelectedId(1, juce::dontSendNotification);
+    // panspread
+    addAndMakeVisible(panSpread);
+    panSpread.addListener(this);
+    panSpread.setSliderStyle(juce::Slider::Rotary);
+    panSpread.setColour(Slider::ColourIds::textBoxBackgroundColourId, dark);
+    // range: 1 for integer value to be displayed
+    panSpread.setRange(0, 127, 1);
+    panSpread.setLookAndFeel(&customLookAndFeel);
+    // delay (sliders above in the sliders section)
+    addAndMakeVisible(delayCombo);
+    delayCombo.setLookAndFeel(&customLookAndFeel);
+    delayCombo.addListener(this);
+    std::string delayArray[5] = {"dig", "lpf1", "lpf2", "mod1", "mod2"};
+    for (int i = 0; i < 5; i++)
+    {
+        delayCombo.addItem("DELAY: " + delayArray[i], i+1);
+    }
+    delayCombo.setSelectedId(1, juce::dontSendNotification);
+    // reverb (sliders above in the sliders section)
+    reverbLabel.setText("REVERB", juce::dontSendNotification);
+    reverbLabel.setJustificationType(juce::Justification::centred);
+    reverbLabel.setFont(headerLabelFont);
+    reverbLabel.setLookAndFeel(&customLookAndFeel);
+    addAndMakeVisible(reverbLabel);
 
     // First drawing request because previous ones were aborted
     // because of arrays not full of what we needed.
@@ -434,6 +502,10 @@ MainComponent::~MainComponent()
         filterArray[i]->removeListener(this);
         filterLblArray[i]->setLookAndFeel(nullptr);
     }
+    chorusCombo.removeListener(this);
+    panCombo.removeListener(this);
+    panSpread.removeListener(this);
+    delayCombo.removeListener(this);
 
     setLookAndFeel(nullptr);
 }
@@ -536,7 +608,7 @@ void MainComponent::resized()
     int VFFXHeaderHeight = 40;
     int VFFXHeight = 2*VFFXHeaderHeight + slidersLabelHeight + slidersHeight;
     auto VFFXArea = area.removeFromTop(VFFXHeight);
-    int VFFXSlidersWidth = area.getWidth() / 19;
+    int VFFXSlidersWidth = area.getWidth() / 18.5;
     // voice
     auto voiceArea = VFFXArea.removeFromLeft(VFFXSlidersWidth * 5);
     auto voiceHeadersArea = voiceArea.removeFromTop(VFFXHeaderHeight);
@@ -583,6 +655,36 @@ void MainComponent::resized()
     filterLblArray[3]->setBounds(bottomLblArea.removeFromLeft(w/2));
     filterArray[2]->setBounds(bottomArea.removeFromLeft(w/2));
     filterArray[3]->setBounds(bottomArea.removeFromLeft(w/2));
+    // space between sections
+    VFFXArea.removeFromLeft(VFFXSlidersWidth);
+    // FX
+    auto fxArea = VFFXArea.removeFromLeft(VFFXSlidersWidth * 7);
+    auto chorusPanArea = fxArea.removeFromTop(VFFXHeaderHeight);
+    chorusCombo.setBounds(chorusPanArea.removeFromLeft(VFFXSlidersWidth * 3));
+    chorusPanArea.removeFromLeft(VFFXSlidersWidth * 0.5);
+    panCombo.setBounds(chorusPanArea.removeFromLeft(VFFXSlidersWidth * 1.2));
+    panSpread.setBounds(chorusPanArea.removeFromLeft(VFFXSlidersWidth * 2.3));
+    panSpread.setTextBoxStyle(juce::Slider::TextBoxLeft,
+                              false,
+                              VFFXSlidersWidth * 0.75,
+                              VFFXHeaderHeight);
+    auto delayReverbHeaders = fxArea.removeFromTop(VFFXHeaderHeight);
+    delayCombo.setBounds(delayReverbHeaders.removeFromLeft(VFFXSlidersWidth * 3));
+    // space between sub-sections
+    delayReverbHeaders.removeFromLeft(VFFXSlidersWidth * 0.5);
+    reverbLabel.setBounds(delayReverbHeaders.removeFromLeft(VFFXSlidersWidth * 3));
+    // spacer for the attached labels
+    fxArea.removeFromTop(slidersLabelHeight);
+    // last 6 sliders (delay + reverb)
+    for (int i = 36; i < 42; i++)
+    {
+        slidersArray[i]->setBounds(fxArea.removeFromLeft(VFFXSlidersWidth));
+        if ( i == 38 )
+        {
+            // space between delay and reverb
+            fxArea.removeFromLeft(VFFXSlidersWidth * 0.5);
+        }
+    }
 }
 
 void MainComponent::refreshMidiPorts()
@@ -699,6 +801,18 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
     {
         sendNRPN(channel, 126, (*combo).getSelectedId() - 1);
     }
+    else if (combo == &chorusCombo)
+    {
+        sendNRPN(channel, 127, (*combo).getSelectedId() - 1);
+    }
+    else if (combo == &panCombo)
+    {
+        sendNRPN(channel, 119, (*combo).getSelectedId() - 1);
+    }
+    else if (combo == &delayCombo)
+    {
+        sendNRPN(channel, 128, (*combo).getSelectedId() - 1);
+    }
     else
     {
         for (int i = 0; i < 3; ++i)
@@ -760,6 +874,11 @@ void MainComponent::buttonClicked(juce::Button* button)
 
 void MainComponent::sliderValueChanged(juce::Slider* slider)
 {
+    if (slider == &panSpread)
+    {
+        sendNRPN(channel, 21, (*slider).getValue());
+        return;
+    }
     for (int i = 0; i < slidersCount; i++)
     {
         if (slider == slidersArray[i])
@@ -770,6 +889,10 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
                 sendNRPN_MSB_LSB(channel, oscNameNRPNs[i].NRPN, value);
             }
             else if ( i == 34 )  // Cutoff
+            {
+                sendNRPN_MSB_LSB(channel, oscNameNRPNs[i].NRPN, value);
+            }
+            else if ( i == 36 )  // Delay time
             {
                 sendNRPN_MSB_LSB(channel, oscNameNRPNs[i].NRPN, value);
             }
@@ -969,6 +1092,14 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                     filterChar.setSelectedId(val+1);
                 else if ( uiElt == "filterRotary" )
                     filterArray[num]->setValue(val);
+                else if ( uiElt == "chorusCombo" )
+                    chorusCombo.setSelectedId(val+1);
+                else if ( uiElt == "panCombo" )
+                    panCombo.setSelectedId(val+1);
+                else if ( uiElt == "panSpread" )
+                    panSpread.setValue(val);
+                else if ( uiElt == "delayCombo" )
+                    delayCombo.setSelectedId(val+1);
                 else if ( uiElt != "" )
                     DBG("Unknown UI element: " + uiElt);
             });
@@ -979,7 +1110,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // qKnobAssignment
         // mKnobAssignment
         // encoderXAssignment (X from 1 to 4)
-        // panSpread
         // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
         // op1Source
         // op1Amount
@@ -988,18 +1118,9 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // op3SourceA
         // op3SourceB
         // modulationKnob
-        // delayTime
-        // delayFeedback
-        // delaySendLevel
-        // reverbDecay
-        // reverbModAmount
-        // reverbSendLevel
         // arpStyle
         // arpGateLength
         // arpSpeed
-        // panSpreadMode
-        // chorus
-        // delayMode
         // arpOnOff
         // arpLatch
         // arpOctaveSpread
@@ -1031,7 +1152,7 @@ const std::unordered_map<std::string,
     { "programTempo", {25, 14, "", 0} },
     { "voiceDetune", {27, 7, "slidersArray", 29} },
     { "oscDetune", {28, 7, "slidersArray", 30} },
-    { "panSpread", {29, 7, "", 0} },
+    { "panSpread", {29, 7, "panSpread", 0} },
     { "glide", {30, 7, "slidersArray", 31} },
     { "pitchBendDown", {31, 7, "slidersArray", 32} },
     { "pitchBendUp", {32, 7, "slidersArray", 33} },
@@ -1118,18 +1239,18 @@ const std::unordered_map<std::string,
     { "op3SourceB", {128, 7, "", 0} },
     { "modulationKnob", {129, 7, "", 0} },
     { "eqFrequencyControl", {130, 14, "slidersArray", 14} },
-    { "delayTime", {132, 14, "", 0} },
-    { "delayFeedback", {134, 7, "", 0} },
-    { "delaySendLevel", {135, 7, "", 0} },
-    { "reverbDecay", {136, 7, "", 0} },
-    { "reverbModAmount", {137, 7, "", 0} },
-    { "reverbSendLevel", {138, 7, "", 0} },
+    { "delayTime", {132, 14, "slidersArray", 36} },
+    { "delayFeedback", {134, 7, "slidersArray", 37} },
+    { "delaySendLevel", {135, 7, "slidersArray", 38} },
+    { "reverbDecay", {136, 7, "slidersArray", 39} },
+    { "reverbModAmount", {137, 7, "slidersArray", 40} },
+    { "reverbSendLevel", {138, 7, "slidersArray", 41} },
     { "arpStyle", {139, 7, "", 0} },
     { "arpGateLength", {140, 7, "", 0} },
     { "arpSpeed", {141, 7, "", 0} },
     { "voiceMode", {142, 7, "voiceAssign", 0} },
     { "voiceUnisonCount", {143, 7, "voiceUnison", 0} },
-    { "panSpreadMode", {144, 7, "", 0} },
+    { "panSpreadMode", {144, 7, "panCombo", 0} },
     { "env1Reset", {145, 7, "Reset", 0} },
     { "env2Reset", {146, 7, "Reset", 1} },
     { "env3Reset", {147, 7, "Reset", 2} },
@@ -1137,8 +1258,8 @@ const std::unordered_map<std::string,
     { "oscPhaseReset", {149, 7, "Reset", 3} },
     { "filterType", {150, 7, "filterType", 0} },
     { "filterCharacter", {151, 7, "filterChar", 0} },
-    { "chorus", {152, 7, "", 0} },
-    { "delayMode", {153, 7, "", 0} },
+    { "chorus", {152, 7, "chorusCombo", 0} },
+    { "delayMode", {153, 7, "delayCombo", 0} },
     // NRPN 129 not used
     { "arpOnOff", {155, 7, "", 0} },
     { "arpLatch", {156, 7, "", 0} },
