@@ -463,7 +463,6 @@ MainComponent::MainComponent()
     // Ops section
     // Lag (items added later)
     addAndMakeVisible(lagCombo);
-    lagCombo.setLookAndFeel(&customLookAndFeel);
     lagCombo.addListener(this);
     addAndMakeVisible(lagSlider);
     // 1 for integer value to be displayed
@@ -478,7 +477,6 @@ MainComponent::MainComponent()
         multArray.add(c.release());
         addAndMakeVisible(*multArray[i]);
         multArray[i]->addListener(this);
-        multArray[i]->setLookAndFeel(&customLookAndFeel);
     }
     // add items to all the comboboxes
     std::string srcArray[36] = {"off", "note", "note+bnd", "velocity",
