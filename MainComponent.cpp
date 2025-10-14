@@ -719,7 +719,7 @@ void MainComponent::resized()
     {
         slidersArray[i]->setBounds(voiceSlidersArea.removeFromLeft(VFFXSlidersWidth));
     }
-    // space between sections
+    // space between sub-sections
     VFFXArea.removeFromLeft(VFFXSlidersWidth);
     // filter
     auto filterArea = VFFXArea.removeFromLeft(VFFXSlidersWidth * 5);
@@ -751,7 +751,7 @@ void MainComponent::resized()
     filterLblArray[3]->setBounds(bottomLblArea.removeFromLeft(w/2));
     filterArray[2]->setBounds(bottomArea.removeFromLeft(w/2));
     filterArray[3]->setBounds(bottomArea.removeFromLeft(w/2));
-    // space between sections
+    // space between sub-sections
     VFFXArea.removeFromLeft(VFFXSlidersWidth);
     // FX
     auto fxArea = VFFXArea.removeFromLeft(VFFXSlidersWidth * 7);
