@@ -734,18 +734,20 @@ void MainComponent::resized()
     // some space
     area.removeFromTop(internalMargin);
     // Ops and Matrix: last part of the UI so we directly use 'area'
-    int opsWidth = totalW / 4;
+    int opsWidth = totalW * 20 / 100;
+    int matWidth = totalW - opsWidth;
+    int opsAndMatHeight = area.getHeight();
+    // ops
     auto opsArea = area.removeFromLeft(opsWidth);
-    int opsHeight = area.getHeight();
-    auto lagArea = opsArea.removeFromTop(opsHeight / 5);
+    auto lagArea = opsArea.removeFromTop(opsAndMatHeight / 5);
     // this calculation for the rotary slider to be square
-    lagCombo.setBounds(lagArea.removeFromLeft(opsWidth - opsHeight / 5));
+    lagCombo.setBounds(lagArea.removeFromLeft(opsWidth - opsAndMatHeight / 5));
     lagSlider.setBounds(lagArea);
     lagSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
     for (int i = 0; i < 2; i++)
     {
-        multArray[2*i]->setBounds(opsArea.removeFromTop(opsHeight / 5));
-        multArray[2*i+1]->setBounds(opsArea.removeFromTop(opsHeight / 5));
+        multArray[2*i]->setBounds(opsArea.removeFromTop(opsAndMatHeight / 5));
+        multArray[2*i+1]->setBounds(opsArea.removeFromTop(opsAndMatHeight / 5));
     }
 }
 
