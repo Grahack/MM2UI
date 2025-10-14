@@ -502,6 +502,56 @@ MainComponent::MainComponent()
     for (int j = 0; j < 4; j++)
         multArray[j]->setSelectedId(1, juce::dontSendNotification);
 
+    // Matrix section
+    std::string otherSrcArray[4] = {"lag", "mult1", "mult2", "offset"};
+    const std::string destArray[] = {"off", "pitch",
+        "tune1", "tune2", "tune3", "shp1", "shp2", "shp3",
+        "mix1", "mix2", "mix3", "xnze", "cuto", "reso", "f.fm", "drive", 
+        "glide", "vca", "pan",
+        "atk1", "atk2", "atk3", "atks",
+        "dcy1", "dcy2", "dcy3", "dcys",
+        "rel1", "rel2", "rel3", "rels",
+        "lfo1", "lfo2", "lfo3", "lfos"
+    };
+    for (int i = 0; i < 10; i++)
+    {
+        auto m = std::make_unique<matrixBlock>();
+        m->src  = std::make_unique<juce::ComboBox>();
+        m->dest = std::make_unique<juce::ComboBox>();
+        m->amt  = std::make_unique<juce::Slider>();
+        matrixArray.add(m.release());
+        addAndMakeVisible(*matrixArray[i]->src);
+        addAndMakeVisible(*matrixArray[i]->dest);
+        addAndMakeVisible(*matrixArray[i]->amt);
+        matrixArray[i]->src->addListener(this);
+        matrixArray[i]->dest->addListener(this);
+        matrixArray[i]->amt->addListener(this);
+        // src
+        for (int j = 0; j < 36; j++)
+        {
+            matrixArray[i]->src->addItem(srcArray[j], j+1);
+        }
+        for (int j = 0; j < 4; j++)
+        {
+            matrixArray[i]->src->addItem(otherSrcArray[j], 36 + j + 1);
+        }
+        matrixArray[i]->src->setSelectedId(1, juce::dontSendNotification);
+        // dest
+        for (int j = 0; j < 35; j++)
+        {
+            matrixArray[i]->dest->addItem(destArray[j], j+1);
+        }
+        matrixArray[i]->dest->setSelectedId(1, juce::dontSendNotification);
+        // amount
+        matrixArray[i]->amt->setSliderStyle(juce::Slider::Rotary);
+        // 1 for integer value to be displayed
+        matrixArray[i]->amt->setRange(29, 227, 1);
+        matrixArray[i]->amt->setLookAndFeel(&customLookAndFeel);
+        matrixArray[i]->amt->setTextBoxStyle(juce::Slider::NoTextBox,
+                                             false, 0, 0);
+        matrixArray[i]->amt->setValue(128, juce::dontSendNotification);
+    }
+
     // First drawing request because previous ones were aborted
     // because of arrays not full of what we needed.
     resized();
@@ -749,6 +799,34 @@ void MainComponent::resized()
         multArray[2*i]->setBounds(opsArea.removeFromTop(opsAndMatHeight / 5));
         multArray[2*i+1]->setBounds(opsArea.removeFromTop(opsAndMatHeight / 5));
     }
+    // some space between sub-sections
+    area.removeFromLeft( totalW * 2 / 100);
+    // matrix
+    auto topMatrix = area.removeFromTop(opsAndMatHeight / 2);
+    auto bottomMatrix = area.removeFromTop(opsAndMatHeight / 2);
+    auto cbH = opsAndMatHeight / 4;
+    auto cbW = totalW * 10 / 100;
+    auto rotW = totalW * 4 / 100;
+    auto spc = totalW * 2 / 100;
+    for (int i = 0; i < 5; i++)
+    {
+        // top line
+        auto matElt = topMatrix.removeFromLeft(cbW + rotW);
+        auto matEltLeft = matElt.removeFromLeft(cbW);
+        matrixArray[i]->src->setBounds(matEltLeft.removeFromTop(cbH));
+        matrixArray[i]->dest->setBounds(matEltLeft.removeFromTop(cbH));
+        matrixArray[i]->amt->setBounds(matElt);
+        // some space between matrix columns (last one not needed and empty)
+        topMatrix.removeFromLeft(spc);
+        // bottom line
+        matElt = bottomMatrix.removeFromLeft(cbW + rotW);
+        matEltLeft = matElt.removeFromLeft(cbW);
+        matrixArray[i + 5]->src->setBounds(matEltLeft.removeFromTop(cbH));
+        matrixArray[i + 5]->dest->setBounds(matEltLeft.removeFromTop(cbH));
+        matrixArray[i + 5]->amt->setBounds(matElt);
+        // some space between matrix columns (last one not needed and empty)
+        bottomMatrix.removeFromLeft(spc);
+    }
 }
 
 void MainComponent::refreshMidiPorts()
@@ -917,6 +995,17 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
                 sendNRPN(channel, 102 + i, src);
             }
         }
+        for (int i = 0; i < 10; i++)
+        {
+            if (combo == matrixArray[i]->src.get())
+            {
+                sendNRPN(channel, 70 + 3*i, (*combo).getSelectedId() - 1);
+            }
+            if (combo == matrixArray[i]->dest.get())
+            {
+                sendNRPN(channel, 71 + 3*i, (*combo).getSelectedId() - 1);
+            }
+        }
     }
 }
 
@@ -1030,6 +1119,13 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
             {
                 sendNRPN(channel, filterNRPNs[i], (*slider).getValue());
             }
+        }
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        if (slider == matrixArray[i]->amt.get())
+        {
+            sendNRPN_MSB_LSB(channel, 72 + 3*i, (*slider).getValue());
         }
     }
 }
@@ -1187,6 +1283,12 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                     lagSlider.setValue(val);
                 else if ( uiElt == "mult" )
                     multArray[num]->setSelectedId(val+1);
+                else if ( uiElt == "matSrc" )
+                    matrixArray[num]->src->setSelectedId(val+1);
+                else if ( uiElt == "matDest" )
+                    matrixArray[num]->dest->setSelectedId(val+1);
+                else if ( uiElt == "matAmt" )
+                    matrixArray[num]->amt->setValue(val);
                 else if ( uiElt != "" )
                     DBG("Unknown UI element: " + uiElt);
             });
@@ -1197,7 +1299,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // qKnobAssignment
         // mKnobAssignment
         // encoderXAssignment (X from 1 to 4)
-        // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
         // modulationKnob
         // arpStyle
         // arpGateLength
@@ -1282,36 +1383,36 @@ const std::unordered_map<std::string,
     { "lfo3Waveform", {79, 7,  "lfo_waveform", 2} },
     { "lfo3Speed",    {80, 14, "lfo_speed", 2} },
     { "lfo3Mode",     {82, 7,  "lfo_mode", 2} },
-    { "matrix1Source",      {83, 7, "", 0} },
-    { "matrix1Destination", {84, 7, "", 0} },
-    { "matrix1Amount",      {85, 14, "", 0} },
-    { "matrix2Source",      {87, 7, "", 0} },
-    { "matrix2Destination", {88, 7, "", 0} },
-    { "matrix2Amount",      {89, 14, "", 0} },
-    { "matrix3Source",      {91, 7, "", 0} },
-    { "matrix3Destination", {92, 7, "", 0} },
-    { "matrix3Amount",      {93, 14, "", 0} },
-    { "matrix4Source",      {95, 7, "", 0} },
-    { "matrix4Destination", {96, 7, "", 0} },
-    { "matrix4Amount",      {97, 14, "", 0} },
-    { "matrix5Source",      {99, 7, "", 0} },
-    { "matrix5Destination", {100, 7, "", 0} },
-    { "matrix5Amount",      {101, 14, "", 0} },
-    { "matrix6Source",      {103, 7, "", 0} },
-    { "matrix6Destination", {104, 7, "", 0} },
-    { "matrix6Amount",      {105, 14, "", 0} },
-    { "matrix7Source",      {107, 7, "", 0} },
-    { "matrix7Destination", {108, 7, "", 0} },
-    { "matrix7Amount",      {109, 14, "", 0} },
-    { "matrix8Source",      {111, 7, "", 0} },
-    { "matrix8Destination", {112, 7, "", 0} },
-    { "matrix8Amount",      {113, 14, "", 0} },
-    { "matrix9Source",      {115, 7, "", 0} },
-    { "matrix9Destination", {116, 7, "", 0} },
-    { "matrix9Amount",      {117, 14, "", 0} },
-    { "matrix10Source",      {119, 7, "", 0} },
-    { "matrix10Destination", {120, 7, "", 0} },
-    { "matrix10Amount",      {121, 14, "", 0} },
+    { "matrix1Source",       {83,  7,  "matSrc",  0} },
+    { "matrix1Destination",  {84,  7,  "matDest", 0} },
+    { "matrix1Amount",       {85,  14, "matAmt",  0} },
+    { "matrix2Source",       {87,  7,  "matSrc",  1} },
+    { "matrix2Destination",  {88,  7,  "matDest", 1} },
+    { "matrix2Amount",       {89,  14, "matAmt",  1} },
+    { "matrix3Source",       {91,  7,  "matSrc",  2} },
+    { "matrix3Destination",  {92,  7,  "matDest", 2} },
+    { "matrix3Amount",       {93,  14, "matAmt",  2} },
+    { "matrix4Source",       {95,  7,  "matSrc",  3} },
+    { "matrix4Destination",  {96,  7,  "matDest", 3} },
+    { "matrix4Amount",       {97,  14, "matAmt",  3} },
+    { "matrix5Source",       {99,  7,  "matSrc",  4} },
+    { "matrix5Destination",  {100, 7,  "matDest", 4} },
+    { "matrix5Amount",       {101, 14, "matAmt",  4} },
+    { "matrix6Source",       {103, 7,  "matSrc",  5} },
+    { "matrix6Destination",  {104, 7,  "matDest", 5} },
+    { "matrix6Amount",       {105, 14, "matAmt",  5} },
+    { "matrix7Source",       {107, 7,  "matSrc",  6} },
+    { "matrix7Destination",  {108, 7,  "matDest", 6} },
+    { "matrix7Amount",       {109, 14, "matAmt",  6} },
+    { "matrix8Source",       {111, 7,  "matSrc",  7} },
+    { "matrix8Destination",  {112, 7,  "matDest", 7} },
+    { "matrix8Amount",       {113, 14, "matAmt",  7} },
+    { "matrix9Source",       {115, 7,  "matSrc",  8} },
+    { "matrix9Destination",  {116, 7,  "matDest", 8} },
+    { "matrix9Amount",       {117, 14, "matAmt",  8} },
+    { "matrix10Source",      {119, 7,  "matSrc",  9} },
+    { "matrix10Destination", {120, 7,  "matDest", 9} },
+    { "matrix10Amount",      {121, 14, "matAmt",  9} },
     { "op1Source", {123, 7, "lagCombo", 0} },
     { "op1Amount", {124, 7, "lagSlider", 0} },
     { "op2SourceA", {125, 7, "mult", 0} },

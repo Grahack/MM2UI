@@ -123,6 +123,13 @@ private:
     juce::ComboBox lagCombo;
     juce::Slider lagSlider;
     OwnedArray<juce::ComboBox> multArray;
+    // matrix
+    struct matrixBlock {
+        std::unique_ptr<juce::ComboBox> src;
+        std::unique_ptr<juce::ComboBox> dest;
+        std::unique_ptr<juce::Slider>   amt;
+    };
+    OwnedArray<matrixBlock> matrixArray;
 
     void refreshMidiPorts();
 
