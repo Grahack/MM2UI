@@ -119,6 +119,10 @@ private:
     juce::Slider panSpread;
     juce::ComboBox delayCombo;
     juce::Label reverbLabel;
+    // ops
+    juce::ComboBox lagCombo;
+    juce::Slider lagSlider;
+    OwnedArray<juce::ComboBox> multArray;
 
     void refreshMidiPorts();
 

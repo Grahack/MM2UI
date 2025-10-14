@@ -460,6 +460,50 @@ MainComponent::MainComponent()
     reverbLabel.setLookAndFeel(&customLookAndFeel);
     addAndMakeVisible(reverbLabel);
 
+    // Ops section
+    // Lag (items added later)
+    addAndMakeVisible(lagCombo);
+    lagCombo.setLookAndFeel(&customLookAndFeel);
+    lagCombo.addListener(this);
+    addAndMakeVisible(lagSlider);
+    // 1 for integer value to be displayed
+    lagSlider.setRange(0, 127, 1);
+    lagSlider.setSliderStyle(juce::Slider::Rotary);
+    lagSlider.setLookAndFeel(&customLookAndFeel);
+    lagSlider.addListener(this);
+    // Mult (items added later)
+    for (int i = 0; i < 4; i++)
+    {
+        auto c = std::make_unique<juce::ComboBox>();
+        multArray.add(c.release());
+        addAndMakeVisible(*multArray[i]);
+        multArray[i]->addListener(this);
+        multArray[i]->setLookAndFeel(&customLookAndFeel);
+    }
+    // add items to all the comboboxes
+    std::string srcArray[36] = {"off", "note", "note+bnd", "velocity",
+        "aftertch", "modwheel", "mod knob", "pitchbnd",
+        "random1", "rnd1*mod", "random2", "rnd2*knb",
+        "env1", "env1*vel", "env2", "env2*vel", "env3", "env3*vel",
+        "lfo1", "lfo1*vel", "lfo1*aft", "lfo1*whl", "lfo1*knb", "lfo1*en1",
+        "lfo2", "lfo2*vel", "lfo2*aft", "lfo2*whl", "lfo2*knb", "lfo2*en2",
+        "lfo3", "lfo3*vel", "lfo3*aft", "lfo3*whl", "lfo3*knb", "lfo3*en3"
+    };
+    std::string multNamesArray[4] = {"M1 src A", "M1 src B",
+                                     "M2 src A", "M2 src B"};
+    for (int i = 0; i < 36; i++)
+    {
+        lagCombo.addItem("LAG: " + srcArray[i], i+1);
+        for (int j = 0; j < 4; j++)
+        {
+            multArray[j]->addItem(multNamesArray[j] + ": " + srcArray[i], i+1);
+        }
+    }
+    // select the first item in all comboboxes
+    lagCombo.setSelectedId(1, juce::dontSendNotification);
+    for (int j = 0; j < 4; j++)
+        multArray[j]->setSelectedId(1, juce::dontSendNotification);
+
     // First drawing request because previous ones were aborted
     // because of arrays not full of what we needed.
     resized();
@@ -506,6 +550,10 @@ MainComponent::~MainComponent()
     panCombo.removeListener(this);
     panSpread.removeListener(this);
     delayCombo.removeListener(this);
+    lagCombo.removeListener(this);
+    lagSlider.removeListener(this);
+    for (int j = 0; j < 4; j++)
+        multArray[j]->removeListener(this);
 
     setLookAndFeel(nullptr);
 }
@@ -685,6 +733,22 @@ void MainComponent::resized()
             fxArea.removeFromLeft(VFFXSlidersWidth * 0.5);
         }
     }
+    // some space
+    area.removeFromTop(internalMargin);
+    // Ops and Matrix: last part of the UI so we directly use 'area'
+    int opsWidth = totalW / 4;
+    auto opsArea = area.removeFromLeft(opsWidth);
+    int opsHeight = area.getHeight();
+    auto lagArea = opsArea.removeFromTop(opsHeight / 5);
+    // this calculation for the rotary slider to be square
+    lagCombo.setBounds(lagArea.removeFromLeft(opsWidth - opsHeight / 5));
+    lagSlider.setBounds(lagArea);
+    lagSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+    for (int i = 0; i < 2; i++)
+    {
+        multArray[2*i]->setBounds(opsArea.removeFromTop(opsHeight / 5));
+        multArray[2*i+1]->setBounds(opsArea.removeFromTop(opsHeight / 5));
+    }
 }
 
 void MainComponent::refreshMidiPorts()
@@ -813,6 +877,10 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
     {
         sendNRPN(channel, 128, (*combo).getSelectedId() - 1);
     }
+    else if (combo == &lagCombo)
+    {
+        sendNRPN(channel, 100, (*combo).getSelectedId() - 1);
+    }
     else
     {
         for (int i = 0; i < 3; ++i)
@@ -839,6 +907,14 @@ void MainComponent::comboBoxChanged(juce::ComboBox* combo)
             {
                 int param = lfoNRPNs[i].mode;
                 sendNRPN(channel, param, (*combo).getSelectedId() - 1);
+            }
+        }
+        for (int i = 0; i < 4; ++i)
+        {
+            if (combo == multArray[i])
+            {
+                int src = (*combo).getSelectedId() - 1;
+                sendNRPN(channel, 102 + i, src);
             }
         }
     }
@@ -877,6 +953,11 @@ void MainComponent::sliderValueChanged(juce::Slider* slider)
     if (slider == &panSpread)
     {
         sendNRPN(channel, 21, (*slider).getValue());
+        return;
+    }
+    if (slider == &lagSlider)
+    {
+        sendNRPN(channel, 101, (*slider).getValue());
         return;
     }
     for (int i = 0; i < slidersCount; i++)
@@ -1100,6 +1181,12 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
                     panSpread.setValue(val);
                 else if ( uiElt == "delayCombo" )
                     delayCombo.setSelectedId(val+1);
+                else if ( uiElt == "lagCombo" )
+                    lagCombo.setSelectedId(val+1);
+                else if ( uiElt == "lagSlider" )
+                    lagSlider.setValue(val);
+                else if ( uiElt == "mult" )
+                    multArray[num]->setSelectedId(val+1);
                 else if ( uiElt != "" )
                     DBG("Unknown UI element: " + uiElt);
             });
@@ -1111,12 +1198,6 @@ void MainComponent::handleIncomingMidiMessage(juce::MidiInput* source,
         // mKnobAssignment
         // encoderXAssignment (X from 1 to 4)
         // matrixXSource matrixXDestination matrixXAmount (X from 1 to 10)
-        // op1Source
-        // op1Amount
-        // op2SourceA
-        // op2SourceB
-        // op3SourceA
-        // op3SourceB
         // modulationKnob
         // arpStyle
         // arpGateLength
@@ -1231,12 +1312,12 @@ const std::unordered_map<std::string,
     { "matrix10Source",      {119, 7, "", 0} },
     { "matrix10Destination", {120, 7, "", 0} },
     { "matrix10Amount",      {121, 14, "", 0} },
-    { "op1Source", {123, 7, "", 0} },
-    { "op1Amount", {124, 7, "", 0} },
-    { "op2SourceA", {125, 7, "", 0} },
-    { "op2SourceB", {126, 7, "", 0} },
-    { "op3SourceA", {127, 7, "", 0} },
-    { "op3SourceB", {128, 7, "", 0} },
+    { "op1Source", {123, 7, "lagCombo", 0} },
+    { "op1Amount", {124, 7, "lagSlider", 0} },
+    { "op2SourceA", {125, 7, "mult", 0} },
+    { "op2SourceB", {126, 7, "mult", 1} },
+    { "op3SourceA", {127, 7, "mult", 2} },
+    { "op3SourceB", {128, 7, "mult", 3} },
     { "modulationKnob", {129, 7, "", 0} },
     { "eqFrequencyControl", {130, 14, "slidersArray", 14} },
     { "delayTime", {132, 14, "slidersArray", 36} },
