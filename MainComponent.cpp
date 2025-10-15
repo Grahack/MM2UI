@@ -800,14 +800,15 @@ void MainComponent::resized()
         multArray[2*i+1]->setBounds(opsArea.removeFromTop(opsAndMatHeight / 5));
     }
     // some space between sub-sections
-    area.removeFromLeft( totalW * 2 / 100);
+    area.removeFromLeft( totalW * 3 / 100);
     // matrix
-    auto topMatrix = area.removeFromTop(opsAndMatHeight / 2);
-    auto bottomMatrix = area.removeFromTop(opsAndMatHeight / 2);
-    auto cbH = opsAndMatHeight / 4;
-    auto cbW = totalW * 10 / 100;
-    auto rotW = totalW * 4 / 100;
-    auto spc = totalW * 2 / 100;
+    auto spcH = opsAndMatHeight * 0.1;
+    auto cbH = (opsAndMatHeight - spcH) / 4;
+    auto cbW = totalW * 9 / 100;
+    auto rotW = totalW * 5 / 100;
+    auto spcW = totalW * 3 / 100;
+    auto topMatrix = area.removeFromTop((opsAndMatHeight - spcH) / 2);
+    auto bottomMatrix = area.removeFromBottom((opsAndMatHeight - spcH) / 2);
     for (int i = 0; i < 5; i++)
     {
         // top line
@@ -817,7 +818,7 @@ void MainComponent::resized()
         matrixArray[i]->dest->setBounds(matEltLeft.removeFromTop(cbH));
         matrixArray[i]->amt->setBounds(matElt);
         // some space between matrix columns (last one not needed and empty)
-        topMatrix.removeFromLeft(spc);
+        topMatrix.removeFromLeft(spcH);
         // bottom line
         matElt = bottomMatrix.removeFromLeft(cbW + rotW);
         matEltLeft = matElt.removeFromLeft(cbW);
@@ -825,7 +826,7 @@ void MainComponent::resized()
         matrixArray[i + 5]->dest->setBounds(matEltLeft.removeFromTop(cbH));
         matrixArray[i + 5]->amt->setBounds(matElt);
         // some space between matrix columns (last one not needed and empty)
-        bottomMatrix.removeFromLeft(spc);
+        bottomMatrix.removeFromLeft(spcH);
     }
 }
 
