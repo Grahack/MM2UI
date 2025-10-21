@@ -422,7 +422,7 @@ MainComponent::MainComponent()
     std::string chorusArray[4] = {"off", "1", "2", "1 + 2"};
     for (int i = 0; i < 4; i++)
     {
-        chorusCombo.addItem(" CHORUS: "  + chorusArray[i], i+1);
+        chorusCombo.addItem(" CHO: "  + chorusArray[i], i+1);
     }
     chorusCombo.setSelectedId(1, juce::dontSendNotification);
     // pan
