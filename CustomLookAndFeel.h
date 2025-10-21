@@ -10,6 +10,7 @@ public:
         setColour (juce::ComboBox::backgroundColourId, mm2);
         setColour (juce::ComboBox::arrowColourId, juce::Colours::black);
         setColour (juce::ComboBox::textColourId, juce::Colours::black);
+        setColour (juce::ComboBox::outlineColourId, juce::Colours::black);
     }
 
     Font getComboBoxFont (ComboBox& box) override
