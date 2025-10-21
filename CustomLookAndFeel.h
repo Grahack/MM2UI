@@ -1,9 +1,11 @@
 class CustomLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
+
+    const juce::Colour mm2 = juce::Colour (0xffF76D22);
+
     CustomLookAndFeel()
     {
-        juce::Colour mm2 = juce::Colour (0xffF76D22);
         setColour (juce::Slider::thumbColourId, juce::Colours::red);
         setColour (juce::ComboBox::backgroundColourId, mm2);
         setColour (juce::ComboBox::arrowColourId, juce::Colours::black);
@@ -27,7 +29,7 @@ public:
         auto angle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
 
         // fill
-        g.setColour (juce::Colour(0xffF76D22));
+        g.setColour (mm2);
         g.fillEllipse (rx, ry, rw, rw);
 
         // outline
