@@ -50,20 +50,20 @@ MainComponent::MainComponent()
         oscAlgosArray.add(new ComboBox());
         for (int j = 0; j < 12; j++)
         {
-            oscAlgosArray[i]->addItem("OSC " + std::to_string(i+1) + ": " +
+            oscAlgosArray[i]->addItem(" OSC " + std::to_string(i+1) + ": " +
                                       algosArray[j], j+1);
         }
         if ( i == 0 ) // Osc1 specials
         {
             for (int j = 0; j < 4; j++)
             {
-                oscAlgosArray[i]->addItem("OSC " + std::to_string(i+1) + ": " +
+                oscAlgosArray[i]->addItem(" OSC " + std::to_string(i+1) + ": " +
                                           algosArrayOsc1[j], j+1+12);
             }
         } else {  // Osc2 and Osc3 specials
             for (int j = 0; j < 8; j++)
             {
-                oscAlgosArray[i]->addItem("OSC " + std::to_string(i+1) + ": " +
+                oscAlgosArray[i]->addItem(" OSC " + std::to_string(i+1) + ": " +
                                           "Wt0" + std::to_string(j+1), j+1+12);
             }
         }
@@ -271,7 +271,7 @@ MainComponent::MainComponent()
         lfoArray[i]->speed->addListener(this);
         for (int j = 0; j < 19; j++)
         {
-            lfoArray[i]->waveform->addItem("LFO " + std::to_string(i+1)
+            lfoArray[i]->waveform->addItem(" LFO " + std::to_string(i+1)
                                            + ": " + lfoWavesArray[j], j+1);
         }
         lfoArray[i]->waveform->setSelectedId(1, juce::dontSendNotification);
@@ -332,7 +332,7 @@ MainComponent::MainComponent()
     std::string assignsArray[4] = {"Modern", "Vintage", "Mono", "Legato"};
     for (int i = 0; i < 4; i++)
     {
-        voiceAssign.addItem("Assign: "  + assignsArray[i], i+1);
+        voiceAssign.addItem(" Assign: "  + assignsArray[i], i+1);
     }
     voiceAssign.setSelectedId(1, juce::dontSendNotification);
     // Unisson ComboBox
@@ -342,7 +342,7 @@ MainComponent::MainComponent()
     std::string unisonsArray[4] = {"1", "2", "3", "6"};
     for (int i = 0; i < 4; i++)
     {
-        voiceUnison.addItem(unisonsArray[i], i+1);
+        voiceUnison.addItem(" " + unisonsArray[i], i+1);
     }
     voiceUnison.setSelectedId(1, juce::dontSendNotification);
     // Filter Label
@@ -361,7 +361,7 @@ MainComponent::MainComponent()
                                        "Notch", "Phaser"};
     for (int i = 0; i < 8; i++)
     {
-        filterType.addItem(filterTypesArray[i], i+1);
+        filterType.addItem(" " + filterTypesArray[i], i+1);
     }
     filterType.setSelectedId(1, juce::dontSendNotification);
     // Filter Character
@@ -371,7 +371,7 @@ MainComponent::MainComponent()
     std::string filterCharsArray[4] = {"Soft", "Mild", "Hard", "Mean"};
     for (int i = 0; i < 4; i++)
     {
-        filterChar.addItem(filterCharsArray[i], i+1);
+        filterChar.addItem(" " + filterCharsArray[i], i+1);
     }
     filterChar.setSelectedId(1, juce::dontSendNotification);
     // Rotary sliders: env amt, env vel, kbd, fm3
@@ -422,7 +422,7 @@ MainComponent::MainComponent()
     std::string chorusArray[4] = {"off", "1", "2", "1 + 2"};
     for (int i = 0; i < 4; i++)
     {
-        chorusCombo.addItem("CHORUS: "  + chorusArray[i], i+1);
+        chorusCombo.addItem(" CHORUS: "  + chorusArray[i], i+1);
     }
     chorusCombo.setSelectedId(1, juce::dontSendNotification);
     // pan
@@ -432,7 +432,7 @@ MainComponent::MainComponent()
     std::string panArray[2] = {"dif", "bal"};
     for (int i = 0; i < 2; i++)
     {
-        panCombo.addItem(panArray[i], i+1);
+        panCombo.addItem(" " + panArray[i], i+1);
     }
     panCombo.setSelectedId(1, juce::dontSendNotification);
     // panspread
@@ -450,7 +450,7 @@ MainComponent::MainComponent()
     std::string delayArray[5] = {"dig", "lpf1", "lpf2", "mod1", "mod2"};
     for (int i = 0; i < 5; i++)
     {
-        delayCombo.addItem("DELAY: " + delayArray[i], i+1);
+        delayCombo.addItem(" DELAY: " + delayArray[i], i+1);
     }
     delayCombo.setSelectedId(1, juce::dontSendNotification);
     // reverb (sliders above in the sliders section)
