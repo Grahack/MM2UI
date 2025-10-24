@@ -2,7 +2,7 @@
 
 MainComponent::MainComponent()
 {
-    setSize(1000, 1000);
+    setSize(1000, 768);
 
     juce::Colour dark = juce::Colour (40, 40, 40);
     juce::Colour mm2 = juce::Colour (0xffF76D22);
@@ -613,10 +613,10 @@ void MainComponent::paint(juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    int internalMargin = 25;
+    int internalMargin = 15;
     auto area = getLocalBounds();
     int totalW = area.getWidth();
-    int headerHeight = 50;
+    int headerHeight = 30;
     auto headerArea = area.removeFromTop(headerHeight);
     channelSelector.setBounds(headerArea.removeFromLeft(totalW * 1 / 10));
     midiInputSelector.setBounds(headerArea.removeFromLeft(totalW * 4 / 10));
@@ -624,10 +624,11 @@ void MainComponent::resized()
     refreshButton.setBounds(headerArea.removeFromLeft(totalW * 1 / 10));
     // some space
     area.removeFromTop(internalMargin);
+    int sectionHeadersHeight = 30;
     // Oscillators section
     // Protect this section from a premature execution
     if (oscAlgosArray.size() < 3) return;
-    int algosComboBoxHeight = 40;
+    int algosComboBoxHeight = sectionHeadersHeight;
     auto algosArea = area.removeFromTop(algosComboBoxHeight);
     int oscSlidersWidth = algosArea.getWidth() / 20;
     for (int i = 0; i < 3; i++)
@@ -637,7 +638,7 @@ void MainComponent::resized()
     }
     // Protect this section from a premature execution
     if (slidersArray.size() == 0) return;
-    int slidersHeight = 150;
+    int slidersHeight = 115;
     int slidersLabelHeight = 26;
     area.removeFromTop(slidersLabelHeight);  // spacer for the attached labels
     auto oscArea = area.removeFromTop(slidersHeight);
@@ -652,7 +653,7 @@ void MainComponent::resized()
     // some space
     area.removeFromTop(internalMargin);
     // env + LFO section
-    int envHeaderHeight = 40;
+    int envHeaderHeight = sectionHeadersHeight;
     int envLFOHeight = envHeaderHeight + slidersLabelHeight + slidersHeight;
     auto envLFOArea = area.removeFromTop(envLFOHeight);
     // env section : labels
@@ -688,7 +689,7 @@ void MainComponent::resized()
     for (int i = 0; i < 3; i++)
     {
         auto lfoBlockArea = lfoArea.removeFromTop(envLFOHeight / 3);
-        int h1 = lfoBlockArea.getHeight() / 7 * 3;  // slightly less than half
+        int h1 = lfoBlockArea.getHeight() / 2;
         lfoArray[i]->waveform->setBounds(lfoBlockArea.removeFromTop(h1));
         lfoArray[i]->mode->setBounds(lfoBlockArea.removeFromLeft(lfoW / 3));
         // position, readonly, width, height
@@ -701,7 +702,7 @@ void MainComponent::resized()
     // some space
     area.removeFromTop(internalMargin);
     // Voice + Filter + FX section: VFFX
-    int VFFXHeaderHeight = 40;
+    int VFFXHeaderHeight = sectionHeadersHeight;
     int VFFXHeight = 2*VFFXHeaderHeight + slidersLabelHeight + slidersHeight;
     auto VFFXArea = area.removeFromTop(VFFXHeight);
     int VFFXSlidersWidth = area.getWidth() / 18.5;
